@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="給新手 PM 的說明文件：北捷輿情日誌從蒐集資料、寫入頁面到雙軌部署（Artifact + GitHub Pages）與通知的完整自動化流程與關鍵名詞解釋。">
+<title>日誌自動化控制室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --bg:#F7F4EC;
+  --surface:#FFFFFF;
+  --surface-2:#EFEBDF;
+  --line:#DFD9C6;
+  --line-soft:#EAE5D5;
+  --ink:#211E19;
+  --ink-2:#4B463C;
+  --muted:#8B8371;
+  --accent:#0F6E5C;
+  --accent-soft:#DCEEE8;
+  --amber:#B4590F;
+  --amber-soft:#F5E3D1;
+  --l-red:#C8102E;
+  --l-blue:#1258A6;
+  --l-brown:#8B5E34;
+  --l-green:#2F7D4F;
+  --l-orange:#D9820C;
+  --shadow:0 1px 2px rgba(33,30,25,.06),0 10px 26px -18px rgba(33,30,25,.4);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15130F;
+    --surface:#1E1B16;
+    --surface-2:#252119;
+    --line:#38321F;
+    --line-soft:#2C2719;
+    --ink:#ECE7DA;
+    --ink-2:#C7BFAC;
+    --muted:#948A72;
+    --accent:#4FBFA3;
+    --accent-soft:#1B332C;
+    --amber:#E6A15B;
+    --amber-soft:#3A2A18;
+    --l-red:#F17188;
+    --l-blue:#6FA3E0;
+    --l-brown:#C79A6E;
+    --l-green:#7BC79A;
+    --l-orange:#F0B24E;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px -18px rgba(0,0,0,.85);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15130F;
+  --surface:#1E1B16;
+  --surface-2:#252119;
+  --line:#38321F;
+  --line-soft:#2C2719;
+  --ink:#ECE7DA;
+  --ink-2:#C7BFAC;
+  --muted:#948A72;
+  --accent:#4FBFA3;
+  --accent-soft:#1B332C;
+  --amber:#E6A15B;
+  --amber-soft:#3A2A18;
+  --l-red:#F17188;
+  --l-blue:#6FA3E0;
+  --l-brown:#C79A6E;
+  --l-green:#7BC79A;
+  --l-orange:#F0B24E;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px -18px rgba(0,0,0,.85);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Noto Sans TC","Helvetica Neue",Arial,sans-serif;
+  font-size:15.5px;line-height:1.75;-webkit-font-smoothing:antialiased;
+  padding-block:0;
+}
+a{color:var(--accent)}
+h1,h2,h3,h4{font-family:"Noto Serif TC",Georgia,serif;text-wrap:balance;margin:0;color:var(--ink)}
+.mono{font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;font-variant-numeric:tabular-nums}
+code{font-family:"IBM Plex Mono",monospace;font-size:.92em;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:4px;padding:.05em .38em}
+
+.wrap{max-width:920px;margin:0 auto;padding:0 20px 90px}
+
+/* ---------- hero ---------- */
+.hero{
+  border-bottom:1px solid var(--line);background:var(--surface);margin-bottom:34px;
+}
+.hero-in{max-width:920px;margin:0 auto;padding:40px 20px 30px}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;font-family:"IBM Plex Mono",monospace;
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);
+  background:var(--accent-soft);border-radius:20px;padding:4px 12px;margin-bottom:16px;
+}
+.hero h1{font-size:clamp(28px,5vw,40px);font-weight:900;line-height:1.3;margin-bottom:14px}
+.hero .lede{font-size:16.5px;color:var(--ink-2);max-width:62ch;margin-bottom:0}
+.hero .meta{margin-top:20px;display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);font-family:"IBM Plex Mono",monospace}
+
+/* ---------- sections ---------- */
+section{margin-bottom:52px}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--ink)}
+.sec-no{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--accent);font-weight:600}
+.sec-head h2{font-size:23px;font-weight:700}
+
+.tldr{
+  background:var(--accent-soft);border:1px solid var(--accent);border-radius:12px;
+  padding:20px 22px;margin-bottom:0;box-shadow:var(--shadow);
+}
+.tldr .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;font-weight:600}
+.tldr p{margin:0;color:var(--ink);font-size:15.5px;line-height:1.8}
+.tldr p+p{margin-top:8px}
+
+/* ---------- mermaid ---------- */
+.diagram-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;
+  box-shadow:var(--shadow);overflow-x:auto;
+}
+
+/* ---------- glossary ---------- */
+.glos-group{margin-bottom:22px}
+.glos-group h3{font-size:14px;letter-spacing:.06em;color:var(--muted);font-family:"IBM Plex Mono",monospace;text-transform:uppercase;margin-bottom:10px}
+.glos-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.glos-grid{grid-template-columns:1fr}}
+.term{
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow);
+}
+.term .t-name{display:flex;align-items:baseline;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.term .t-name b{font-size:15px;font-weight:700}
+.term .t-name span{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted)}
+.term p{margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.7}
+
+/* ---------- stations (line map) ---------- */
+.line{position:relative;padding-left:34px}
+.line::before{
+  content:"";position:absolute;left:10px;top:6px;bottom:6px;width:3px;
+  background:linear-gradient(var(--l-red),var(--l-blue) 20%,var(--l-brown) 40%,var(--l-green) 60%,var(--l-orange) 80%,var(--accent));
+  border-radius:2px;
+}
+.stop{position:relative;margin-bottom:26px}
+.stop:last-child{margin-bottom:0}
+.stop::before{
+  content:"";position:absolute;left:-34px;top:4px;width:17px;height:17px;border-radius:50%;
+  background:var(--surface);border:3px solid var(--dot,var(--accent));box-shadow:0 0 0 4px var(--bg);
+}
+.stop-card{
+  background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--dot,var(--accent));
+  border-radius:10px;padding:16px 18px;box-shadow:var(--shadow);
+}
+.stop-card .sh{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.stop-card .badge{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;color:#fff;background:var(--dot,var(--accent));
+  border-radius:5px;padding:2px 8px;letter-spacing:.03em;
+}
+.stop-card h3{font-size:16px;font-weight:700}
+.stop-card p{margin:0 0 8px;color:var(--ink-2);font-size:14px;line-height:1.75}
+.stop-card p:last-child{margin-bottom:0}
+.stop-card .ex{
+  margin-top:10px;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:8px;
+  padding:10px 12px;font-size:13px;color:var(--ink-2);
+}
+.stop-card .ex b{color:var(--ink);font-weight:600}
+
+/* ---------- qa ---------- */
+.qa{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow)}
+.qa .q{font-weight:700;font-size:15px;margin-bottom:8px;display:flex;gap:8px}
+.qa .q::before{content:"Q";font-family:"IBM Plex Mono",monospace;color:var(--accent);font-weight:700}
+.qa .a{color:var(--ink-2);font-size:14px;line-height:1.75;display:flex;gap:8px}
+.qa .a::before{content:"A";font-family:"IBM Plex Mono",monospace;color:var(--amber);font-weight:700;flex-shrink:0}
+
+/* ---------- troubleshoot table ---------- */
+.tbl{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+.tbl th{background:var(--surface-2);text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-family:"IBM Plex Mono",monospace;padding:10px 14px;border-bottom:1px solid var(--line)}
+.tbl td{padding:12px 14px;border-bottom:1px solid var(--line-soft);font-size:13.5px;color:var(--ink-2);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
+.tbl-wrap{overflow-x:auto}
+
+/* ---------- next steps ---------- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:720px){.steps{grid-template-columns:1fr}}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;box-shadow:var(--shadow)}
+.step .n{font-family:"IBM Plex Mono",monospace;color:var(--accent);font-size:12px;font-weight:600;margin-bottom:6px}
+.step h4{font-size:14.5px;font-weight:700;margin-bottom:6px}
+.step p{margin:0;font-size:13px;color:var(--ink-2);line-height:1.7}
+
+footer.foot{
+  margin-top:10px;padding-top:18px;border-top:1px solid var(--line);
+  font-size:12px;color:var(--muted);line-height:1.8;
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-in">
+    <span class="eyebrow">PM 內部教材 · 給新手的系統說明</span>
+    <h1>「北捷輿情日誌」是怎麼自己跑起來的？</h1>
+    <p class="lede">你每天收到的那則推播通知，背後其實是一整條無人值守的生產線：排程觸發、AI 讀資料、上網蒐集新聞、寫回資料庫、組頁面、驗證、雙軌上線、推播回報。這篇文件用「捷運路網」的方式，把這條線從頭到尾攤開給你看。</p>
+    <div class="meta">
+      <span>閱讀時間 約 10 分鐘</span>
+      <span>·</span>
+      <span>對象：不寫程式的 PM / 營運</span>
+      <span>·</span>
+      <span>版本 2026-09-21</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <div class="tldr">
+    <div class="k">30 秒版本</div>
+    <p>這是一個「每天自動醒來一次」的 AI 任務。它醒來後會：讀取昨天寫好的資料 → 上網找今天跟台北捷運有關的新聞與討論 → 把新資料寫進一份 JSON 清單 → 用同一份清單組出兩個網頁 → 用真的瀏覽器截圖檢查版面沒壞 → 同時發布到「Claude Artifact」和「GitHub Pages」兩個地方 → 傳一則通知告訴你今天發生了什麼。</p>
+    <p>你不需要碰任何程式碼。你需要知道的只是：<b>「排程」決定什麼時候跑</b>、<b>「Artifact」和「GitHub」是兩個不同的家，但住的是同一份內容</b>、<b>「LOG 陣列」是這整個系統唯一的資料庫</b>。</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-no">01</span><h2>全貌：一張圖看懂整條線</h2></div>
+  <div class="diagram-card">
+<pre class="mermaid">
+flowchart TD
+    ROUTINE["Routine 排程<br/>設定好的時間一到就觸發"] --> SESSION["啟動一個全新的 Session<br/>沒有昨天的記憶，只靠檔案接手"]
+    SESSION --> READ["讀取現有資料<br/>Artifact 版本 或 GitHub 版本"]
+    READ --> SEARCH["WebSearch / WebFetch<br/>上網蒐集新聞、PTT、官方公告"]
+    SEARCH --> WRITE["把新資料寫進 LOG 陣列<br/>純 JSON，沒有資料庫"]
+    WRITE --> BUILD["組出兩份 HTML<br/>Artifact 版 + GitHub 版"]
+    BUILD --> TEST["Playwright 開瀏覽器<br/>截圖驗證版面沒跑掉"]
+    TEST --> GH["git push 到 GitHub"]
+    TEST --> ART["發布回 Artifact"]
+    GH --> PAGES["GitHub Pages<br/>自動把 repo 變成公開網站"]
+    ART --> LINK["claude.ai 上的分享連結"]
+    PAGES --> NOTIFY["PushNotification<br/>把重點推播給你"]
+    LINK --> NOTIFY
+</pre>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-no">02</span><h2>名詞小辭典</h2></div>
+
+  <div class="glos-group">
+    <h3>跟「AI 怎麼運作」有關</h3>
+    <div class="glos-grid">
+      <div class="term">
+        <div class="t-name"><b>Routine（排程任務）</b><span>schedule</span></div>
+        <p>你在後台設定好的鬧鐘，例如「每天早上跑一次」。時間一到，系統會自動開一個全新的對話，把固定的任務指令丟給它，不需要你手動點「開始」。</p>
+      </div>
+      <div class="term">
+        <div class="t-name"><b>Session（對話）</b><span>session</span></div>
+        <p>Routine 每次觸發，都是一個「全新的人」在做事——它沒有昨天的記憶，完全靠讀取「昨天留下的檔案」來接手，這也是為什麼整個系統必須把狀態都存在檔案裡，而不是存在 AI 的腦袋裡。</p>
+      </div>
+      <div class="term">
+        <div class="t-name"><b>Skill（技能包）</b><span>skill</span></div>
+        <p>一份預先寫好的「操作手冊」，AI 在需要時會臨時讀進來照著做，例如「怎麼設計一個好看的網頁」。用完即丟，不佔用平常的思考空間。</p>
+      </div>
+      <div class="term">
+        <div class="t-name"><b>WebSearch / WebFetch</b><span>工具</span></div>
+        <p>AI 用來上網的兩隻手：WebSearch 像 Google 搜尋，先找「有哪些相關頁面」；WebFetch 則是打開某一個網址、把內容讀進來整理給你。今天蒐集新聞用的就是這兩個工具。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="glos-group">
+    <h3>跟「網頁怎麼組出來」有關</h3>
+    <div class="glos-grid">
+      <div class="term">
+        <div class="t-name"><b>LOG 陣列</b><span>data</span></div>
+        <p>整個系統唯一的「資料庫」——其實就是網頁原始碼裡的一段 JSON 清單，每一天是一筆資料，裡面放著當天的新聞條目。沒有 MySQL、沒有後端，資料就直接寫死在網頁裡。</p>
+      </div>
+      <div class="term">
+        <div class="t-name"><b>JSON</b><span>格式</span></div>
+        <p>一種「用大括號和方括號包資料」的通用格式，幾乎所有系統都看得懂。你可以把它想成「結構化的 Excel 表格」，只是用純文字寫成。</p>
+      </div>
+      <div class="term">
+        <div class="t-name"><b>Playwright</b><span>工具</span></div>
+        <p>一支「假裝成使用者」的自動化瀏覽器。AI 用它打開剛做好的網頁、拍下截圖，藉此檢查版面有沒有跑掉、按鈕能不能點——這是發布前唯一的「人工測試」替代品。</p>
+      </div>
+      <div class="term">
+        <div class="t-name"><b>Chromium</b><span>瀏覽器核心</span></div>
+        <p>Google Chrome 背後的引擎，Playwright 就是拿這顆引擎去開網頁。伺服器上沒有真的視窗，所以是「看不見畫面、但真的有在跑」的無頭（headless）瀏覽器。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="glos-group">
+    <h3>跟「GitHub / 上線」有關</h3>
+    <div class="glos-grid">
+      <div class="term">
+        <div class="t-name"><b>Repository（repo）</b><span>倉庫</span></div>
+        <p>一個專案的完整檔案總管，這次是 <code>cjw9223233/mrt-log</code>。所有版本紀錄、每次修改，都存在這裡。</p>
+      </div>
+      <div class="term">
+        <div class="t-name"><b>Commit / Push</b><span>版控動作</span></div>
+        <p>Commit 是「幫這次修改拍一張快照、寫一句說明」；Push 是「把這張快照上傳到 GitHub 的伺服器」。沒有 Push，修改只存在本機，別人看不到。</p>
+      </div>
+      <div class="term">
+        <div class="t-name"><b>Branch（分支）</b><span>分身</span></div>
+        <p>同一個 repo 可以有好幾條平行時空。<code>main</code> 是正式對外的那一條，<code>claude/xxx</code> 是這次任務專用的工作分支。這次因為要直接上線，兩條分支都會收到同一個 commit。</p>
+      </div>
+      <div class="term">
+        <div class="t-name"><b>GitHub Pages</b><span>免費架站</span></div>
+        <p>GitHub 提供的免費服務：只要 repo 裡有一個 <code>index.html</code>，它就會自動把整個 repo 變成一個公開網站，網址通常長得像 <code>帳號.github.io/repo名稱</code>。</p>
+      </div>
+      <div class="term">
+        <div class="t-name"><b>Artifact</b><span>Claude 的頁面</span></div>
+        <p>Claude 這邊自己的「快速發布網頁」功能，跟 GitHub 無關，發布後會拿到一個 <code>claude.ai</code> 開頭的連結，可以直接分享給任何人開啟，不需要懂技術。</p>
+      </div>
+      <div class="term">
+        <div class="t-name"><b>MCP / Connector</b><span>外部接線</span></div>
+        <p>讓 AI 能操作外部服務（例如 GitHub）的「轉接頭」。這次能自動 push 程式碼到 GitHub，靠的就是背後接好的 GitHub 授權，不需要人工輸入帳密。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="glos-group">
+    <h3>跟「回報」有關</h3>
+    <div class="glos-grid">
+      <div class="term">
+        <div class="t-name"><b>PushNotification</b><span>推播</span></div>
+        <p>任務跑完後，主動把重點推到你的手機或信箱的工具。設計原則是「沒事不打擾」——平淡無事的一天可以選擇不推播，只在真的有東西值得你知道時才響。</p>
+      </div>
+      <div class="term">
+        <div class="t-name"><b>Egress Proxy（對外連線代理）</b><span>網路限制</span></div>
+        <p>這次任務跑在一個受管控的環境裡，對外連線會先經過一層「代理」把關，某些網域（例如 <code>metro.taipei</code>、<code>github.io</code>）會被擋下無法直接讀取，這是安全設計，不是故障。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-no">03</span><h2>逐站說明：這條線實際怎麼跑</h2></div>
+  <div class="line">
+
+    <div class="stop" style="--dot:var(--l-red)">
+      <div class="stop-card">
+        <div class="sh"><span class="badge">STOP 1</span><h3>讀基底：先找「昨天寫到哪」</h3></div>
+        <p>Session 一啟動，第一件事不是找新聞，而是先把「昨天最後長什麼樣子」讀進來——優先讀 Claude Artifact 那份，讀不到才改讀 GitHub 上的 <code>index.html</code> 當備援。兩邊都讀得到時，會比對哪邊資料比較新、比較完整。</p>
+        <div class="ex"><b>今天實際情況：</b>Artifact 讀取成功，且發現裡面已經有「今天」這一天的資料——代表這是同一天內的第二次執行，於是切換成「補資料」模式，而不是「新增一天」。</div>
+      </div>
+    </div>
+
+    <div class="stop" style="--dot:var(--l-blue)">
+      <div class="stop-card">
+        <div class="sh"><span class="badge">STOP 2</span><h3>蒐集：上網找今天的真實素材</h3></div>
+        <p>用 WebSearch／WebFetch 分頭查詢新聞網站、PTT 討論板、官方新聞稿頁、誤點證明頁，盡量涵蓋「營運狀況、工程進度、票務政策、治安安全、社群熱議」五大類。找到的每一則都要留下可點擊的原始連結，不能只憑印象生成內容。</p>
+        <div class="ex"><b>今天實際情況：</b>查了貓纜狀態、萬大線施工爭議、中捷藍線預算攻防等多個關鍵字，確認除了早上已記錄的 12 則之外，沒有新的重大事件，所以沒有新增條目。</div>
+      </div>
+    </div>
+
+    <div class="stop" style="--dot:var(--l-brown)">
+      <div class="stop-card">
+        <div class="sh"><span class="badge">STOP 3</span><h3>寫入：塞進 LOG 這份「假資料庫」</h3></div>
+        <p>把整理好的素材，依照固定欄位格式（分類、熱度、標籤、摘要、來源連結）寫成一筆 JSON 物件。這個系統沒有真的資料庫，LOG 陣列本身就是資料庫——整份歷史，就活在網頁原始碼裡的那一段文字裡。</p>
+        <div class="ex"><b>今天實際情況：</b>因為是同一天重跑且沒有新素材，只更新了頁首「最後更新」時間戳，LOG 陣列的內容維持不變。</div>
+      </div>
+    </div>
+
+    <div class="stop" style="--dot:var(--l-green)">
+      <div class="stop-card">
+        <div class="sh"><span class="badge">STOP 4</span><h3>組頁：一份資料、兩種外殼</h3></div>
+        <p>同一段 LOG 資料，會被包成兩個不同的檔案：一個保留 Artifact 平台加的外框，另一個組成完全獨立、可以放在任何網站的標準 HTML 檔（給 GitHub Pages 用）。版面的 CSS、排版邏輯完全不動，這一步只換「外殼」，不碰設計。</p>
+        <div class="ex"><b>今天實際情況：</b>用 <code>sed</code> 把原始檔案從 <code>&lt;title&gt;</code> 到 <code>&lt;/script&gt;</code> 這一段抽出來，前後補上標準網頁該有的 <code>&lt;!doctype&gt;</code>、<code>&lt;head&gt;</code>、<code>&lt;body&gt;</code>，變成獨立的 <code>index.html</code>。</div>
+      </div>
+    </div>
+
+    <div class="stop" style="--dot:var(--l-orange)">
+      <div class="stop-card">
+        <div class="sh"><span class="badge">STOP 5</span><h3>驗證：機器自己先當一次讀者</h3></div>
+        <p>在真正發布之前，用 Node.js 把 LOG 陣列抽出來實際「解析」一遍，確認格式沒寫錯、日期沒重複、天數沒超過上限；再用 Playwright 開一個看不見的瀏覽器把頁面整個跑一次，截圖檢查排版，並且真的去點「切換日期」「雙日比對」這些按鈕，確認功能沒壞掉。</p>
+        <div class="ex"><b>今天實際情況：</b>解析結果確認共 14 天資料、日期由新到舊排列、今天 12 則、所有連結都是合法網址；截圖確認主頁與雙日比對畫面都正常顯示。</div>
+      </div>
+    </div>
+
+    <div class="stop" style="--dot:var(--accent)">
+      <div class="stop-card">
+        <div class="sh"><span class="badge">STOP 6</span><h3>上線：同時部署到兩個家</h3></div>
+        <p>驗證過關後，兩邊幾乎同時發布：GitHub 那邊用 <code>git commit</code> + <code>git push</code> 把新的 <code>index.html</code> 送上 <code>main</code> 分支，觸發 GitHub Pages 自動重新部署公開網站；Artifact 那邊則用同一個網址「覆蓋更新」，版本號自動往上加一，舊網址不會變。</p>
+        <div class="ex"><b>今天實際情況：</b>這是這個 repo 第一次真的有 <code>index.html</code> 被推上去（之前只有一份 README）。Artifact 端則是已經第 31 個版本，代表這條線已經穩定跑了一個多月。</div>
+      </div>
+    </div>
+
+    <div class="stop" style="--dot:var(--amber)">
+      <div class="stop-card">
+        <div class="sh"><span class="badge">STOP 7</span><h3>回報：只在值得的時候打擾你</h3></div>
+        <p>最後一步是決定「要不要通知你」。系統被設計成預設安靜：如果今天沒有新東西、兩邊都部署成功，可以選擇不發通知，避免每天洗版一則「一切正常」。只有出現新的重要事件、或部署過程有異常需要你知道時，才會真的推播。</p>
+        <div class="ex"><b>今天實際情況：</b>因為是「repo 第一次真正上線」這種一次性的里程碑，判斷值得讓你知道，所以還是發了一則通知，並附上兩個連結。</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-no">04</span><h2>為什麼要這樣設計？</h2></div>
+
+  <div class="qa">
+    <div class="q">為什麼要同時發布到 Artifact 和 GitHub 兩個地方，不是重複做工嗎？</div>
+    <div class="a">兩者服務的對象不同。Artifact 連結誰都能打開、不需要懂技術，適合快速分享；GitHub Pages 則是「真正屬於你、掛在你自己網域下」的公開網站，之後要接自訂網域、串其他自動化都比較有彈性。用同一份 LOG 資料組出兩個外殼，維護成本幾乎沒有增加。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">為什麼「同一天重跑」要用「補資料」而不是「新增一筆」？</div>
+    <div class="a">因為 Routine 可能一天觸發不只一次（例如人工手動又跑了一次，或排程設定成每天兩次）。如果每次都新增一筆，日期欄位就會重複，網頁上的「切換日期」清單會出現兩個一模一樣的 09-21。所以系統會先檢查陣列裡有沒有今天的日期，有的話就地補充，維持「一天只有一筆資料」的規則。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">為什麼發布前要特地開瀏覽器截圖，而不是看程式碼有沒有報錯就好？</div>
+    <div class="a">程式碼「沒有報錯」不代表「排版沒有跑掉」——欄位塞太長的文字、CSS 選錯顏色，這些問題只有實際「用眼睛看畫面」才抓得到。Playwright 截圖加上實際點擊按鈕測試，是目前最接近「找一個人幫你點開來看一眼」的自動化做法。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">為什麼有些官方網站（例如 metro.taipei）AI 讀不到？</div>
+    <div class="a">這個執行環境的對外連線會先經過一層「Egress Proxy」把關，只放行特定名單內的網域，其餘一律擋下——這是資安上的保護機制，避免自動化任務任意存取或洩漏資料到未知的外部服務。遇到這種情況，系統會改用搜尋引擎的摘要結果來間接取得資訊，不會因此整個任務失敗。</div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-no">05</span><h2>萬一出狀況，通常是這些原因</h2></div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>症狀</th><th>最可能的原因</th><th>系統怎麼自己處理</th></tr></thead>
+      <tbody>
+        <tr><td>git push 被拒絕</td><td>repo 對 <code>main</code> 分支設了保護規則，不接受直接推送</td><td>改推到一條備用分支，並在通知裡請你去 GitHub Pages 設定把來源分支切過去</td></tr>
+        <tr><td>Artifact 發布失敗</td><td>這次的基底資料來自 GitHub 備援版本，系統認定「還沒讀過最新的 Artifact 版本」，為了避免覆蓋掉別人剛改的內容而擋下</td><td>因為已經先確認 GitHub 版才是最新、最正確的版本，會用「強制覆蓋」參數完成發布</td></tr>
+        <tr><td>出現「repo 尚未授權」錯誤</td><td>這個 Routine 目前只被允許操作特定幾個 repo，這次要處理的 repo 不在名單裡</td><td>不會嘗試繞過權限限制，只會照常做完其他能做的事，並在通知裡請你去後台把這個 repo 加進允許名單</td></tr>
+        <tr><td>公開網站看起來還沒更新</td><td>GitHub Pages 從收到新檔案到全球生效，本來就有幾分鐘的快取延遲</td><td>會嘗試重新讀取確認，讀不到不會直接判定失敗，只會在通知裡註記「可能還在生效中」</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-no">06</span><h2>身為 PM，你真正需要記得的三件事</h2></div>
+  <div class="steps">
+    <div class="step">
+      <div class="n">01</div>
+      <h4>你不用管程式碼</h4>
+      <p>這整條線平常完全不需要人工介入。你唯一會接觸到的，是收到的推播通知、以及兩個最終網址。</p>
+    </div>
+    <div class="step">
+      <div class="n">02</div>
+      <h4>資料只有一份，別自己手改</h4>
+      <p>LOG 陣列是唯一真相來源。如果你想調整內容或修正錯字，最安全的做法是請 AI 依照同樣的格式規則去改，而不是直接在網頁上手動編輯，避免下次自動更新時把你的修改蓋掉。</p>
+    </div>
+    <div class="step">
+      <div class="n">03</div>
+      <h4>沒收到通知＝一切正常</h4>
+      <p>這是刻意的設計，不是系統壞掉忘記通知你。如果你想確認狀態，直接打開兩個公開連結看「最後更新」時間戳，會比等通知更即時。</p>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  本文件為內部教學說明，整理自 2026-09-21 該日任務的實際執行紀錄。若日後系統設計調整（例如新增資料來源、改變部署流程），建議同步更新本文件，避免與實際運作脫節。
+</footer>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default',
+    securityLevel: 'loose'
+  });
+</script>
+</body>
+</html>
