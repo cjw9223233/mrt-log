@@ -1,0 +1,1240 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="台北捷運每日輿情彙整：營運、工程路網、票務、安全與社群熱議。">
+<title>北捷輿情日誌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ground:#EEF1F4;
+  --surface:#FFFFFF;
+  --surface-2:#F5F7F9;
+  --line:#D7DDE4;
+  --line-soft:#E6EBF0;
+  --ink:#141A21;
+  --ink-2:#3D4753;
+  --muted:#68747F;
+  --accent:#0B5FA5;
+  --accent-soft:#E1ECF6;
+  --c-ops:#0070BD;
+  --c-build:#A97321;
+  --c-fare:#D97706;
+  --c-safe:#C8102E;
+  --c-buzz:#00795C;
+  --hot:#C8102E;
+  --hot-bg:#FBE9EB;
+  --shadow:0 1px 2px rgba(20,26,33,.06),0 8px 24px -16px rgba(20,26,33,.35);
+  --rail-w:280px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D1117;
+    --surface:#151B23;
+    --surface-2:#1B222B;
+    --line:#2A3542;
+    --line-soft:#222B36;
+    --ink:#E7ECF2;
+    --ink-2:#C2CBD6;
+    --muted:#8A96A4;
+    --accent:#5AA9E6;
+    --accent-soft:#16283A;
+    --c-ops:#5AA9E6;
+    --c-build:#D6A44C;
+    --c-fare:#EFA33F;
+    --c-safe:#F4707F;
+    --c-buzz:#43BFA0;
+    --hot:#F4707F;
+    --hot-bg:#31161C;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -18px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D1117;
+  --surface:#151B23;
+  --surface-2:#1B222B;
+  --line:#2A3542;
+  --line-soft:#222B36;
+  --ink:#E7ECF2;
+  --ink-2:#C2CBD6;
+  --muted:#8A96A4;
+  --accent:#5AA9E6;
+  --accent-soft:#16283A;
+  --c-ops:#5AA9E6;
+  --c-build:#D6A44C;
+  --c-fare:#EFA33F;
+  --c-safe:#F4707F;
+  --c-buzz:#43BFA0;
+  --hot:#F4707F;
+  --hot-bg:#31161C;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -18px rgba(0,0,0,.9);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"Noto Sans TC","Helvetica Neue",Arial,sans-serif;
+  font-size:15px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+h1,h2,h3,h4{font-family:"Noto Serif TC",Georgia,serif;text-wrap:balance;margin:0}
+.mono{font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;font-variant-numeric:tabular-nums}
+
+/* ---------- shell ---------- */
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 72px}
+
+.masthead{
+  border-bottom:1px solid var(--line);
+  background:var(--surface);
+  margin-bottom:26px;
+}
+.masthead-in{
+  max-width:1240px;margin:0 auto;padding:24px 20px 20px;
+  display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px 28px;justify-content:space-between;
+}
+.brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.brand h1{font-size:30px;font-weight:900;letter-spacing:.01em}
+.brand .kicker{
+  font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
+  font-family:"IBM Plex Mono",monospace;
+}
+.stamp{display:flex;gap:22px;flex-wrap:wrap}
+.stamp div{display:flex;flex-direction:column;gap:1px}
+.stamp .lbl{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stamp .val{font-size:14px;font-weight:600}
+
+.layout{display:grid;grid-template-columns:var(--rail-w) 1fr;gap:28px;align-items:start}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+
+/* ---------- rail ---------- */
+.rail{position:sticky;top:14px;display:flex;flex-direction:column;gap:16px}
+@media (max-width:900px){.rail{position:static}}
+.panel{
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.panel-h{
+  padding:11px 14px;border-bottom:1px solid var(--line-soft);
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  font-family:"IBM Plex Mono",monospace;display:flex;justify-content:space-between;align-items:center;gap:8px;
+}
+.panel-b{padding:10px}
+
+.daylist{display:flex;flex-direction:column;gap:2px;max-height:330px;overflow-y:auto}
+.daybtn{
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;
+  width:100%;text-align:left;background:none;border:0;border-radius:7px;
+  padding:8px 10px;cursor:pointer;color:var(--ink-2);font:inherit;
+}
+.daybtn:hover{background:var(--surface-2)}
+.daybtn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.daybtn .d{font-family:"IBM Plex Mono",monospace;font-size:13.5px;font-variant-numeric:tabular-nums;font-weight:500}
+.daybtn .w{font-size:11.5px;color:var(--muted)}
+.daybtn .n{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
+  border:1px solid var(--line);border-radius:20px;padding:0 7px;line-height:18px;
+}
+.daybtn[aria-current="true"]{background:var(--accent-soft);color:var(--ink)}
+.daybtn[aria-current="true"] .d{font-weight:600}
+.daybtn.is-b{box-shadow:inset 0 0 0 1.5px var(--accent)}
+.daybtn .hotdot{width:6px;height:6px;border-radius:50%;background:var(--hot);display:inline-block}
+.daybtn .nodot{width:6px;height:6px;display:inline-block}
+
+.cmpbar{display:flex;gap:8px;align-items:center;padding:10px 12px;border-top:1px solid var(--line-soft);flex-wrap:wrap}
+.toggle{
+  display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-2);cursor:pointer;
+}
+.toggle input{accent-color:var(--accent);width:15px;height:15px}
+.hint{font-size:11.5px;color:var(--muted);line-height:1.5}
+
+/* topic tracker */
+.tracker{width:100%;border-collapse:collapse;font-size:12px}
+.tracker th{
+  font-weight:500;color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:10px;
+  padding:0 0 6px;text-align:center;
+}
+.tracker th:first-child{text-align:left;padding-left:2px}
+.tracker td{padding:3px 0;border-top:1px solid var(--line-soft)}
+.tracker td:first-child{color:var(--ink-2);font-size:12px;padding-right:8px;white-space:nowrap}
+.tracker .cell{display:flex;justify-content:center}
+.tracker .dot{width:9px;height:9px;border-radius:2px;background:var(--line);}
+.tracker .dot.on{background:var(--accent)}
+.tracker .dot.hot{background:var(--hot)}
+
+/* ---------- main ---------- */
+.summary{
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  box-shadow:var(--shadow);padding:22px 24px;margin-bottom:20px;
+  border-top:3px solid var(--accent);
+}
+.summary .eyebrow{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:8px;
+}
+.summary h2{font-size:21px;font-weight:700;margin-bottom:10px;line-height:1.5}
+.summary p{margin:0 0 10px;color:var(--ink-2);max-width:68ch}
+.summary p:last-child{margin-bottom:0}
+.metrics{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.metric{
+  border:1px solid var(--line);border-radius:7px;padding:7px 12px;background:var(--surface-2);
+  display:flex;flex-direction:column;min-width:88px;
+}
+.metric .k{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.metric .v{font-family:"IBM Plex Mono",monospace;font-size:18px;font-weight:600}
+
+.cols{display:grid;gap:20px}
+.cols.two{grid-template-columns:1fr 1fr}
+@media (max-width:1040px){.cols.two{grid-template-columns:1fr}}
+
+.colhead{
+  display:flex;align-items:baseline;gap:10px;margin-bottom:12px;
+  padding-bottom:8px;border-bottom:2px solid var(--ink);
+}
+.colhead .dt{font-family:"IBM Plex Mono",monospace;font-size:17px;font-weight:600}
+.colhead .wd{font-size:12.5px;color:var(--muted)}
+.colhead .tag{margin-left:auto;font-size:11px;color:var(--muted);font-family:"IBM Plex Mono",monospace}
+
+.catgroup{margin-bottom:18px}
+.cathead{
+  display:flex;align-items:center;gap:9px;margin-bottom:8px;
+}
+.cathead .bar{width:4px;height:15px;border-radius:2px}
+.cathead h3{font-size:14.5px;font-weight:700;letter-spacing:.02em}
+.cathead .cnt{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted)}
+
+.item{
+  background:var(--surface);border:1px solid var(--line);border-left-width:3px;
+  border-radius:8px;padding:12px 14px;margin-bottom:8px;
+}
+.item.hot{border-color:var(--hot);background:var(--hot-bg)}
+.item h4{font-size:14.5px;font-weight:700;line-height:1.55;margin-bottom:5px;font-family:"Noto Sans TC",sans-serif}
+.item p{margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.7}
+.meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:9px}
+.chip{
+  font-size:10.5px;line-height:19px;padding:0 8px;border-radius:4px;border:1px solid var(--line);
+  color:var(--muted);font-family:"IBM Plex Mono",monospace;letter-spacing:.03em;
+}
+.chip.kind{border-color:transparent;background:var(--surface-2);color:var(--ink-2);font-weight:500}
+.chip.hotflag{border-color:var(--hot);color:var(--hot);font-weight:600}
+.chip.newflag{border-color:var(--accent);color:var(--accent);font-weight:600}
+.src{font-size:11.5px;color:var(--muted)}
+.src a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent}
+.src a:hover{border-bottom-color:var(--accent)}
+.src a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.diffstrip{
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;
+  margin-bottom:18px;box-shadow:var(--shadow);
+}
+.diffstrip h3{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  font-family:"IBM Plex Mono",monospace;font-weight:500;margin-bottom:10px}
+.difflists{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:720px){.difflists{grid-template-columns:1fr}}
+.difflists div .t{font-size:11.5px;font-weight:700;margin-bottom:5px;letter-spacing:.04em}
+.difflists .add .t{color:var(--accent)}
+.difflists .same .t{color:var(--muted)}
+.difflists .gone .t{color:var(--muted)}
+.difflists ul{margin:0;padding-left:16px;font-size:12.5px;color:var(--ink-2);line-height:1.7}
+.difflists .none{font-size:12.5px;color:var(--muted);padding-left:2px}
+
+.bg-note{
+  margin-top:26px;background:var(--surface-2);border:1px dashed var(--line);border-radius:10px;padding:16px 18px;
+}
+.bg-note h3{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  font-family:"IBM Plex Mono",monospace;font-weight:500;margin-bottom:9px}
+.bg-note ul{margin:0;padding-left:18px;color:var(--ink-2);font-size:13px;line-height:1.8}
+
+footer.foot{
+  margin-top:34px;padding-top:16px;border-top:1px solid var(--line);
+  font-size:11.5px;color:var(--muted);line-height:1.8;
+}
+.empty{color:var(--muted);font-size:13.5px;padding:10px 2px}
+
+.rawdata{margin-top:18px}
+.rawdata details{
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;
+}
+.rawdata summary{
+  padding:12px 16px;cursor:pointer;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);font-family:"IBM Plex Mono",monospace;
+}
+.rawdata summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.rawdata details[open] summary{border-bottom:1px solid var(--line-soft)}
+.rawbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px 0}
+.rawbar button{
+  font:inherit;font-size:12px;padding:4px 12px;border-radius:6px;cursor:pointer;
+  border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2);
+}
+.rawbar button:hover{border-color:var(--accent);color:var(--accent)}
+.rawbar button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#rawjson{
+  margin:12px 16px 16px;padding:12px;background:var(--surface-2);border:1px solid var(--line-soft);
+  border-radius:7px;font-size:11.5px;line-height:1.6;color:var(--ink-2);
+  max-height:340px;overflow:auto;white-space:pre;
+}
+</style>
+
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-in">
+    <div class="brand">
+      <h1>北捷輿情日誌</h1>
+      <span class="kicker">Taipei Metro · Daily Sentiment Log</span>
+    </div>
+    <div class="stamp">
+      <div><span class="lbl">收錄期間</span><span class="val mono" id="range">—</span></div>
+      <div><span class="lbl">最後更新</span><span class="val mono">2026-09-21 11:19 CST</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="layout">
+    <aside class="rail">
+      <section class="panel">
+        <div class="panel-h"><span>日期</span><span id="daycount"></span></div>
+        <div class="panel-b">
+          <div class="daylist" id="daylist"></div>
+        </div>
+        <div class="cmpbar">
+          <label class="toggle"><input type="checkbox" id="cmp"> 比對兩個日期</label>
+          <span class="hint" id="cmphint">開啟後，於左側再點一個日期作為對照組。</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-h"><span>議題追蹤</span></div>
+        <div class="panel-b" style="overflow-x:auto">
+          <table class="tracker" id="tracker"></table>
+        </div>
+      </section>
+    </aside>
+
+    <main>
+      <section class="summary" id="summary"></section>
+      <div id="diffwrap"></div>
+      <div class="cols" id="cols"></div>
+
+      <section class="bg-note">
+        <h3>延續中的背景議題</h3>
+        <ul>
+          <li><strong>文湖線可靠度與車輛汰換</strong>——本月第二起旅客中途換乘事故，9/18 起成為主線。9/18 中午 12 時 31 分辛亥站一列往動物園方向列車行走輪破損觸發障礙物偵測警訊，約 40 人月台換乘、麟光—動物園一度中斷並改採公車接駁，13 時 32 分恢復；北捷初判集電靴及行走輪異常、列車送回機廠，東森獨家另指出隧道時傳巨響、輪面多處白色皺褶，疑撞異物刺破輪胎後車輛下沉壓到電力設備。9/20 這起事故已列入官方誤點證明頁（115 年 9 月 18 日 12 時 31 分文湖線），是近兩週北捷全路網唯一達到 5 分鐘出證標準的延誤，但外來物或零件脫落的調查結論仍未公布。舊帳同步翻出：文湖線 3 年故障 13 次、影響 7,591 人次，25 列新車要到 2036 年才全數上線，短期的「評估增加車廂」自 9/8 揭露後無後續。</li>
+          <li><strong>車廂空間優化與長者乘車安全</strong>——8 月中旬延燒至今、本輪最失分的一條線。9/14 拄拐杖老翁在淡水信義線列車起步時無處可抓、面朝上重摔頭部著地（後確認手背挫傷、當日出院），蔣萬安下令全面檢視車廂扶握設施；9/15 松山新店線再傳旅客跌倒臉部濺血，北捷急稱「該列車並非空間優化列車」反成邏輯破口；9/16 媒體以「優化不成變劣化」定調。補救進度持續落後：301 型 2 列每列 56 個拉環承諾「9 月中旬完成」已逾期六天未回報（381 型 2 列每列 128 個已完成，低拉環由 161 公分降到 155 公分並繫黃色織帶），板南線外每列 24 處立式扶手完工比例未公布，市長允諾的全面檢視亦無期程。論壇相關各串已無新回應，進入平原期。</li>
+          <li><strong>車廂秩序執法與第一線人員保護</strong>——48 小時內兩起、官方兩度動用法律手段，是本期最明確的態度轉向。9/15 大安站保全勸導違規飲食遭旅客比中指，北捷 9/16 發稿宣布遭辱保全已報案提告、公司全力提供司法協助；9/17 上午文湖線男子咆哮嚼檳榔、堵住車門與保全對峙，北捷將依大眾捷運法就違規飲食與妨礙執行職務各處 1,500 元罰鍰並就辱罵提告。社群評價罕見一面倒支持。至 9/21 兩案均無偵辦或裁罰後續，中央社專題最新一則仍停在 9/16，能否真正進入偵查程序將決定這是公關動作還是執法轉向。</li>
+          <li><strong>信義線東延段通車後的實質檢驗</strong>——8/30 通車、3 小時新站進出近萬人次，首月（至 9/28）象山—廣慈／奉天宮區間免費，僅剩 7 天；為期三週的通車活動已在 9/19 下午最後一場音樂會後收尾，新站進入沒有活動加持的常態營運。批評焦點集中在現場管理與設備：9/2 扭蛋末日擠爆並有旅客跌倒送醫、電扶梯一度故障，新站資訊顯示設備連續三天異常且官方沉默至今滿 20 天。官方始終未公布新站分站運量；免費期最後一天 9/28 正好落在中秋教師節四天連假的最末日，人潮與優惠末日疊加下的現場管理，連同免費期結束後的真實運量與淡水信義線南段班距，是 9 月底的驗收題。</li>
+        </ul>
+      </section>
+
+      <section class="rawdata">
+        <details>
+          <summary>原始資料（JSON）· <span id="rawcount"></span></summary>
+          <div class="rawbar">
+            <button type="button" id="copyjson">複製全部</button>
+            <span class="hint">此頁的歷史資料庫本體。複製後可存檔備份，或作為下一版的輸入。</span>
+          </div>
+          <pre id="rawjson" class="mono"></pre>
+        </details>
+      </section>
+
+      <footer class="foot">
+        本頁由排程任務每日自動彙整公開網路新聞、PTT MRT 板、Dcard 與社群貼文之討論熱度，內容為輿論摘錄而非官方公告；營運資訊請以臺北捷運公司公告為準。<br>
+        推文數／瀏覽數為擷取當下的概略值。標記 <span class="chip hotflag" style="display:inline-block">爭議</span> 者為當日明顯有正反交鋒或大量負面留言的題目。
+      </footer>
+    </main>
+  </div>
+</div>
+
+<script>
+const CATS = {
+  ops:   {name:"營運狀況",   color:"var(--c-ops)"},
+  build: {name:"工程與路網", color:"var(--c-build)"},
+  fare:  {name:"票價與票務", color:"var(--c-fare)"},
+  safe:  {name:"安全與治安", color:"var(--c-safe)"},
+  buzz:  {name:"社群熱議",   color:"var(--c-buzz)"}
+};
+const KIND = {news:"新聞", forum:"論壇", social:"社群"};
+
+/* ============================================================
+   DATA:START — 每日新增一天時，把新的日物件插在陣列「最前面」。
+   欄位規格：
+     date  "YYYY-MM-DD"（唯一鍵）
+     wd    週幾
+     summary 當日總結（第一句會被抽出當標題，務必以「。」結尾）
+     metrics [[標籤,值], ...] 最多 3 組
+     items[] { cat, kind, hot, tags[], t, p, src, url }
+       cat  ops|build|fare|safe|buzz
+       kind news|forum|social
+       hot  true 表示當日明顯爭議，會標紅
+       tags 供「議題追蹤」與「兩日比對」使用，沿用既有標籤才連得起來
+   新標籤若要進入左側追蹤表，記得同步加到下方 TRACK 陣列。
+   ============================================================ */
+const LOG = [
+{
+  date:"2026-09-21", wd:"週一",
+  summary:"貓空纜車 9/20 午後系統異常停駛近 3 小時，是本期第一起落在北捷非軌道運具上的營運中斷。13 時 22 分貓空站監控設備線路異常，降速疏散、官方稱無人受困並啟動公車接駁，16 時 8 分恢復；媒體另以「遊客滯留半空中」下標。軌道系統連兩日零事故。工程面萬大線建中旁水泥灌進樹穴遭罰，「工人疏忽」說法被質疑；論壇熱度仍在陳世凱與盧秀燕的中捷藍線攻防。東延段免費期剩 7 天、301 型拉環逾期第六天；上午複查另見貓纜官網「最新消息」至今未張貼停駛或恢復公告，連假前的第一線資訊管道出現落差。整體風向中性偏負：軌道平穩，但貓纜停駛與施工瑕疵各扣一分。",
+  metrics:[["當日則數","12"],["爭議題","1"],["當日風向","中性偏負"]],
+  items:[
+    {cat:"ops", kind:"news", hot:false, tags:["貓纜異常"],
+     t:"今日最大事件：貓空纜車 9/20 午後系統異常停駛近 3 小時，官方稱無人受困、啟動公車接駁",
+     p:"臺北捷運公司 9/20 發布〈20 日下午貓空纜車系統異常已排除 無旅客受困 16 時 8 分恢復營運〉：貓纜當日 13 時 22 分出現系統異常警訊，控制中心隨即降速運轉，協助車廂內旅客於鄰近車站下車，無人受困；停駛期間啟動公車接駁，並於貓纜官網與各捷運站公告請旅客暫勿前往。維修人員查出肇因為貓空站監控設備線路異常，完成搶修與測試後於 16 時 8 分恢復營運，前後約 2 小時 46 分；受影響旅客可至車站站務處辦理退費或電子票證紀錄更正。這是本期第一起落在北捷非軌道運具上的營運中斷，時點正好在中秋教師節連假前最後一個週末的觀光時段。",
+     src:"臺北捷運公司新聞稿（9/20）／中央社／聯合新聞網", url:"https://www.cna.com.tw/news/aloc/202609200197.aspx"},
+    {cat:"ops", kind:"news", hot:false, tags:["貓纜異常"],
+     t:"說法落差：媒體以「遊客滯留半空中」下標，官方強調降速疏散、無人受困",
+     p:"貓纜異常當天，工商時報、中天等媒體先以「系統異常暫停營運、北捷啟動公車接駁」即時報導，另有媒體以〈貓空纜車故障！遊客「滯留半空中」傻眼畫面曝光〉為題，放大車廂降速停頓期間旅客在空中等待的畫面；官方與中央社的定調則是「降速運轉、協助旅客於鄰近車站下車、無人受困」。兩種敘事的差別在於車廂降速行進期間的等待是否算「滯留」，社群轉傳以前者為主。北捷未另外說明車廂降速運轉的實際時長；對照 9/18 文湖線一案當日即發稿，這次同樣在當天完成說明，揭露速度維持近期水準。",
+     src:"工商時報（9/20）／Yahoo 新聞／中天新聞網", url:"https://www.ctee.com.tw/news/20260920700497-431401"},
+    {cat:"ops", kind:"news", hot:false, tags:["貓纜異常"],
+     t:"上午複查補記：貓纜官網「最新消息」未張貼 9/20 停駛與恢復公告，最新一則仍是 8/23 敬軍優惠",
+     p:"9/21 上午複查貓空纜車官網「貓纜最新消息」頁，列表最新一則仍為 115 年 8 月 23 日的〈臺北市政府敬軍活動專屬優惠〉，未見 9/20 系統異常停駛、公車接駁或 16 時 8 分恢復營運的任何公告；相關說明只出現在臺北捷運公司新聞稿頁面與媒體即時報導。北捷 9/20 稿件稱停駛期間曾「於貓纜官網與各捷運站公告請旅客暫勿前往」，但事後官網未留存紀錄，查詢退費與電子票證更正的旅客須自行轉往北捷新聞稿頁面。中秋教師節四天連假 9/25 起登場、貓纜為前往貓空的主要觀光運具，官網作為遊客第一線資訊管道的更新落差值得留意。軌道端同步複查：北捷新聞稿頁面 9/21 上午無新稿，誤點證明頁仍只有 9/18 文湖線一筆，MRT 板亦未就貓纜停駛開串。",
+     src:"貓空纜車官網最新消息／臺北捷運公司新聞稿（9/20）", url:"https://www.gondola.taipei/News.aspx?n=776A9D42AF1B5DE7&sms=B92C99755B351B4C"},
+    {cat:"ops", kind:"news", hot:false, tags:["文湖線異常"],
+     t:"軌道系統連兩日零事故：誤點證明頁仍只有 9/18 文湖線一筆，破輪原因仍未公布",
+     p:"官方「誤點證明」頁面 9/21 上午仍只列出 115 年 9 月 18 日 12 時 31 分文湖線一筆紀錄，9/19、9/20 北捷各線均無達到 5 分鐘出證標準的延誤。新聞稿頁面 9/19 兩則為 UITP 會議收尾、9/20 一則為貓纜異常說明，均未觸及文湖線行走輪破損的調查結果——究竟是隧道段外來物或設備零件脫落，事發第三天仍無結論，巡軌程序是否檢討亦無說明。中央社台北捷運專題最新一則仍停在 9/16。",
+     src:"臺北捷運公司誤點證明頁／新聞稿頁面", url:"https://www.metro.taipei/News.aspx?n=0D6F05148E52D2FE&sms=8FF6EAB4BC08C618"},
+    {cat:"build", kind:"news", hot:false, tags:["萬大線施工"],
+     t:"萬大線建中旁施工把水泥灌進行道樹樹穴，罰 5,000 元；鍾小平稱「工人疏忽」遭網質疑",
+     p:"民進黨議員洪婉臻接獲陳情，揭露建國中學旁的捷運萬大線施工區出現水泥灌進行道樹樹穴、樹穴被封小的狀況，會同公園處與捷運局會勘後，公園處認定施工廠商造成樹穴縮小，依規裁罰 5,000 元並要求廠商負擔 3 年樹木養護費用。國民黨議員鍾小平表示是「廠商工人疏忽」、已立即通知相關單位開罰，但網友不買單，認為灌漿需要材料與人力、不可能是單純疏忽，追問「誰下令的」。相關報導 9/20 轉入 PTT MRT 板（5 則留言、2 推 1 噓），是近五天來板上唯一的北捷路網工程題，也延續 9/12「幹道時速掉到 21.6 公里」後對施工外部成本的檢視。",
+     src:"三立新聞網／PTT MRT 板（5 則留言）", url:"https://www.setn.com/news/1907103"},
+    {cat:"build", kind:"forum", hot:true, tags:["捷運預算","軌道政見"],
+     t:"外溢爭議升級：陳世凱反嗆盧秀燕「中捷藍線 1 公分都沒蓋，還怪中央不給錢」",
+     p:"盧秀燕 9/17 在議會喊中央補助藍線「預計 42 億只給 1 億多、台中被虧待」後，交通部長陳世凱 9/19 罕見正面反擊：中央已核定補助中捷藍線約 600 億元，台中在新財劃法後每年多出約 370 億元財源，卻「這幾年除了綠線，有看到台中捷運蓋出 1 公分嗎」，強調補助原則是「做到哪、補助到哪」，批市府只會要錢、牽拖交通部。PTT MRT 板該串（godofsex 轉貼）列表顯示 10 推，連同 9/17 的盧秀燕原串，這組中央地方攻防已連續三天占據板上前排。對北捷屬外溢題，但與 9/12 陳世凱赴新北喊「補助一毛都不會少」並列，部長本人已成為選舉年軌道預算戰的主角。",
+     src:"自由時報（9/19）／聯合新聞網／PTT MRT 板", url:"https://news.ltn.com.tw/news/Taichung/breakingnews/5579052"},
+    {cat:"build", kind:"news", hot:false, tags:["路網規劃","軌道政見"],
+     t:"新北捷運局成立 10 年：侯友宜重申 2035 年「四環八線」，三鶯線、安坑輕軌列成果",
+     p:"新北市捷運工程局 9/18 慶祝成立 10 週年，侯友宜細數十年間環狀線、淡海輕軌、安坑輕軌與三鶯線陸續通車，路網由「三環六線」擴充為「四環八線」目標，並重申新北至 2035 年將形成約 189 公里、182 座車站的軌道網絡，喊話與六都攜手開創捷運新篇章。報導 9/19 轉入 PTT MRT 板（2 推），討論冷淡，留言多追問萬大線二期、深坑輕軌與淡海輕軌二期的實際時程。屬選前的成果宣示題，與同週李四川汐東線延伸政見相互呼應。",
+     src:"自由時報／ETtoday（9/18）", url:"https://news.ltn.com.tw/news/NewTaipei/breakingnews/5578059"},
+    {cat:"ops", kind:"news", hot:false, tags:["機捷增班"],
+     t:"機捷今起平日傍晚 A1 往機場增開 1 班，晚間尖峰平均 5.5 分鐘一班",
+     p:"桃園機場捷運宣布 9 月 21 日起，平日傍晚下班放學尖峰由 A1 台北車站往機場方向增開 1 班普通車，縮短尖峰班距，晚間尖峰平均約 5.5 分鐘一班，盼紓緩返程通勤人潮。此案 9/14 公布時在 PTT 僅 3 推，今日正式上路；對北捷通勤族的實際影響集中在台北車站與新北三重、新莊一帶的機捷轉乘旅客。",
+     src:"中央社（9/14）／聯合新聞網", url:"https://www.cna.com.tw/news/ahel/202609140177.aspx"},
+    {cat:"ops", kind:"forum", hot:false, tags:["拆座椅","長者摔倒","顯示器異常"],
+     t:"兩項官方待辦逾期第六天：301 型拉環零回報，廣慈站顯示異常沉默滿 20 天",
+     p:"北捷 9/8 承諾淡水信義線 301 型 2 列每列增設 56 個拉環於「9 月中旬完成」，至 9/21 逾期第六天仍無進度回報；9/19 至 9/20 官方三則稿件分屬國際會議與貓纜異常，蔣萬安 9/15 允諾的「全面檢視車廂扶握設施」仍無期程，板南線以外每列 24 處立式扶手的完工比例亦未公布。廣慈／奉天宮新站資訊顯示設備異常自 9/2 開串至今，官方沉默滿 20 天。PTT 上 9/15 至 9/16 那批摔倒與手扶梯討論串（pttweb 列表顯示「重摔濺血」23 推、手扶梯風氣 25 推、高齡長者跌倒 10 推）已無新回應，議題停在未結案的平原期。",
+     src:"臺北捷運公司新聞稿（9/8）／PTT MRT 板", url:"https://udn.com/news/story/7266/9741696"},
+    {cat:"safe", kind:"news", hot:false, tags:["保全執勤","車廂治安"],
+     t:"車廂秩序兩案進入第五、六天仍無後續，同週另有捷警半小時尋回港客護照的正面題",
+     p:"9/15 大安站保全遭比中指（北捷報案提告、將依大眾捷運法第 50 條開罰）與 9/17 文湖線男子咆哮嚼檳榔堵車門（兩張 1,500 元罰單並提告）兩案，至 9/21 上午仍無偵辦或裁罰進度，中央社專題最新一則仍是 9/16 的保全案。PTT「中國情侶北捷飲食被抓包 惱羞狡辯還比中指」串 pttweb 列表顯示 41 推，仍是北捷本體最熱的一串。同期較正面的治安題是自由時報報導的香港旅客遺失一家四口護照、捷警半小時內尋回，社群反應以讚許為主。",
+     src:"中央社台北捷運專題／自由時報（9/15）／PTT MRT 板", url:"https://news.ltn.com.tw/news/society/breakingnews/5574516"},
+    {cat:"fare", kind:"news", hot:false, tags:["首月免費","信義東延段","票價調整"],
+     t:"東延段免費期剩 7 天、明日世界無車日：新北軌道免費最後一天，雙北公車全日免費",
+     p:"象山—廣慈／奉天宮新通車區間免費搭乘至 9 月 28 日，剩 7 天，每日 500 份霜淇淋兌換與乘車抽獎續辦至同日；官方至今未公布新站分站運量。9/28 同時是中秋教師節四天連假（9/25–9/28）最後一天，北捷至 9/21 上午仍未發布連假疏運或人潮管制公告，高鐵、台鐵與新北則已公布加班車與匝道管制。另一檔票務利多明日收尾：響應 922 世界無車日，三鶯線與淡海、安坑輕軌 9/19 起的四天免費於 9/22 結束，當日雙北市區公車全日免費，北捷本身未推出無車日票價措施。",
+     src:"臺北捷運公司新聞稿／自由時報（9/18）", url:"https://news.ltn.com.tw/news/NewTaipei/breakingnews/5578269"},
+    {cat:"build", kind:"forum", hot:false, tags:["路網規劃"],
+     t:"論壇北捷本體連五日無熱帖：非官方路線圖與「蓋捷運不是為了賺錢」置頂討論分食版面",
+     p:"MRT 板 9/18 至 9/20 的新文多為外縣市與選戰題：新竹捷運 2030 動工政見（3 推）、高雄捷運新整體路網（17 推）、機捷 A23 旅運推測（10 推）、大新竹輕軌紅藍線（5 推）、汐東線延伸（25 推）。與北捷相關的僅網友 leptoneta 整理的「台北捷運未來路線圖及各站出口圖（非官方）」（2 推）、萬大線水泥封樹，以及一則把文湖線戲稱為「遠東環線」的短文；板上另有「蓋捷運不是為了賺錢」討論（12 推），延續 9/10 以來財報與降溫論的辯論。貓纜停駛至 9/21 上午未在板上開串。（以上推文數為 pttweb 列表當下顯示值。）",
+     src:"PTT MRT 板（pttweb 列表）", url:"https://www.pttweb.cc/bbs/MRT"}
+  ]
+},
+
+{
+  date:"2026-09-20", wd:"週日",
+  summary:"北捷本體交出全月最平靜的一天：9/19 全日零事故、零新爭議，官方兩則新稿都是 UITP 亞太會議的收尾。臺北捷運公司 9/19 連發〈亞太軌道運輸領袖齊聚臺北 2026 UITP Taipei Meetings 圓滿落幕〉與〈亞太軌道運輸領袖交流臺北經驗 聚焦自動化、人潮管理與智慧運輸〉兩稿，為 9/17 至 9/18 的 11 國近 60 位貴賓會議收尾，是北捷一週內第三場國際主場活動。唯一的硬紀錄變動在誤點證明頁：沉默近兩週的「查無資料」被 9 月 18 日 12 時 31 分文湖線一筆取代，成為兩週來唯一達到出證標準的延誤，行走輪破損究竟是撞上外來物或零件脫落，調查結論仍未公布。票務利多由新北接手：響應 922 世界無車日，三鶯線與淡海、安坑輕軌 9/19 至 9/22 四天免費，9/22 再加碼雙北公車免費。論壇熱度則全在選戰，李四川主張汐東線延伸銜接環狀線東環段、喊與蔣萬安合作打通汐止瓶頸，單串 84 推為當日最熱新文，北捷本體連續第四天沒有新開的討論串。兩項官方待辦同步逾期第五天、沉默滿 19 天。整體風向中性：零事故與國際會議加分，逾期承諾與車廂秩序兩案零後續仍是扣分項。",
+  metrics:[["當日則數","10"],["爭議題","1"],["當日風向","中性"]],
+  items:[
+    {cat:"build", kind:"news", hot:true, tags:["軌道政見","路網規劃"],
+     t:"今日論壇最熱：李四川推汐東線延伸接環狀線東環段，喊與蔣萬安合作打通汐止瓶頸",
+     p:"國民黨新北市長參選人李四川 9/18 於汐止活動中提出軌道政見，承諾當選後推動「汐東線延伸銜接環狀線東環段」，以打通汐止、汐科進入臺北市區路網的關鍵瓶頸，並強調上任後將與臺北市長蔣萬安密切合作；同場另拋出「大漢溪捷運縱貫線」，規劃自大稻埕出發串聯三重、新莊至樹林。相關報導轉入 MRT 板後單串累積 84 推，是 9/18 至 9/20 上午板上熱度最高的新文。留言兩極：一派認為汐止長期缺乏軌道服務、延伸案務實；一派質疑東環段本身仍在施工，延伸案的財源、都市計畫與時程全無著落，並把它與 9/13「三鶯線通車在即」口誤、9/17 中捷藍線補助攻防並列為選舉年的軌道支票。",
+     src:"聯合新聞網（9/18）／自由時報／PTT MRT 板（84 推）", url:"https://udn.com/news/story/124652/9762813"},
+    {cat:"fare", kind:"news", hot:false, tags:["票價調整","三鶯線"],
+     t:"票務利多換新北接手：響應 922 世界無車日，三鶯線與淡海、安坑輕軌 9/19 起四天免費",
+     p:"新北市政府響應 9 月 22 日世界無車日，宣布 9 月 19 日至 22 日三鶯線、淡海輕軌與安坑輕軌連續四天免費搭乘，9 月 22 日當天雙北市區公車亦免費；9/21 至 9/22 民眾在新北市民廣場出示搭乘大眾運輸的打卡照片，可兌換限量 2,000 份咖啡券，發完為止。侯友宜表示「政府把大眾運輸做得方便，民眾自然會把車留在家裡」。對照三鶯線 9 月 1 日才結束兩個月免費試乘轉為收費、並因轉乘板南線「被扣兩次錢」在 PTT 累積 156 推的爭議，這波四天免費被視為收費後的第一次軟著陸；北捷本身則未跟進任何無車日票價措施，臺北市端僅有 9/22 的公車免費。",
+     src:"中央社（9/17）／聯合新聞網", url:"https://www.cna.com.tw/news/aloc/202609170218.aspx"},
+    {cat:"ops", kind:"news", hot:false, tags:["文湖線異常"],
+     t:"硬紀錄變動：誤點證明頁兩週來首度出現資料，9/18 中午文湖線一筆入列",
+     p:"官方「誤點證明」頁面 9/20 上午已不再顯示查無資料，新增一筆 115 年 9 月 18 日 12 時 31 分文湖線的紀錄，可於事發 7 日內下載。該頁僅登載 5 分鐘以上的延誤，等於 9/18 中午的行走輪破損事故，是近兩週北捷全路網唯一達到出證標準的延誤，也為本日誌連日記錄的「查無資料」畫下句點；頁面並註明誤點證明的時間包含系統運轉處理時間與旅客於不同車站等候的時間（約 10 分鐘）。至 9/19 全日，北捷未再發布任何與行車有關的稿件，行走輪破損究竟肇因於軌道外來物或設備零件脫落，調查結論仍未公布，也沒有巡軌程序是否檢討的說明。",
+     src:"臺北捷運公司誤點證明頁／自由時報（9/18）", url:"https://www.metro.taipei/News.aspx?n=0D6F05148E52D2FE&sms=8FF6EAB4BC08C618"},
+    {cat:"buzz", kind:"news", hot:false, tags:["捷運聯盟"],
+     t:"官方 9/19 兩則新稿都給國際會議：2026 UITP Taipei Meetings 圓滿落幕",
+     p:"臺北捷運公司 9/19 發出的兩則稿件〈亞太軌道運輸領袖齊聚臺北 2026 UITP Taipei Meetings 圓滿落幕〉與〈亞太軌道運輸領袖交流臺北經驗 聚焦自動化、人潮管理與智慧運輸〉，為 9 月 17 至 18 日舉行的第 50 屆亞太執行委員會（APC）及第 25 屆亞太城市軌道平臺會（APURP）收尾。該會共有新加坡、比利時、德國、印度、泰國、馬來西亞、日本、韓國、香港、澳洲等 11 國、17 家業者近 60 位貴賓與會，議程聚焦自動化與機器人應用、尖峰時段人潮管理，以及 AI 對運輸產業的影響；北捷並以國父紀念館站 AI 人流分析與智慧導引系統獲頒 UITP Awards 卓越成就獎。連同 9/16 的第七屆捷運聯盟交流會，這是北捷一週內第三場國際主場活動，社群聲量低但屬純正面題。",
+     src:"臺北捷運公司新聞稿（9/19）", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"},
+    {cat:"ops", kind:"forum", hot:false, tags:["拆座椅","顯示器異常","信義東延段"],
+     t:"兩項官方待辦逾期第五天：301 型拉環仍零回報，廣慈站顯示異常沉默滿 19 天",
+     p:"北捷 9/8 承諾淡水信義線 301 型 2 列每列增設 56 個拉環於「9 月中旬完成」，逾期進入第五天仍無任何進度回報；381 型 2 列每列 128 個早已完成，低拉環由 161 公分降至 155 公分並繫黃色織帶。9/19 官方新增的兩則稿件全屬國際會議題，蔣萬安 9/15 允諾的「全面檢視車廂扶握設施」仍未見期程，板南線以外每列 24 處立式扶手的完工比例自 8/17 決標以來未公布。另一項是 9/2 開串、一度累積 118 推 368 則留言的廣慈／奉天宮新站資訊顯示設備異常，官方沉默已滿 19 天——對照 9/18 文湖線異常當天即發稿、9/19 兩稿談國際會議，發稿順位的落差持續擴大。",
+     src:"臺北捷運公司新聞稿（9/8）／PTT MRT 板", url:"https://udn.com/news/story/7266/9741696"},
+    {cat:"ops", kind:"forum", hot:false, tags:["長者摔倒","拆座椅","手扶梯政策"],
+     t:"摔倒爭議第六天：四串仍是北捷本體最熱，「重摔濺血」65 推、手扶梯風氣 123 推，皆零增長",
+     p:"MRT 板上與北捷本體有關的前排貼文仍停在 9/15 至 9/16 那一批：crashonU 的「北捷連 2 天『乘客重摔』還濺血」65 推、godofsex 的「北捷手扶梯風氣改變了 潛規則 2 年被消失」123 推、YellowWolf 的「高齡長者搭車慘跌『頭撞地』無回應」71 推、leptoneta 的「拆立柱釀禍？傳老翁重摔頭撞地」31 推，四串在 9/18 至 9/20 上午均無明顯增長。9/19 未出現新的跌倒通報，媒體亦無新事證跟進。議題已在延燒後的平原期停留第三天，但由於補救進度逾期、市長允諾的全面檢視無期程，仍屬未結案而非已結案。",
+     src:"PTT MRT 板（65／123／71／31 推）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"safe", kind:"news", hot:false, tags:["保全執勤","車廂治安"],
+     t:"車廂秩序兩案全部停在原地：中央社專題最新一則仍是 9/16 保全遭比中指案",
+     p:"9/15 大安站保全勸導違規飲食遭比中指（北捷 9/16 報案提告、將依大眾捷運法第 50 條處 1,500 至 7,500 元罰鍰）與 9/17 文湖線男子晨峰咆哮嚼檳榔堵車門（北捷將就違規飲食與妨礙執行職務各處 1,500 元罰鍰並就辱罵提告）兩案，至 9/19 仍無偵辦或裁罰的後續，中央社台北捷運新聞專題最新一則也停在 9/16，官方未再發稿。論壇端則由 charles0939 的「中國情侶北捷飲食被抓包 惱羞狡辯還比中指」以 125 推居北捷本體之冠。48 小時內兩度動用法律手段之後，兩案是否真的進入偵查與裁罰程序，仍是判斷這波表態屬公關動作或執法轉向的關鍵。",
+     src:"中央社台北捷運專題／PTT MRT 板（125 推）", url:"https://www.cna.com.tw/news/ahel/202609160237.aspx"},
+    {cat:"fare", kind:"news", hot:false, tags:["首月免費","信義東延段","親子活動"],
+     t:"東延段免費期倒數 8 天：通車活動已於 9/19 收尾，官方始終未公布新站運量",
+     p:"象山—廣慈／奉天宮新通車區間免費搭乘至 9 月 28 日，剩 8 天；每日上午 7 時起發放限量 500 份全家霜淇淋兌換券、乘車抽獎（捷運年票與自行車）續辦至同日。8/30 起排定、為期三週的歡慶通車音樂會已於 9 月 19 日下午 2 時 15 分演出最後一場，同日大安森林公園站陽光大廳的第二場假日親子電影院也已放映完畢，通車活動正式收尾，新站自此進入沒有活動加持的常態營運。官方自 8/30 通車以來始終未公布新站分站運量，免費期結束後的真實運量、以及淡水信義線南段班距是否被實質拉長，是 9 月底的驗收題，距驗收剩 8 天。",
+     src:"臺北捷運公司新聞稿", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"},
+    {cat:"build", kind:"forum", hot:false, tags:["路網規劃","捷運預算"],
+     t:"論壇連四日北捷本體零新文：外縣市題推數普遍翻倍，中捷藍線 95 推、機捷 A23 51 推",
+     p:"MRT 板 9/18 的四則新文在一日內全面增長：msun 轉貼的汐東線延伸案衝上 84 推、zhier 的「高雄捷運新整體路網」由 9 推增至 28 推、NiChu 的「機捷 A23 通車後 TOP10 旅運變化推測」由 8 推增至 51 推、tgordoncheng 的「大新竹輕軌紅藍線整合可行性研究預計 116 年底提中央審查」由 2 推增至 9 推；9/17 的中捷藍線補助攻防則由 13 推續增至 95 推，是外縣市題中熱度最高的一串。9/19 全日板上未見新文，北捷本體連續第四天沒有新開的討論串，9/18 中午的文湖線行走輪破損事故至今仍未在板上開出任何討論。",
+     src:"PTT MRT 板（95／84／51／28／9 推）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"buzz", kind:"news", hot:false, tags:["親子活動"],
+     t:"下週預告：中秋教師節四天連假 9/25 登場，高鐵加開 176 班，北捷尚無疏運公告",
+     p:"今年中秋節與教師節形成 9 月 25 日至 28 日的四天連假，高鐵加開 176 班次、台鐵規畫 6 天疏運並加開約 158 至 160 列次，新北市亦公布匝道封閉與客運優惠。北捷方面至 9/19 尚未發布任何連假疏運、末班車延長或人潮管制的公告，軟性檔期活動則續辦：兒童新樂園中秋限定圓月與玉兔造景（9/18 起）、敬師月優惠（至 9/30，9/25 至 9/28 假日再加碼設施免費券）與敬軍優惠（至 12/31）。值得注意的是，連假最後一天 9 月 28 日正好也是東延段免費期與霜淇淋兌換的最後一日，新站在連假人潮與優惠末日疊加下的現場管理，是下週最明確的觀察點。",
+     src:"壹蘋新聞網（9/17）／聯合新聞網／臺北捷運公司新聞稿", url:"https://news.nextapple.com/life/20260917/4B8136CA3C4FB9706A1BFD7C3E61BA24"}
+  ]
+},
+{
+  date:"2026-09-19", wd:"週六",
+  summary:"連續九天的零事故紀錄在 9/18 中午斷線：文湖線列車行走輪破損，辛亥站 40 人換乘、麟光至動物園間一度改採公車接駁。事發 9 月 18 日中午 12 時 31 分，一列往動物園方向列車在辛亥站觸發障礙物偵測警訊，車上約 40 名旅客於月台換乘後續列車，麟光—動物園區間一度中斷，至 13 時 32 分異常排除、全線恢復，通勤約多耗 15 至 25 分鐘。北捷初判為集電靴及行走輪異常、列車已送回機廠詳查，並當日發出〈說明 18 日文湖線列車異常原因〉新聞稿；東森獨家另指列車出隧道時傳出巨響、輪面出現多處白色皺褶，疑在隧道段撞擊異物刺破輪胎，集電靴受損後車輛下沉壓到電力設備。這是本月第二起文湖線旅客中途換乘事故（9/3 文德站約 83 人），把「3 年故障 13 次、影響 7,591 人次」與新車要等到 2036 年才全數到位的舊帳一併翻出。其餘版面平靜：官方同日另發中秋兒樂活動稿，論壇三則新文全是外縣市路網，文湖線事故甚至未在 MRT 板開串；301 型拉環逾期第四天、廣慈站顯示異常沉默滿 18 天、小巨蛋「Chinese Taipei」連七天無下文。整體風向中性偏負：零事故紀錄中斷且原因指向車輛老化，但這次的處置與官方揭露速度罕見地未被挑剔。",
+  metrics:[["當日則數","11"],["爭議題","2"],["當日風向","中性偏負"]],
+  items:[
+    {cat:"ops", kind:"news", hot:true, tags:["文湖線異常"],
+     t:"今日最大事件：文湖線行走輪破損，辛亥站 40 人換乘、麟光—動物園公車接駁，連九天零事故紀錄中斷",
+     p:"9 月 18 日中午 12 時 31 分，文湖線一列往動物園方向列車行駛至辛亥站時觸發障礙物偵測警訊而停止，車上約 40 名旅客依標準程序在辛亥站月台換乘後續列車，麟光站至動物園站間一度中斷營運，北捷同步啟動麟光—動物園間的公車接駁，並採彈性調度列車、調整班距與加強廣播引導。維修人員到場檢視後確認為列車行走輪破損，故障列車移離正線後，13 時 32 分全線恢復正常營運，官方提醒該時段通勤恐多等 15 至 25 分鐘。這是北捷自 9/9 松山新店線停靠位置異常以來、連續九天行車零事故紀錄的中斷點，也是本日誌開設以來第一次由「行走輪」這種車輛本體損壞造成的區間中斷。",
+     src:"自由時報（9/18）／華視新聞／工商時報", url:"https://news.ltn.com.tw/news/life/breakingnews/5578199"},
+    {cat:"ops", kind:"news", hot:false, tags:["文湖線異常"],
+     t:"官方當日即發稿：初判集電靴及行走輪異常，列車送回機廠詳查",
+     p:"臺北捷運公司 9/18 在新聞稿頁面發布〈臺北捷運公司說明 18 日文湖線列車異常原因〉，說明維修人員檢視後發現集電靴及行走輪異常，該列車已移離正線並送回機廠進行詳細檢查，13 時 32 分全線恢復正常營運。值得記的是節奏：這次官方在事件當日即主動說明、並同步向媒體提供初判原因，與 9/3 文湖線文德站一案僅稱「列車異常、處理後恢復正常」、關鍵細節由中央社補上的處理方式相比明顯進步；也與廣慈／奉天宮站顯示設備異常至今沉默 18 天形成對比。社群對處置本身批評不多，火力集中在「為什麼又是文湖線」。",
+     src:"臺北捷運公司新聞稿（9/18）／聯合新聞網", url:"https://udn.com/news/story/7266/9763115"},
+    {cat:"ops", kind:"news", hot:true, tags:["文湖線異常"],
+     t:"獨家補上的細節：破輪出隧道傳巨響、輪面多處白色皺褶，疑撞異物刺破輪胎壓到電力設備",
+     p:"東森新聞 9/18 獨家報導補上官方新聞稿沒有的現場細節：該列車出隧道時傳出巨響，事後檢視發現車輪表面出現多處白色皺褶；據內部人士透露，列車進入辛亥站前即出現異常，疑似在隧道段撞到異物並刺破輪胎，維修人員另發現集電靴受損、車輛下沉後壓到電力設備。北捷人員正進一步調查究竟是外來物侵入還是設備零件脫落所致。文湖線採膠輪系統，行走輪破損與一般鋼輪列車的故障型態不同，也是這則事故在鐵道社群被特別關注的原因——若為軌道上的外來物，代表巡軌與清道程序需要檢討；若為零件脫落，則直接指向車輛老化。",
+     src:"東森新聞（9/18 獨家）／Yahoo 新聞轉載", url:"https://news.ebc.net.tw/news/living/571921"},
+    {cat:"ops", kind:"news", hot:false, tags:["文湖線異常","路網規劃"],
+     t:"舊帳被翻出：文湖線 3 年故障 13 次、影響 7,591 人次，新車要等到 2036 年才全數到位",
+     p:"一天之內第二次的區間中斷讓文湖線的可靠度問題重回版面。此前議員盤點，文湖線 3 年內故障 13 次、影響 7,591 人次，促北捷加速列車更新；北捷的答案是分期汰換，全線 25 列新車預計 2036 年才全數完成上線，新車採四節車廂全貫穿設計、載客量增約 3 成至 574 人，尖峰每小時可多載約 5,000 人次。短期手段則是 9/8 補助新聞中揭露的「北市府正評估文湖線增加車廂的可行性」，至今無後續。對照本月紀錄：9/3 文德站燈光閃爍後緊急煞車、約 83 人換乘，9/18 辛亥站行走輪破損、約 40 人換乘——兩起皆為旅客中途換乘，且都發生在同一條線。",
+     src:"聯合新聞網／工商時報（議員盤點）", url:"https://udn.com/news/story/7323/9508714"},
+    {cat:"ops", kind:"forum", hot:false, tags:["拆座椅","顯示器異常","信義東延段"],
+     t:"兩項官方待辦逾期第四天：301 型拉環仍零回報，廣慈站顯示異常沉默滿 18 天",
+     p:"北捷 9/8 承諾淡水信義線 301 型 2 列每列增設 56 個拉環於「9 月中旬完成」，逾期進入第四天仍無任何進度回報；381 型 2 列每列 128 個早已完成，低拉環由 161 公分降至 155 公分並繫黃色織帶。9/18 官方新增的兩則稿件（文湖線異常說明、中秋兒樂活動）同樣與車廂扶握設施無關，蔣萬安 9/15 允諾的「全面檢視」仍未見期程，板南線以外每列 24 處立式扶手的完工比例自 8/17 決標以來未公布。另一項是 9/2 開串、一度累積 118 推 368 則留言的廣慈／奉天宮新站資訊顯示設備異常，官方沉默已滿 18 天——今日文湖線一案當天就發稿，落差更為刺眼。",
+     src:"臺北捷運公司新聞稿（9/8）／PTT MRT 板", url:"https://udn.com/news/story/7266/9741696"},
+    {cat:"ops", kind:"forum", hot:false, tags:["長者摔倒","拆座椅","手扶梯政策"],
+     t:"摔倒爭議進入第五天：PTT 兩串續凍，「重摔濺血」22 則、手扶梯風氣 25 則留言",
+     p:"9/16 網友 crashonU 轉貼的「北捷連 2 天『乘客重摔』還濺血」停在 22 則留言、9/15 的「北捷手扶梯風氣改變了 潛規則 2 年被消失」停在 25 則留言，兩串在 9/17 至 9/19 上午均無明顯增長，仍是 MRT 板上僅存的北捷本體題。9/18 未出現新的跌倒通報，媒體亦無新事證。議題確認進入延燒後的平原期，但由於補救進度逾期、全面檢視無期程，仍屬未結案；今日文湖線事故則把版面注意力從「車廂裡抓不到東西」暫時拉回到「車輛本身會不會壞」。",
+     src:"PTT MRT 板（22／25 則留言）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"safe", kind:"news", hot:false, tags:["保全執勤","車廂治安"],
+     t:"車廂秩序兩案暫無新進展：中央社專題最新一則仍停在 9/16 保全遭比中指案",
+     p:"9/15 大安站保全勸導違規飲食遭比中指（北捷 9/16 報案提告、將依大眾捷運法第 50 條處 1,500 至 7,500 元罰鍰）與 9/17 文湖線男子晨峰咆哮嚼檳榔堵車門（北捷將就違規飲食與妨礙執行職務各處 1,500 元罰鍰並就辱罵提告）兩案，9/18 均未見偵辦或裁罰的後續。中央社台北捷運新聞專題最新一則仍停在 9/16 的保全案，官方亦無新稿。48 小時內兩度動用法律手段之後，接下來的觀察點是兩案是否真的進入偵查與裁罰程序——這將決定這波「護衛第一線人員」的表態是一次性的公關動作，還是執法態度的實質轉向。",
+     src:"中央社台北捷運專題／臺北捷運公司新聞稿（9/16）", url:"https://www.cna.com.tw/news/ahel/202609160237.aspx"},
+    {cat:"fare", kind:"news", hot:false, tags:["首月免費","信義東延段","親子活動"],
+     t:"東延段免費期倒數 9 天：今日下午 2 時 15 分最後一場通車音樂會，官方仍未公布新站運量",
+     p:"象山—廣慈／奉天宮新通車區間免費搭乘至 9 月 28 日，剩 9 天；每日上午 7 時起發放限量 500 份全家霜淇淋兌換券、乘車抽獎（捷運年票與自行車）續辦至同日。8/30 起排定的通車音樂會今日（9 月 19 日）下午 2 時 15 分於車站公共藝術區演出最後一場，為期三週的通車活動正式收尾；同日大安森林公園站陽光大廳另有「2026 假日親子電影院」第二場，3 時魔術開場後放映《哆啦A夢：大雄的繪畫世界物語》，國小以下孩童可領限量貼紙。官方自 8/30 通車以來始終未公布新站分站運量，免費期結束後的真實運量、以及淡水信義線南段班距是否被實質拉長，是 9 月底的驗收題，距驗收剩 9 天。",
+     src:"臺北捷運公司新聞稿", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"},
+    {cat:"buzz", kind:"news", hot:false, tags:["親子活動"],
+     t:"軟性聲量：中秋檔期開跑，兒童新樂園推限定圓月、玉兔打卡場景",
+     p:"北捷 9/18 的另一則新稿為〈中秋同樂就來兒樂！限定圓月、玉兔等你來合照〉，兒童新樂園配合中秋檔期設置限定圓月與玉兔造景供旅客合照，延續敬師月（至 9/30）、敬軍優惠（至 12/31）與假日親子電影院的親子與族群定向路線。社群反應正面但聲量極低，留言多為打卡與入園資格詢問。值得記的節奏是：9/15 至 9/18 官方共發出七則稿件，其中五則屬形象、活動與宣導題，僅兩則與行車直接相關（9/15 松山新店線旅客跌倒說明、9/18 文湖線異常說明），車廂扶握設施的補救工程進度則持續缺席。",
+     src:"臺北捷運公司新聞稿（9/18）", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"},
+    {cat:"buzz", kind:"news", hot:false, tags:["小巨蛋廣告"],
+     t:"小巨蛋「Chinese Taipei」進入第七天：連日無下文，事前審核機制仍未交代",
+     p:"IVE 9/11 至 9/13 在臺北小巨蛋開唱期間外牆 LED 播出「Welcome to Chinese Taipei」一事，自 9/14 蔣萬安以「北捷遊憩公司已經清楚地對外說明了」回應、議員洪健益與張文潔批甩鍋委外之後，9/15 至 9/19 上午未再出現新的官方說明、議會質詢或媒體跟進。北捷遊憩公司的定調仍停在 9/13 新聞稿：外牆由代理廠商經營、內容審核與排播由廠商負責、不代表營運單位立場、已停播並將「強化事前審核機制」——具體做法至今未公布。連七天無下文，議題實質退燒；本日誌自今日起將其移出「延續中的背景議題」，但未結案的事實不變。",
+     src:"臺北捷運公司新聞稿（9/13）／自由時報、中央社彙整", url:"https://news.ltn.com.tw/news/Taipei/breakingnews/5572915"},
+    {cat:"build", kind:"forum", hot:false, tags:["路網規劃","軌道政見"],
+     t:"論壇連三日北捷本體零新文：9/18 三則新文全為外縣市，文湖線事故甚至沒開串",
+     p:"MRT 板 9/18 長出三則新文，全數與北捷無關：網友 zhier 的「高雄捷運新整體路網」（9 推）、NiChu 的「機捷 A23 通車後 TOP10 旅運變化推測」（8 推）、tgordoncheng 轉貼的「大新竹輕軌紅藍線整合可行性研究預計 116 年底提中央審查」（2 推）；9/17 唯一新文則是中捷藍線補助爭議（13 推）。最值得記的是缺席的那一則——中午的文湖線行走輪破損事故截至 9/19 上午仍未在板上開出任何討論串，與 9/3 文德站一案曾被拿來清點「文湖線 3 年出包十餘次」的反應明顯不同，顯示論壇對一小時內排除的區間中斷已相對無感。北捷本體連續第三天沒有新開的討論串。",
+     src:"PTT MRT 板（9／8／2 推）", url:"https://www.pttweb.cc/bbs/MRT"}
+  ]
+},
+{
+  date:"2026-09-18", wd:"週五",
+  summary:"北捷連兩日對車廂失序動手：文湖線男子晨峰咆哮、嚼檳榔並與保全隔著車門對峙，官方依大眾捷運法連開兩張 1,500 元罰單並將就辱罵提告。事發 9/17 上午 7 時 57 分南京復興往忠孝復興區間，戴鴨舌帽男子在禁止飲食區嚼檳榔遭勸導後把檳榔吐在手上、對保全飆罵，並堵住車門讓乘客無處可退，有學生嚇到說「拜託不要這樣，我怕被捅死」；捷警於忠孝復興站上車監看，男子至麟光站自行離開。這是繼 9/15 大安站保全遭比中指、9/16 北捷報案提告之後的第二起同性質事件，讓「第一線人員保護」從單一新聞變成連續兩日的執法動作。同日最暖的一則來自乘客自己：9/13 龍山寺往西門途中一名女乘客打翻奶茶，滿車廂陌生人掏出衛生紙、塑膠袋與學生的運動毛巾合力擦乾，Threads 貼文兩天累積逾 6 萬讚並紅到日本，留言「這種畫面在東京已經看不到了」。國際場合也加一分：2026 UITP Taipei Meetings 9/17 至 9/18 在臺北登場，11 國 17 家業者近 60 位貴賓與會，北捷以國父紀念館站 AI 人流分析拿下 UITP Awards 卓越成就獎。官方 9/17 另連發三稿，其中〈握緊扶手、站穩踏階〉電扶梯安全宣導落在連兩起跌倒事件之後，被視為側面回應。行車面連續第九天全清，301 型拉環逾期第三天、廣慈站顯示異常沉默滿 17 天。整體風向中性偏正：暖聞與國際獎項拉抬形象，車廂失序與逾期承諾仍是扣分項。",
+  metrics:[["當日則數","12"],["爭議題","2"],["當日風向","中性偏正"]],
+  items:[
+    {cat:"safe", kind:"news", hot:true, tags:["保全執勤","車廂治安"],
+     t:"今日最大爭議：文湖線男子晨峰咆哮嚼檳榔堵車門，北捷連開兩張 1,500 元罰單並將提告",
+     p:"9 月 17 日上午 7 時 57 分通勤尖峰，一名灰衣戴鴨舌帽的中年男子在文湖線列車上無故咆哮、持續爆粗口，並在禁止飲食區嚼食檳榔。列車行經南京復興往忠孝復興區間，站務與保全於劍南路站介入勸導，男子竟把檳榔吐在手上、對保全飆罵，態度強硬；保全要求其下車遭拒，雙方隔著車門兩側對峙，車廂內乘客因出口被堵而無法離開，有學生嚇得說「拜託不要這樣，我怕被捅死」。捷警獲報後於忠孝復興站上車，男子情緒已平復、站長未表示拒載，監看至麟光站由其自行離開。北捷表示將依大眾捷運法分別就違規飲食與妨礙人員執行職務各處 1,500 元罰鍰，並就辱罵部分提告，強調「嚴正維護捷運安全與秩序」。這是繼 9/15 大安站保全遭比中指、9/16 官方報案提告之後，48 小時內第二起第一線人員遭衝撞的事件。",
+     src:"壹蘋新聞網（9/17）／三立新聞網", url:"https://news.nextapple.com/local/20260917/1918F3C8231FFC352732714B86957DA9"},
+    {cat:"buzz", kind:"social", hot:false, tags:["乘客互助","車廂治安"],
+     t:"今日最暖一則：北捷打翻奶茶「滿車廂陌生人合力擦乾」，Threads 逾 6 萬讚紅到日本",
+     p:"9 月 13 日一名女乘客在龍山寺站附近的車廂內打翻整杯奶茶，列車行進間液體迅速蔓延，車上陌生乘客卻沒有走避：有人連續遞出衛生紙、餐巾與塑膠袋，一名學生拿出自己的運動毛巾吸水，一位穿裙子的女子直接跪下協助擦地，整節車廂在抵達西門站前就被清乾淨。原PO在 Threads 記錄此事，兩天內累積逾 6 萬讚，寫下「當我哭著用完最後一張衛生紙，突然看見視線裡伸出四五隻遞紙的手」。貼文被大量轉載至日本社群後引發熱議，留言包括「台灣最棒」「這種畫面在東京已經看不到了」，不少曾訪台的日本網友分享自身受助經驗。在連日車廂衝突與跌倒爭議之間，這是本期少見完全由乘客自己創造的正面聲量。",
+     src:"自由時報（9/15）／三立新聞網／Threads", url:"https://news.ltn.com.tw/news/life/breakingnews/5574825"},
+    {cat:"buzz", kind:"news", hot:false, tags:["捷運聯盟"],
+     t:"國際場合加分：2026 UITP Taipei Meetings 今明兩日登場，11 國近 60 位貴賓齊聚臺北",
+     p:"臺北捷運公司與國際公共交通聯會（UITP）共同主辦的 2026 UITP Taipei Meetings 於 9 月 17 日至 18 日在臺北舉行，為第 50 屆亞太執行委員會（APC）及第 25 屆亞太城市軌道平臺會（APURP）會議。與會者來自新加坡、比利時、德國、印度、泰國、馬來西亞、日本、韓國、香港及澳洲等 11 個國家、17 家公共運輸及軌道業者，共近 60 位貴賓。議程聚焦自動化與機器人應用、尖峰時段人潮管理，以及人工智慧對運輸產業的影響三大面向。北捷並以「國父紀念館站 AI 人流分析與智慧導引系統」獲頒 2026 UITP Awards 卓越成就獎。這是繼 9/16 第七屆捷運聯盟交流會之後，北捷一週內第二場國際級主場活動，社群聲量不高但屬純正面題。",
+     src:"聯合新聞網／經濟日報（9/17）／臺北捷運公司新聞稿", url:"https://udn.com/news/story/7241/9760315"},
+    {cat:"ops", kind:"news", hot:false, tags:["手扶梯政策","長者摔倒"],
+     t:"官方 9/17 連發三稿，〈握緊扶手、站穩踏階〉電扶梯安全宣導被視為側面回應跌倒爭議",
+     p:"臺北捷運公司新聞稿頁面 9/17 一口氣新增三則，數量是近兩週單日最高：〈握緊扶手、站穩踏階 搭乘電扶梯請注意安全〉、〈跟著捷米！綠燈大步向前、紅燈停下休息！〉與〈全球公共運輸盛會臺北登場〉。三則皆非行車題，其中電扶梯安全宣導的時點值得記：它落在 9/14 老翁車廂重摔、9/15 松山新店線旅客跌倒之後第三天，與 9/15、9/16 兩則被批「避重就輕」「反證自己」的說明不同，改以站內設施的安全提醒切入，等於把「旅客跌倒」的敘事從車廂扶握設施拉到電扶梯搭乘習慣。社群未把兩者連在一起討論，但官方對車廂扶握設施的全面檢視期程仍未公布。",
+     src:"臺北捷運公司新聞稿（9/17）", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"},
+    {cat:"ops", kind:"forum", hot:false, tags:["拆座椅","顯示器異常","信義東延段"],
+     t:"兩項官方待辦逾期第三天：301 型拉環仍零回報，廣慈站顯示異常沉默滿 17 天",
+     p:"北捷 9/8 承諾淡水信義線 301 型 2 列每列增設 56 個拉環於「9 月中旬完成」，逾期進入第三天仍無任何進度回報；381 型 2 列每列 128 個早已完成，低拉環高度由 161 公分降至 155 公分並繫黃色織帶。9/17 官方新增的三則稿件全數與車廂扶握設施無關，蔣萬安 9/15 允諾的「全面檢視」亦未見期程，板南線以外每列 24 處立式扶手的完工比例自 8/17 決標以來同樣未公布。另一項是 9/2 開串、一度累積 118 推 368 則留言的廣慈／奉天宮新站資訊顯示設備異常，官方沉默已滿 17 天——對照板南線 9/12 夜間同類顯示器當機、隔日即主動發稿，落差持續擴大。",
+     src:"臺北捷運公司新聞稿（9/8）／PTT MRT 板", url:"https://udn.com/news/story/7266/9741696"},
+    {cat:"ops", kind:"forum", hot:false, tags:["長者摔倒","拆座椅"],
+     t:"摔倒爭議進入第四天：PTT「連 2 天乘客重摔還濺血」續增至 21 則留言，未見新事證",
+     p:"9/16 網友 crashonU 轉貼的「北捷連 2 天『乘客重摔』還濺血」由前日記錄的 15 推 40 則留言，續增至 21 則留言後趨緩，仍是 MRT 板上熱度最高的北捷本體題。討論已從事件本身轉為對決策順序的清算，最被反覆引用的仍是「請北捷高層上優化列車，站立不要扶扶手，從頭坐到尾試一次」與「空間優化不如叫空間劣化」。9/17 未出現新的跌倒通報，媒體亦無新事證跟進，議題進入延燒後的平原期；但由於官方補救進度逾期、全面檢視無期程，仍屬未結案。",
+     src:"PTT MRT 板（21 則留言）／Newtalk 新聞（9/16）", url:"https://newtalk.tw/news/view/2026-09-16/1060155"},
+    {cat:"build", kind:"forum", hot:true, tags:["捷運預算","軌道政見","路網規劃"],
+     t:"9/17 論壇唯一新文：盧秀燕批中捷藍線遭中央卡 5 年、42 億只給 1 億「中部人心裡有數」",
+     p:"MRT 板 9/17 全日僅長出一則新文，是網友轉貼的中捷藍線補助爭議（7 則留言）：台中市長盧秀燕批評藍線遭中央卡關 5 年，市府申請 42 億元卻僅獲 1 億元，直言「中部人心裡會有數」，並指中央開芭樂票。這接續 9/6「中央明年補助中捷藍線 45 億、捷工局稱還差 46.53 億」與 9/11「藍線 999 億缺口未編入總預算」兩案，是本期第三度以中捷藍線為戰場的預算攻防，時點落在年底選舉前。對北捷而言屬外溢題，但論壇連續兩日發文量停在個位數，是本日誌開設以來最低——北捷本體與外縣市路網同時無大事。",
+     src:"聯合新聞網（9/17）／PTT MRT 板（7 則留言）", url:"https://udn.com/news/story/6656/9760763"},
+    {cat:"ops", kind:"news", hot:false, tags:["松山新店線異常","顯示器異常"],
+     t:"行車面連續第九天全清：誤點證明頁仍「查無資料」，中央社專題最新一則停在 9/16",
+     p:"官方「誤點證明」頁面 9/18 上午仍顯示查無資料——該頁僅登載 5 分鐘以上延誤並提供 7 日內下載，等於近一週北捷全路網沒有任何達到出證標準的延誤。臺北捷運公司新聞稿頁面 9/17 新增的三則稿件（電扶梯安全、捷米交通安全大使、UITP 盛會）均非行車題；與行車有關的最新一則仍是 9/9 的松山新店線新店區公所站停靠位置異常（退行處理約 2 分 30 秒、列車已送回機廠詳查）。中央社台北捷運專題最新一則停在 9/16 的保全遭比中指案。東延段通車後第 20 天無人潮管制紀錄：行車紀錄乾淨，失分仍集中在車廂設施、危機溝通與現場秩序。",
+     src:"臺北捷運公司誤點證明頁／中央社台北捷運專題", url:"https://www.metro.taipei/News.aspx?n=0D6F05148E52D2FE&sms=8FF6EAB4BC08C618"},
+    {cat:"safe", kind:"news", hot:false, tags:["車廂治安"],
+     t:"補記一則性騷擾通報：噁男「故意跌倒」貼近女乘客背後猛吸狂聞",
+     p:"自由時報 9/15 報導的另一起車廂事件在本期補記：一名男子在北捷車廂內以「假裝跌倒」為由貼近女乘客背後，隨後對其頭髮與背部猛吸狂聞，行徑遭其他旅客察覺並拍下。此案與 8/26 忠孝復興站手扶梯遭噴不明液體（嫌疑人辯稱針筒裝髒水）、8/14 議員許淑華揭露北捷 5 年累計 1,119 件性騷通報、7 成發生在車廂等紀錄接力。對照本日文湖線咆哮案的處理，北捷近期對「妨礙人員執行職務」的執法動作明確，但乘客對乘客的騷擾仍高度仰賴旁人蒐證與事後報案，這也是議員長期要求擴充捷警與導入 AI 監視器的理由。",
+     src:"自由時報（9/15）", url:"https://news.ltn.com.tw/news/life/breakingnews/5574543"},
+    {cat:"fare", kind:"news", hot:false, tags:["首月免費","信義東延段"],
+     t:"東延段免費期倒數 10 天：明日 9/19 最後一場通車音樂會，官方仍未公布新站運量",
+     p:"象山—廣慈／奉天宮新通車區間免費搭乘至 9 月 28 日，剩 10 天；每日上午 7 時起發放限量 500 份全家霜淇淋兌換券、乘車抽獎（捷運年票與自行車）續辦。8/30 起排定的通車音樂會明日（9 月 19 日）下午 2 時 15 分演出最後一場，同日大安森林公園站另有第二場假日親子電影院，放映《哆啦A夢：大雄的繪畫世界物語》，3 時魔術開場。官方自 8/30 通車以來始終未公布新站分站運量，免費期結束後新站的真實運量、以及淡水信義線南段班距是否被實質拉長，仍是本月最主要的待驗證項目，距驗收剩 10 天。",
+     src:"臺北捷運公司新聞稿", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"},
+    {cat:"buzz", kind:"news", hot:false, tags:["小巨蛋廣告"],
+     t:"小巨蛋「Chinese Taipei」進入第六天：連日無新進展，事前審核機制仍未交代",
+     p:"IVE 9/11 至 9/13 在臺北小巨蛋開唱期間外牆 LED 播出「Welcome to Chinese Taipei」一事，自 9/14 蔣萬安以「北捷遊憩公司已經清楚地對外說明了」回應、議員洪健益與張文潔批甩鍋委外之後，9/15 至 9/18 上午未再出現新的官方說明、議會質詢或媒體跟進。北捷遊憩公司的定調仍停在 9/13 新聞稿：外牆由代理廠商經營、內容審核與排播由廠商負責、不代表營運單位立場、已停播並將「強化事前審核機制」——具體做法至今未公布。連六天無下文，議題實質退燒，但屬未結案而非已結案。",
+     src:"臺北捷運公司新聞稿（9/13）／自由時報、中央社彙整", url:"https://news.ltn.com.tw/news/Taipei/breakingnews/5572915"},
+    {cat:"buzz", kind:"news", hot:false, tags:["親子活動"],
+     t:"軟性聲量：捷米化身交通安全大使，「綠燈大步向前、紅燈停下休息」宣導上線",
+     p:"北捷 9/17 另一則新稿由吉祥物捷米（Jie-Mi）擔綱，以「綠燈大步向前、紅燈停下休息」為訴求推廣行人號誌與路口安全觀念，延續 9/12、9/19 兩場假日親子電影院與彩繪列車 10 週年特展的親子路線。社群反應正面但聲量極低，留言多為打卡與周邊詢問。值得一提的是，這類形象與宣導稿在 9/15 至 9/17 的三天內占了官方全部五則稿件中的四則，與同期車廂扶握設施補救進度逾期未回報形成對比——官方發稿節奏偏向活動與宣導，實質工程進度則維持沉默。",
+     src:"臺北捷運公司新聞稿（9/17）", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"}
+  ]
+},
+{
+  date:"2026-09-17", wd:"週四",
+  summary:"北捷罕見地從挨批的一方轉為提告的一方：大安站保全勸導違規飲食遭比中指，官方 9/16 宣布已報案提告並全力提供司法協助。事件發生於 9/15 大安站月台，遭勸導旅客的同行者嗆「憑什麼冤枉我們」，上車前比出不雅手勢；北捷完成蒐證後將依大眾捷運法第 50 條處 1,500 至 7,500 元罰鍰，PTT 該串一日內由 13 推衝上 40 推、124 則留言。但另一條主線仍在失分：老翁摔倒延燒第三天，壹蘋以「優化不成變劣化」定調，鏡週刊、CTWANT、Newtalk 同步跟進，網友酸「要搭北捷，意外險買好買滿」、建議高層「站著不扶扶手從頭坐到尾試一次」；周軒批「改動之前都必須要想好前因後果」，主張要提升運量該買新車、拉高妥善率而非拆扶手。PTT「連 2 天乘客重摔還濺血」15 推 40 則留言，是 9/16 板上最熱的北捷本體題。正面題有二：第七屆捷運聯盟交流會在北捷登場，以及手扶梯兩側站立的風氣轉變被讚德政。行車面連續第八天全清，301 型拉環逾期第二天、廣慈站顯示異常沉默滿 16 天。整體風向中性偏負：官方首度強勢護衛第一線員工，車廂安全爭議卻仍未止血。",
+  metrics:[["當日則數","11"],["爭議題","3"],["當日風向","中性偏負"]],
+  items:[
+    {cat:"safe", kind:"news", hot:true, tags:["保全執勤","車廂治安"],
+     t:"今日最大動作：保全勸導飲食遭比中指，北捷報案提告並將依法開罰 1,500 至 7,500 元",
+     p:"北捷 9/16 發布〈大安站保全執勤遭旅客非理性對待 臺北捷運全力協助維護權益〉新聞稿：9 月 15 日大安站月台，一名旅客違規飲食遭保全勸導，同行旅客不滿嗆「憑什麼冤枉我們」，隨後在上車時對保全比出不雅手勢，全程遭其他旅客拍下上傳。北捷表示保全依規定勸導卻遭受不當對待，遭辱保全已前往警察局報案，公司將全力提供司法協助以維護員工工作尊嚴與執勤權益；完成蒐證後也將依大眾捷運法第 50 條對違規飲食旅客處 1,500 至 7,500 元罰鍰。媒體對當事人國籍描述不一（初傳中國口音、後多報為港籍），北捷未認定。PTT MRT 板該串一日內由 13 推衝上 40 推、124 則留言。這是本期官方第一次為第一線員工主動採取法律行動，社群評價罕見一面倒支持。",
+     src:"中央社（9/16）／臺北捷運公司新聞稿（9/16）／PTT MRT 板（40 推／124 則留言）", url:"https://www.cna.com.tw/news/ahel/202609160237.aspx"},
+    {cat:"ops", kind:"news", hot:true, tags:["長者摔倒","拆座椅"],
+     t:"摔倒爭議延燒第三天：媒體以「優化不成變劣化」定調，批決策未先徵詢就上路",
+     p:"壹蘋新聞網 9/16 以〈北捷連日爆跌倒、濺血！拆車廂立柱未周全 優化不成變劣化〉為題總結兩起事件——9/14 淡水信義線高齡長者無處抓握重摔頭部著地、9/15 松山新店線旅客跌倒臉部濺血——並把批評收束為三點：決策過程未經充分徵詢即倉促上路，「明明可蒐集意見後再實施」；官方否認拆柱與跌倒有關的回應引發反感；尖峰擁擠時沒有立柱可抓對長者與孩童特別危險。文中並指北捷承諾的 24 處立式扶手與拉環降至 155 公分等補救，仍無法徹底解決問題。鏡週刊、CTWANT 同日跟進，把「非優化列車」這句澄清當成官方最大的邏輯破口反覆引用。",
+     src:"壹蘋新聞網（9/16）／鏡週刊、CTWANT", url:"https://news.nextapple.com/life/20260916/C4393BE2514D9A4B1DACEF67E71CABA2"},
+    {cat:"ops", kind:"forum", hot:true, tags:["長者摔倒","拆座椅"],
+     t:"論壇最熱北捷本體題：「連 2 天乘客重摔還濺血！官方回應掀反效果」15 推 40 則留言",
+     p:"網友 crashonU 9/16 轉貼的報導成為當日 MRT 板熱度最高的北捷本體貼文（15 推、40 則留言）。留言火力集中在兩處：一是設計本身「只是增加行進中的風險跟不確定性」，二是官方切割式的回應。最被轉述的兩句是「請北捷高層上優化列車，站立不要扶扶手，從頭坐到尾試一次」與「要搭北捷，意外險買好買滿」，也有人把「空間優化」直接改稱「空間劣化」。這是 9 月以來論壇首度連續兩日由北捷自己的車廂議題領頭，而非外縣市路網或預算辯論。",
+     src:"PTT MRT 板（15 推／40 則留言）／Newtalk 新聞（9/16）", url:"https://newtalk.tw/news/view/2026-09-16/1060155"},
+    {cat:"ops", kind:"news", hot:false, tags:["長者摔倒","拆座椅","路網規劃"],
+     t:"批評升級到路線層級：周軒批「改動前就要想好前因後果」，質疑沒人想過北捷未來 30 年",
+     p:"在蔣萬安 9/15 要求全面檢視車廂扶握設施後，政治工作者周軒把批評從單一事件拉高到營運策略：「不是說你不可以去改現行的東西，但是要改動之前都必須要想好前因後果。」他指拆扶手、減座椅確實能多塞人，但若目的是提升運量，正解應是購置新車與拉高現有車輛妥善率，而不是壓縮既有車廂的安全裕度；並質疑歷任市長是否認真思考過北捷未來 30 年的發展，批評現況只是「頭痛醫頭腳痛醫腳」。這是本輪爭議中第一則把車廂配置與購車、妥善率、長期路網規劃綁在一起檢視的評論。",
+     src:"自由時報（9/16）", url:"https://news.ltn.com.tw/news/politics/breakingnews/5575283"},
+    {cat:"buzz", kind:"news", hot:false, tags:["捷運聯盟"],
+     t:"難得的正面官方題：第七屆捷運聯盟交流會在北捷登場，通車 30 週年累計運量破 150 億人次",
+     p:"北捷 9/16 發布新聞稿，第七屆捷運聯盟交流會當日於臺北捷運行政大樓舉行，與會者包含臺北、新北、桃園、臺中、高雄 5 家捷運公司，以及新加坡地鐵 SMRT 與國際公共交通聯會（UITP），以「智慧觀光、聯盟啟航」為願景，聚焦「軌道經濟與觀光」及「AI 應用」兩大主軸。議程包含「軌道經濟驅動臺灣觀光樞紐的開發策略」、「臺北捷運文湖線人流模擬暨數位孿生」技術分享，以及 AI 應用概念驗證（POC）成果展示。官方同時提及今年適逢臺北捷運通車 30 週年、累計運量已突破 150 億人次。社群聲量不高，但屬本日兩則純正面題之一。",
+     src:"臺北捷運公司新聞稿（9/16）／好視新聞網", url:"https://newsday.tw/news/570085"},
+    {cat:"buzz", kind:"news", hot:false, tags:["手扶梯政策"],
+     t:"另一則正面題續熱：手扶梯「左側空著」成歷史，PTT 串增至 15 推 88 則留言",
+     p:"9/15 由網友 godofsex 轉貼的「北捷手扶梯風氣改變了 潛規則 2 年被消失」，由前日記錄的 8 推增至 15 推、88 則留言，是 9/15 至 9/16 板上少數持續增長的北捷本體題。留言仍一面倒支持兩側皆可站立：「左邊本來就可以站立，趕時間自己去走樓梯」「左右都站滿不走動，運量才最有效率」，也有人指出這正說明宣導只要方向正確、給足時間就會見效——與同期扶握設施爭議中「先拆再補」的批評構成明顯對照。背景是北捷 2005 年跨年散場意外後改口宣導「緊握扶手、站穩踏階」，近兩年進一步於車站張貼兩側皆可站立的公告。",
+     src:"PTT MRT 板（15 推／88 則留言）／聯合新聞網、NOWnews", url:"https://udn.com/news/story/120912/9756023"},
+    {cat:"ops", kind:"news", hot:false, tags:["松山新店線異常","顯示器異常"],
+     t:"行車面連續第八天全清：誤點證明頁仍「查無資料」，中央社專題最新一則停在 9/15",
+     p:"官方「誤點證明」頁面 9/17 上午仍顯示查無資料——該頁僅登載 5 分鐘以上延誤並提供 7 日內下載，等於近一週北捷全路網沒有任何達到出證標準的延誤。臺北捷運公司新聞稿頁面 9/16 新增兩則（捷運聯盟交流會、大安站保全遭不當對待），均非行車題；與行車有關的最新一則仍是 9/9 的松山新店線新店區公所站停靠位置異常（退行處理約 2 分 30 秒、列車已送回機廠詳查）。中央社台北捷運專題最新一則仍停在 9/15 的老翁跌倒事件。東延段通車後第 19 天無人潮管制紀錄：行車紀錄乾淨，失分仍全在車廂設施與危機溝通。",
+     src:"臺北捷運公司誤點證明頁／中央社台北捷運專題", url:"https://www.metro.taipei/News.aspx?n=0D6F05148E52D2FE&sms=8FF6EAB4BC08C618"},
+    {cat:"ops", kind:"forum", hot:false, tags:["拆座椅","顯示器異常","信義東延段"],
+     t:"兩項官方待辦逾期第二天：301 型拉環仍未回報，廣慈站顯示異常沉默滿 16 天",
+     p:"北捷 9/8 承諾淡水信義線 301 型 2 列每列增設 56 個拉環於「9 月中旬完成」，逾期進入第二天仍未見進度回報；381 型 2 列每列 128 個早已完成，低拉環高度由 161 公分降至 155 公分並繫黃色織帶。在連兩起跌倒事件與市長「全面檢視扶握設施」的指示之後，這項逾期格外刺眼——紅線目前的空間優化列車僅 4 列，板南線則已全車隊改裝，而每列 24 處立式扶手的補救方案自 8/17 決標以來仍未公布完工比例，蔣萬安 9/15 允諾的全面檢視也尚未見具體期程。另一項是 9/2 開串、一度累積 118 推 368 則留言的廣慈／奉天宮新站資訊顯示設備異常，官方沉默已滿 16 天。",
+     src:"臺北捷運公司新聞稿（9/8）／PTT MRT 板", url:"https://udn.com/news/story/7266/9741696"},
+    {cat:"fare", kind:"news", hot:false, tags:["首月免費","信義東延段"],
+     t:"東延段免費期倒數 11 天：後天 9/19 最後一場音樂會，官方仍未公布新站運量",
+     p:"象山—廣慈／奉天宮新通車區間免費搭乘至 9 月 28 日，剩 11 天；每日上午 7 時起發放限量 500 份全家霜淇淋兌換券、乘車抽獎（捷運年票與自行車）續辦。8/30 起排定的通車音樂會僅剩 9 月 19 日下午 2 時 15 分的最後一場，同日大安森林公園站另有第二場假日親子電影院，放映《哆啦A夢：大雄的繪畫世界物語》。官方自 8/30 通車以來始終未公布新站分站運量，免費期結束後新站的真實運量、以及淡水信義線南段班距是否被實質拉長，仍是本月最主要的待驗證項目，距驗收剩不到兩週。",
+     src:"臺北捷運公司新聞稿", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"},
+    {cat:"buzz", kind:"news", hot:false, tags:["小巨蛋廣告"],
+     t:"小巨蛋「Chinese Taipei」進入第五天：仍無新進展，事前審核機制未見交代",
+     p:"IVE 9/11 至 9/13 在臺北小巨蛋開唱期間外牆 LED 播出「Welcome to Chinese Taipei」一事，自 9/14 蔣萬安以「北捷遊憩公司已經清楚地對外說明了」回應、議員洪健益與張文潔批甩鍋委外之後，9/15 至 9/17 上午未再出現新的官方說明、議會質詢或媒體跟進。北捷遊憩公司的定調仍停在 9/13 新聞稿：外牆由代理廠商經營、內容審核與排播由廠商負責、不代表營運單位立場、已停播並將「強化事前審核機制」——具體做法至今未公布。連五天無下文，議題實質退燒，但屬未結案而非已結案。",
+     src:"臺北捷運公司新聞稿（9/13）／自由時報、公視新聞彙整", url:"https://news.ltn.com.tw/news/Taipei/breakingnews/5572915"},
+    {cat:"build", kind:"forum", hot:false, tags:["捷運降溫論","路網規劃"],
+     t:"論壇結構續變：9/16 全日僅兩則新文，降溫論代理戰連三日零增長",
+     p:"MRT 板 9/16 全日只長出兩則新文——「連 2 天乘客重摔還濺血」（15 推、40 則留言）與網友 godofsex 的「高雄輕軌 8 月運量增 6.5％」情報（7 推、17 則留言），9/17 上午板上尚無新文，是近兩週最低的發文量。連燒八天、最高衝上 63 推 770 則留言的「高雄輕軌 以結果論來說 成功了吧？」連續第三日零增長，社子天母大同線說明會串（51 推）與深坑輕軌母串（32 推）同樣停止擴張。自 9/7 張景森拋出 5 項警示指標以來主導版面的政策辯論確定退潮，版面重心已完全回到北捷自己的車廂與車站。",
+     src:"PTT MRT 板（15／7 推）", url:"https://www.pttweb.cc/bbs/MRT"}
+  ]
+},
+{
+  date:"2026-09-16", wd:"週三",
+  summary:"拆立柱爭議首度出現傷者：拄拐杖的高齡老翁在淡水信義線列車起步時無處可抓，面朝上重摔、頭部撞地，蔣萬安下令全面檢視車廂扶握設施。事發於 9/14 上午，目擊者稱老翁腳步還在移動時列車突然加速，倒地時發出巨響、睜著眼沒有反應；另有目擊者指站務員未先確認頸椎脊椎就把人拉起，質疑急救 SOP。北捷 9/15 的 302 字新聞稿只有 65 字談事件、其餘談國際經驗，被批避重就輕（傷者為手背挫傷、當日中午出院）；同日下午松山新店線又傳跌倒，官方急稱「該列車並非空間優化列車」，反被網友圍剿「非優化車也會摔，那優化在優化什麼」，止血動作變成第二把火。其餘版面相對安靜：小巨蛋「Chinese Taipei」進入第四天無新進展，論壇由中國情侶車廂飲食比中指（13 推）與「手扶梯左側空著成歷史」接手，北捷本體終於重回 MRT 板。301 型拉環「9 月中旬完成」逾期未回報、廣慈站顯示異常沉默滿 15 天。整體風向明顯偏負：這是本日誌開設以來第一次，車廂空間優化政策被連上一名實際受傷的乘客。",
+  metrics:[["當日則數","13"],["爭議題","3"],["當日風向","明顯偏負"]],
+  items:[
+    {cat:"ops", kind:"news", hot:true, tags:["長者摔倒","拆座椅"],
+     t:"今日最大爭議：拐杖老翁無處可抓重摔頭撞地，蔣萬安下令全面檢視車廂扶握設施",
+     p:"9 月 14 日上午，一名 80 多歲老翁拄著拐杖搭乘淡水信義線列車，站在已移除中柱與扶手的車廂正中央，列車起步加速時重心不穩，以面朝上的姿勢倒地、頭部撞擊地面發出巨大聲響。目擊者在 Threads 貼文質疑「北捷拆扶手，到底有什麼好處？」，並描述老翁倒地後睜著眼沒有反應，乘客按下緊急按鈕、不敢擅自移動傷者，最後透過老翁手機聯繫家屬。蔣萬安 9/15 回應，捷運公司第一時間協助送醫並持續關懷，強調「民眾的安全是非常非常重要的」，已要求北捷「全面檢視車廂內的扶握設施，全面檢討與精進」。這是 8 月中旬空間優化爭議延燒一個月以來，第一次有具體受傷的乘客把政策與安全風險直接連在一起。",
+     src:"自由時報／聯合新聞網／中央社（9/15）", url:"https://news.ltn.com.tw/news/life/breakingnews/5574652"},
+    {cat:"ops", kind:"news", hot:true, tags:["長者摔倒","拆座椅"],
+     t:"官方止血第一步被批避重就輕：302 字新聞稿只有 65 字談事件",
+     p:"北捷 9/15 就此事發布〈北捷高度重視旅客安全 參考國際經驗持續優化乘車環境〉新聞稿，但媒體清點後指出，全篇 302 字中只有 65 字談事件本身——「針對 9 月 14 日上午一名旅客於捷運列車內跌倒一事，車站人員獲報後立即前往協助並協助送醫，後續持續關懷旅客身體狀況」，其餘篇幅用於說明「車廂內依不同車型設置多元扶握設施」與參考國際都會經驗進行空間優化；對於「來不及走到靠邊者」「抓不到拉環的乘客」的安全風險並未正面回應。北捷另補充已派專人慰問，傷者經醫院檢查為手背挫傷、無其他大礙，當日中午出院在家休養。這是本期官方對爭議題的首次主動發稿，卻被定性為避重就輕。",
+     src:"自由時報（9/15）／臺北捷運公司新聞稿（9/15）", url:"https://news.ltn.com.tw/news/life/breakingnews/5574217"},
+    {cat:"ops", kind:"news", hot:true, tags:["長者摔倒","拆座椅"],
+     t:"止血變第二把火：連兩天傳旅客跌倒，北捷急稱「非空間優化列車」反遭圍剿",
+     p:"9 月 15 日下午近 4 時，松山新店線一列往新店方向列車再傳旅客跌倒。北捷當晚發聲明說明：熱心旅客通報後站長立即上車，確認是一名旅客手提重物未站穩而跌倒，站長協助擦藥後旅客不願就醫自行離站，並特別強調「該列車並非空間優化列車」，籲外界勿妄自揣測。這句澄清卻被網友當成邏輯破口大量反擊：「非優化列車都會摔，那優化到底在優化什麼」「原來拆不拆都會跌倒，那先拆的理由是什麼」，也有人把「優化」改稱「劣化」。官方在 24 小時內連發兩份說明，第一份被批避重就輕、第二份被批反證自己，是本期危機處理最失分的一天。",
+     src:"自由時報（9/15 22:13）／臺北捷運公司聲明", url:"https://news.ltn.com.tw/news/politics/breakingnews/5575033"},
+    {cat:"safe", kind:"social", hot:false, tags:["長者摔倒","車廂治安"],
+     t:"延伸爭點：站務員被指未確認頸椎脊椎就把人拉起，網問急救 SOP 何在",
+     p:"目擊者向媒體補充的細節讓爭議多開一條線：站務人員抵達現場後，「竟沒先確認頸椎或脊椎是否有傷勢、就直接將老翁拉起」。評論質疑「北捷站務人員應有急救 SOP 及相關訓練吧？」，社群留言把它與北捷 9/2 才與急救教育團隊合作推廣「閃電 CPR 挑戰」的形象操作對照，批評宣導與現場處置落差。另一條批評則指向高齡化：「台灣越來越進入高齡化社會，便民設施還可以越來越不便民」，把拆立柱、拆座椅、嬰兒車無處停放與長者無處抓握串成同一組問題。北捷尚未就現場處置流程另行說明。",
+     src:"壹蘋新聞網（9/15）／Threads 目擊者貼文", url:"https://news.nextapple.com/life/20260915/FA08856C379B1839D7152207FBFCCF49"},
+    {cat:"safe", kind:"news", hot:false, tags:["車廂治安"],
+     t:"論壇當日最熱北捷本體題：中國口音情侶車廂飲食遭勸阻，女子比中指爆粗口",
+     p:"一對疑似中國籍情侶在北捷車廂內飲用飲料遭保全勸阻，男方被指「只喝了一口」，女方則護航並與保全爭執，臨上車前對保全比中指、爆粗口，全程遭其他旅客拍下並上傳。影片在社群與 PTT 大量轉傳，MRT 板該串 13 推，是 9/15 板上熱度最高的北捷本體貼文。留言多聚焦車廂飲食規定的執法一致性與勸導現場的衝突風險，也有人提醒依大眾捷運法飲食可處 1,500 至 7,500 元罰鍰；另一派則提醒勿把個案上綱到國籍。北捷未就此另行發稿。",
+     src:"自由時報／鏡週刊（9/15）／PTT MRT 板（13 推）", url:"https://news.ltn.com.tw/news/Taipei/breakingnews/5574647"},
+    {cat:"buzz", kind:"news", hot:false, tags:["手扶梯政策"],
+     t:"難得的正面題：北捷手扶梯「左側空著」成歷史，兩年宣導被讚德政",
+     p:"網友貼出北捷電扶梯左右兩側都站滿乘客、幾乎沒有行走空間的照片，原意是抱怨「不要站左邊」，留言卻一面倒支持：「左邊本來就可以站立，趕時間自己去走樓梯」「左右都站滿不走動，這樣運量才是最有效率的」。同一則討論也在 MRT 板出現（8 推），標題直接寫「潛規則 2 年被消失」。背景是北捷早年宣導「靠右站立、左側通行」，2005 年跨年散場意外後改為強調「緊握扶手、站穩踏階」，近兩年進一步推動兩側皆可站立並於車站張貼公告。這是本期少數社群評價正面的北捷題，也與同日的扶握設施爭議形成對比。",
+     src:"聯合新聞網／NOWnews（9/15）／PTT MRT 板（8 推）", url:"https://udn.com/news/story/120912/9756023"},
+    {cat:"ops", kind:"news", hot:false, tags:["松山新店線異常","顯示器異常"],
+     t:"行車面：誤點證明頁仍「查無資料」，近 7 日無 5 分鐘以上延誤",
+     p:"官方「誤點證明」頁面 9/16 上午仍顯示查無資料——該頁僅登載 5 分鐘以上延誤並提供 7 日內下載，等於近一週北捷全路網沒有任何達到出證標準的延誤。臺北捷運公司新聞稿頁面 9/15 新增的唯一一則即為旅客安全說明，與行車有關的最新一則仍是 9/9 的松山新店線新店區公所站停靠位置異常（退行處理約 2 分 30 秒、列車已送回機廠詳查）。中央社台北捷運專題最新一則則已更新為 9/15 的老翁跌倒事件，是 9/9 之後該專題的第一則新稿。東延段通車後第 18 天無人潮管制紀錄：行車紀錄乾淨，失分全在車廂設施與危機溝通。",
+     src:"臺北捷運公司誤點證明頁／中央社台北捷運專題", url:"https://www.metro.taipei/News.aspx?n=0D6F05148E52D2FE&sms=8FF6EAB4BC08C618"},
+    {cat:"ops", kind:"forum", hot:false, tags:["拆座椅","顯示器異常","信義東延段"],
+     t:"兩項官方待辦同時逾期：301 型拉環「9 月中旬完成」未回報，廣慈站顯示異常沉默滿 15 天",
+     p:"北捷 9/8 承諾淡水信義線 301 型 2 列每列增設 56 個拉環於「9 月中旬完成」，今日已過月中仍未見進度回報；381 型 2 列每列 128 個則早已完成，低拉環高度由 161 公分降至 155 公分並繫黃色織帶。在老翁摔倒事件後，這項逾期格外刺眼——紅線目前的空間優化列車僅 4 列，板南線則已全車隊改裝，而每列 24 處立式扶手的補救方案自 8/17 決標以來也未公布完工比例。另一項是 9/2 開串、一度累積 118 推 368 則留言的廣慈／奉天宮新站資訊顯示設備異常，官方沉默已滿 15 天。",
+     src:"臺北捷運公司新聞稿（9/8）／PTT MRT 板", url:"https://udn.com/news/story/7266/9741696"},
+    {cat:"fare", kind:"news", hot:false, tags:["首月免費","信義東延段"],
+     t:"東延段免費期倒數 12 天：僅剩 9/19 最後一場音樂會，官方仍未公布新站運量",
+     p:"象山—廣慈／奉天宮新通車區間免費搭乘至 9 月 28 日，剩 12 天；每日上午 7 時起發放限量 500 份全家霜淇淋兌換券、乘車抽獎（捷運年票與自行車）續辦。8/30 起排定的通車音樂會僅剩 9 月 19 日下午 2 時 15 分的最後一場，同日大安森林公園站另有第二場假日親子電影院。官方自 8/30 通車以來始終未公布新站分站運量，免費期結束後新站的真實運量、以及淡水信義線南段班距是否被實質拉長，仍是本月最主要的待驗證項目。",
+     src:"臺北捷運公司新聞稿", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"},
+    {cat:"buzz", kind:"news", hot:false, tags:["小巨蛋廣告"],
+     t:"小巨蛋「Chinese Taipei」進入第四天：無新進展，事前審核機制仍無具體交代",
+     p:"IVE 9/11 至 9/13 在臺北小巨蛋開唱期間外牆 LED 播出「Welcome to Chinese Taipei」一事，在 9/14 蔣萬安以「北捷遊憩公司已經清楚地對外說明了」回應、議員洪健益與張文潔批甩鍋委外之後，9/15 至 9/16 上午未再出現新的官方說明或議會後續。北捷遊憩公司的定調仍停在 9/13 新聞稿：外牆由代理廠商經營、內容審核與排播由廠商負責、不代表營運單位立場、已停播並將「強化事前審核機制」——但強化的具體做法至今未見公布。爭議熱度明顯被同期的車廂安全事件蓋過，屬未結案而非已結案。",
+     src:"臺北捷運公司新聞稿（9/13）／自由時報、聯合新聞網彙整", url:"https://news.ltn.com.tw/news/Taipei/breakingnews/5572915"},
+    {cat:"build", kind:"forum", hot:false, tags:["捷運降溫論","社子線","路網規劃"],
+     t:"降溫論代理戰連兩日熄火：高雄輕軌串仍停在 63 推，社子線兩串亦停止增長",
+     p:"連燒八天、以「高雄輕軌 以結果論來說 成功了吧？」為代表的降溫論代理戰，在 9/15 首度零增長後，9/16 上午仍停在 63 推、770 則留言，確認退潮；9/12 的社子天母大同線說明會串（51 推）與 9/13 的延伸建議串（24 推）同樣未再擴張，深坑輕軌母串停在 32 推。自 9/7 張景森拋出 5 項警示指標以來連續九天的政策辯論，至此讓出版面。接手的是社會題與北捷本體的安全爭議——這是 9 月以來第一次，MRT 板的熱度重新回到北捷自己的車廂裡。",
+     src:"PTT MRT 板（63／51／32／24 推）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"build", kind:"forum", hot:false, tags:["路網規劃","軌道政見"],
+     t:"外溢題補版面：桃捷 8 月各站日均運量情報、「你是北捷觀光大使嗎？」小遊戲",
+     p:"9/15 MRT 板四則新文中，除手扶梯與中國情侶兩則社會題外，另兩則熱度極低：「桃園捷運 115 年 08 月各站日均旅運量」情報（3 推）與網友自製的「你是北捷觀光大使嗎？」互動小遊戲（2 推）。前者延續每月運量比較的例行題，後者屬輕鬆型自製內容。板上仍無 9/16 新文。整體而言，北捷本體重回版面靠的是社會事件而非路網或票務題，外縣市軌道題的比重則明顯下降。",
+     src:"PTT MRT 板（3／2 推）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"buzz", kind:"forum", hot:false, tags:["防颱整備"],
+     t:"納莉 25 週年正日：北捷 16 站被淹回顧串停在 9 推，防汛話題未再擴大",
+     p:"2001 年 9 月 16 至 19 日納莉颱風長時間滯留北台灣，台北市區嚴重積水，北捷共 16 座車站遭大水灌入、花費約三個月才全面復原。今日正逢屆滿 25 週年，9/13 網友轉貼的回顧串仍停在 9 推、32 則留言，未因週年再起波瀾。討論留下的實質問題是現行車站出入口防水閘門、抽水設備與防汛 SOP 能否應付更極端的降雨——在颱風季尾聲仍具提醒意義，但今年汛期至今北捷未發生積水事件，話題自然降溫。",
+     src:"PTT MRT 板（9 推／32 則留言）", url:"https://www.pttweb.cc/bbs/MRT"}
+  ]
+},
+{
+  date:"2026-09-15", wd:"週二",
+  summary:"蔣萬安首度回應小巨蛋「Chinese Taipei」爭議，一句「北捷遊憩公司已經清楚地對外說明了」被議員批甩鍋委外，火勢從一面廣告牆燒到市長本人。9/14 市長赴議會接受任內最後一次總質詢後受訪，重申廣告內容不代表臺北小巨蛋或營運單位立場、已下架；民進黨議員洪健益反駁委外廠商未盡審核責任，市府不能「推給委外單位」，並強調「台灣是一個國家，不是中國的一個城市」，張文潔則直批蔣市府甩鍋。社群火力隨即轉向個人，蔣萬安妻子 2017 年在行政院性平工作坊影片自稱「I'm from Chinese Taipei」的片段被翻出重播，留言酸「私下都不敢說自己是台灣人，怎麼期待自家地標敢寫台灣」。北捷本體則安靜到近乎空白：官方新聞稿停在 9/13、誤點證明頁仍查無資料，行車已連續第六天零事故；9/14 MRT 板唯一的北捷新文是「為什麼中和新蘆線不切分成兩條」（10 推、44 則留言），連燒八天的降溫論代理戰首度熄火，高雄輕軌串停在 63 推零增長。兩項官方待辦同時到期：301 型拉環承諾的「9 月中旬完成」本週進入期限仍未回報，廣慈／奉天宮站顯示設備異常官方沉默滿 14 天。整體風向中性偏負：北捷行車零缺失，但主權爭議進入第三天且已上升到市長個人層級。",
+  metrics:[["當日則數","11"],["爭議題","2"],["當日風向","中性偏負"]],
+  items:[
+    {cat:"buzz", kind:"news", hot:true, tags:["小巨蛋廣告"],
+     t:"今日最大爭議：蔣萬安首度回應只說「北捷已清楚說明」，議員批市府不能推給委外單位",
+     p:"9 月 14 日蔣萬安赴議會接受任內最後一次總質詢，會後受訪談及小巨蛋外牆「Welcome to Chinese Taipei」應援廣告，僅表示「北捷遊憩公司已經清楚地對外說明了」，重申廣告內容並不代表臺北小巨蛋或營運單位立場，並確認該廣告已下架。民進黨台北市議員洪健益不埋單，指委外廠商未盡審核責任，市府對場館負有監督責任、不能「推給委外單位」，並強調「台灣是一個國家，不是中國的一個城市」，若市長不即時回應等於默認這樣的用語；議員張文潔則直批蔣市府甩鍋委外廠商。代理廠商已下架該素材，並承諾與委刊單位重新檢視、審核確認妥適後再播。爭議進入第三天，焦點已從廣告本身轉為市府的委外監督責任。",
+     src:"壹新聞／聯合新聞網／自由時報（9/13–9/14）", url:"https://www.nexttv.com.tw/NextTV/News/Home/Politics/2026-09-14/2466612.html"},
+    {cat:"buzz", kind:"social", hot:true, tags:["小巨蛋廣告"],
+     t:"延燒轉向市長個人：蔣萬安妻子 2017 年「I'm from Chinese Taipei」舊片被翻出重播",
+     p:"爭議進入第三天後，社群把矛頭從場館管理轉到市長家庭：蔣萬安妻子 2017 年於行政院性平工作坊影片中自我介紹「I'm from Chinese Taipei」、隨後才補上「I'm Taiwanese」的片段被大量翻出轉傳，留言酸「私下都不敢說自己是台灣人，怎麼期待自家土地上的地標敢寫台灣」。原本屬於北捷遊憩公司廣告審核流程的問題，就此升級為市長個人的國族表態爭議，也是本日誌開設以來第一次北捷相關話題完全脫離運輸範疇；另一派留言則認為責任在代理商與委刊的中國粉絲團，不該無限上綱到家屬舊片。",
+     src:"自由時報（9/14）／Threads", url:"https://news.ltn.com.tw/news/politics/breakingnews/5573545"},
+    {cat:"ops", kind:"forum", hot:false, tags:["路網規劃"],
+     t:"9/14 唯一北捷本體新文：「為什麼中和新蘆線不切分成兩條」10 推、44 則留言",
+     p:"網友 lc85301 在 MRT 板提問中和新蘆線為何不拆分為兩條獨立路線營運，累積 10 推、44 則留言，是 9/14 板上唯一與北捷直接相關的新貼文。討論集中在 Y 型路網共用中山國小—古亭段所造成的班距稀釋、蘆洲與迴龍兩端的運量落差，以及分線後的月台配置、轉乘成本與折返能力；也有人把 8 月以來板南線尖峰 2 分鐘班距上限的討論拿來對照，認為橘線的問題是「班距不均」而非運能不足。屬技術性討論，情緒平和、無負面聲量。",
+     src:"PTT MRT 板（10 推／44 則留言）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"build", kind:"forum", hot:false, tags:["捷運降溫論","軌道政見","路網規劃"],
+     t:"降溫論的反面版本進場：嘉義高鐵輕軌等 21 年一場空，張啓楷批「騙票」",
+     p:"民眾黨立委張啓楷批評嘉義高鐵聯外輕軌推動 21 年仍未動工，指民進黨與立委王美惠「明挺暗卡」、政見跳票是騙嘉義人，黃敏惠則以「情何以堪」表達不滿；9/14 相關報導被轉入 MRT 板（5 推、11 則留言）。這與 9/7 以來由張景森、李鴻源主導的「捷運蓋過頭、該踩煞車」論恰成一體兩面：中央端談財政紀律與資本效率，地方端談等了二十年還沒動工。連同 9/12 的深坑輕軌推逾 20 年遭批選舉騙票，兩週內已有三案以「等太久」為由反推降溫論。",
+     src:"中天新聞網／PTT MRT 板（5 推／11 則留言）", url:"https://ctinews.com/news/items/KwnKLRMYWY"},
+    {cat:"build", kind:"forum", hot:false, tags:["社子線","路網規劃"],
+     t:"社子天母大同線仍是北捷本體最熱：說明會串增至 51 推，延伸建議串增至 24 推",
+     p:"9/12 網友 hoyunxian 分享的「社子天母大同線路網說明會」由昨日記錄的 35 推增至 51 推，仍是北捷本體熱度最高的一串；9/13 網友 GamaBear 的「社子天母線延伸建議」亦由 9 推增至 24 推。討論集中在天母三站（雨農國小、蘭雅公園、天母棒球場旁）的站位取捨、採地下中運量的造價，以及與淡水信義線、北環段、中和新蘆線、民生汐止線的轉乘串接；也有人把降溫論的 5 項警示指標直接套到本案的預估運量上檢視。全案仍須完成可行性研究、交通部核定、都市計畫變更與環評。",
+     src:"PTT MRT 板（51／24 推）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"build", kind:"forum", hot:false, tags:["捷運降溫論","路網規劃"],
+     t:"降溫論代理戰首度熄火：高雄輕軌串停在 63 推零增長，深坑輕軌母串增至 32 推",
+     p:"9/11 開串、9/14 記錄到 63 推 770 則留言的「高雄輕軌 以結果論來說 成功了吧？」，24 小時零增長，連續八天主導 MRT 板的降溫論代理戰首度停止擴張；9/12 的深坑輕軌母串則由 29 推小幅增至 32 推、兩篇 Re: 續戰串維持在 5 推與 2 推。接棒版面的是 9/14 的五則新文，其中四則屬外縣市與機場捷運題，北捷本體僅中和新蘆線一則。自 9/7 張景森拋出 5 項警示指標以來，這是論壇第一次沒有新的降溫論貼文。",
+     src:"PTT MRT 板（63／32 推）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"ops", kind:"news", hot:false, tags:["松山新店線異常","顯示器異常"],
+     t:"行車面連續第六天全清：官方新聞稿停在 9/13，誤點證明頁仍「查無資料」",
+     p:"臺北捷運公司新聞稿頁面最新兩則仍是 9/13 的小巨蛋外牆廣告說明與板南線到站顯示器短暫異常，9/14 與 9/15 上午皆無新增稿件；與行車有關的最新一則已回推到 9/9 的松山新店線新店區公所站停靠位置異常（退行處理約 2 分 30 秒、列車已送回機廠詳查）。官方「誤點證明」頁面同步顯示查無資料——該頁僅登載 5 分鐘以上延誤並提供 7 日內下載，等於近一週北捷全路網沒有任何達到出證標準的延誤。中央社台北捷運專題最新一則亦停在 9/9。東延段通車後第 17 天無人潮管制紀錄。",
+     src:"臺北捷運公司新聞稿／誤點證明頁", url:"https://www.metro.taipei/News.aspx?n=0D6F05148E52D2FE&sms=8FF6EAB4BC08C618"},
+    {cat:"ops", kind:"forum", hot:false, tags:["拆座椅","顯示器異常","信義東延段"],
+     t:"兩項官方待辦同時到期：301 型拉環「9 月中旬完成」未回報，廣慈站顯示異常沉默滿 14 天",
+     p:"北捷 9/8 承諾淡水信義線 301 型 2 列每列增設 56 個拉環於「9 月中旬完成」，本週已進入到期區間，官方仍未回報進度；381 型 2 列每列 128 個則已完成，低拉環高度由 161 公分降至 155 公分並繫黃色織帶。另一項是 9/2 開串、一度累積 118 推 368 則留言的廣慈／奉天宮新站資訊顯示設備異常，北捷至今從未就此另發稿說明，官方沉默已滿 14 天，設備是否修復亦無公開資訊——對照板南線 9/12 同類顯示器當機隔日即發稿，落差持續擴大。拉環串則連續第五日停在 7 推、19 則留言。",
+     src:"臺北捷運公司新聞稿（9/8）／PTT MRT 板（7 推／19 則留言）", url:"https://udn.com/news/story/7266/9741696"},
+    {cat:"fare", kind:"news", hot:false, tags:["首月免費","信義東延段"],
+     t:"東延段免費期倒數 13 天：僅剩 9/19 最後一場音樂會，官方仍未公布新站運量",
+     p:"象山—廣慈／奉天宮新通車區間免費搭乘至 9 月 28 日，剩 13 天；每日上午 7 時起發放限量 500 份全家霜淇淋兌換券、乘車抽獎（捷運年票與自行車）續辦。8/30 起排定的通車音樂會僅剩 9 月 19 日下午 2 時 15 分的最後一場。官方自 8/30 通車以來始終未公布新站分站運量，免費期結束後新站的真實運量、以及淡水信義線南段班距是否被實質拉長，仍是本月最主要的待驗證項目，距驗收只剩不到兩週。",
+     src:"臺北捷運公司新聞稿", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"},
+    {cat:"buzz", kind:"forum", hot:false, tags:["防颱整備"],
+     t:"納莉 25 週年將至：北捷 16 站被淹老照片續熱，增至 9 推 32 則留言",
+     p:"9/13 網友轉貼的納莉颱風回顧在 MRT 板由 7 推增至 9 推、32 則留言。2001 年 9 月 16 至 19 日納莉颱風長時間滯留，台北市區嚴重積水，北捷共 16 座車站遭大水灌入、花費約三個月才全面復原，當年的「捷運水上樂園」照片再度被翻出。9 月 17 日即將屆滿 25 週年，討論延伸到現行車站出入口防水閘門、抽水設備與捷運防汛 SOP 是否足以應付更極端的降雨。屬季節性回顧題，情緒平和，但在颱風季尾聲具實質提醒意義。",
+     src:"PTT MRT 板（9 推／32 則留言）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"build", kind:"news", hot:false, tags:["軌道政見","路網規劃"],
+     t:"外溢題補版面：鐵道局現地會勘桃園捷運青線，機捷 9/21 起平日傍晚加開 1 班往機場",
+     p:"9/14 進入 MRT 板的兩則外縣市題：鐵道局赴桃園現地會勘捷運青線計畫，強調中央地方攜手加速桃園軌道建設（1 推）；桃園機場捷運宣布 9 月 21 日起平日傍晚加開 1 班往機場方向列車，盼紓緩返程尖峰（2 推）。另有「香港人搭高捷逃票喊愛台灣竟公審站務員」一則（9 推、11 則留言）。三則推文數都不高，但顯示北捷本體沉寂時，論壇版面持續由外縣市與機捷的進度題填補；9/15 上午板上唯一新文則是台南亞太棒球場的捷運黃線定線問題。",
+     src:"PTT MRT 板（9／2／1 推）", url:"https://www.pttweb.cc/bbs/MRT"}
+  ]
+},
+{
+  date:"2026-09-14", wd:"週一",
+  summary:"臺北小巨蛋外牆連播三天「Welcome to Chinese Taipei」，把北捷推進主權爭議，是本期第一次負面聲量落在營運以外的資產管理上。南韓女團 IVE 9 月 11 至 13 日於臺北小巨蛋開唱期間，中國粉絲團為成員張員瑛慶生投放的應援廣告在外牆 LED 播出，每小時至少 6 次、每次 15 秒，自上午 7 時至晚間 10 時連播三日，經網友「jess.susu」在 Threads 揭露後炸鍋，留言批「國際賽被迫用就算了，在自己國家自願用很可悲」「我們的台北被蔣市長變成中國城市」。北捷遊憩公司 9/13 發稿說明外牆由專業廠商代理經營，廣告承接、內容審核與排播均由代理商負責，內容不代表小巨蛋或營運單位立場，發現後已立即停播、將強化事前審核；代理廠商同步下架並稱重新審核確認妥適後再播。營運面另有一則對照組：板南線 9/12 晚間 9 時許一列往南港展覽館方向列車因通訊設備當機，車門上方到站顯示器停留在善導寺站，行車專員先廣播報站再重置，未造成延誤——北捷隔日即主動發稿，與廣慈／奉天宮站顯示異常至今沉默滿 13 天形成明顯落差。選舉端則是李四川貼文稱「三鶯線通車在即」被卓冠廷抓包「通車典禮你自己都去了」，競辦承認小編用字不精準已虛心修正，並反過來要求追回遭刪減的補助。論壇的主角仍是降溫論的代理戰：「高雄輕軌以結果論來說成功了吧？」單串暴衝至 63 推、770 則留言，是本日誌開設以來最熱的一串。整體風向中性偏負：北捷行車零事故，但主權廣告與政治口誤同時佔據版面。",
+  metrics:[["當日則數","11"],["爭議題","3"],["當日風向","中性偏負"]],
+  items:[
+    {cat:"buzz", kind:"news", hot:true, tags:["小巨蛋廣告"],
+     t:"今日最大爭議：小巨蛋外牆播「Chinese Taipei」三天、1 小時 6 次，北捷遊憩急下架",
+     p:"南韓女團 IVE 於 9 月 11 至 13 日在臺北小巨蛋開唱，期間外牆 LED 播出中國粉絲團為成員張員瑛慶生投放的應援廣告，畫面出現紅底深色字的「Welcome to Chinese Taipei（歡迎來到中華台北）」，每小時至少播出 6 次、每次約 15 秒，自上午 7 時至晚間 10 時連播三天。北捷遊憩公司 9/13 發布新聞稿說明：外牆螢幕由專業廠商代理經營，依合約廣告承接、內容審核及排播均由代理廠商負責，素材由委刊單位提供，相關內容「不代表臺北小巨蛋或營運單位立場」，發現後已立即停止播放並將強化事前審核機制；代理廠商亦主動說明並先行下架，後續將與委刊單位檢視內容、重新審核確認妥適後再播。臺北小巨蛋由北捷轉投資的北捷遊憩公司營運，這是本日誌開設以來第一次負面聲量落在北捷的非軌道資產上。",
+     src:"自由時報／聯合新聞網／臺北捷運公司新聞稿（9/13）", url:"https://news.ltn.com.tw/news/Taipei/breakingnews/5572915"},
+    {cat:"buzz", kind:"social", hot:true, tags:["小巨蛋廣告"],
+     t:"社群火力集中在市府監督責任：「我們的台北被蔣市長變成中國城市」",
+     p:"事件由網友「jess.susu」在 Threads 貼出外牆畫面後引爆，短時間內大量轉發與截圖，留言批評分兩路：一是主權用語本身，「國際賽事被迫用這個名稱就算了，在自己的國家自願用很可悲」；二是直指市府與場館管理責任，「我們的台北被蔣市長變成中國城市」「這種東西是怎麼過審的」。也有留言主張責任在代理商與委刊的中國粉絲團、不該無限上綱。與 8 月「拆座椅遭影射軍事用途」時北捷強硬駁斥造謠的處理相比，這次官方以「代理商負責、不代表立場」定調，被部分網友認為切割過快。",
+     src:"Threads／自由時報、壹蘋新聞網彙整", url:"https://news.ltn.com.tw/news/Taipei/breakingnews/5572588"},
+    {cat:"ops", kind:"news", hot:false, tags:["顯示器異常"],
+     t:"對照組出現：板南線顯示器 9/12 夜間當機停在善導寺站，北捷隔日主動發稿",
+     p:"北捷 9/13 發布新聞稿說明，9 月 12 日晚間 9 時許一列往南港展覽館方向的板南線列車，因通訊設備當機導致車門上方的到站資訊顯示器停留於善導寺站畫面，行車專員依標準程序先以車內廣播向旅客說明站名，隨後重置顯示器、系統恢復正常，未造成列車延誤。事件本身輕微、社群幾乎無討論，值得記的是官方節奏：同屬顯示設備異常，板南線一案隔日即主動說明，廣慈／奉天宮新站自 9/2 起的顯示異常卻至今未見任何專稿，官方沉默已滿 13 天。",
+     src:"臺北捷運公司新聞稿（9/13）／好視新聞網", url:"https://newsday.tw/news/567571"},
+    {cat:"build", kind:"news", hot:true, tags:["軌道政見","三鶯線","捷運預算"],
+     t:"李四川貼文稱「三鶯線通車在即」被抓包，競辦：小編用字不精準已虛心修正",
+     p:"國民黨新北市長參選人李四川發文提及「三鶯線通車在即」，隨即遭民進黨新北市議員卓冠廷抓包：三鶯線 6 月 30 日就已通車，「通車典禮你自己都去了，現在還在『通車在即』？」另有綠營人士酸「若選上會記得自己開過的支票嗎」。李四川競辦發言人郭昭嵐回應，團隊小編對文字不精準之處已虛心修正，並將焦點轉回預算，要求追回遭刪減的軌道補助 6 億元；卓冠廷則回酸「地方大事記不清，跟我敬酒卻心心念念」。此事把 9/6 以來的補助減列爭議與選戰語言問題綁在一起，是 9/13 MRT 板的新文之一（6 推、19 則留言）。",
+     src:"自由時報（9/13）／PTT MRT 板（6 推／19 則留言）", url:"https://news.ltn.com.tw/news/politics/breakingnews/5572602"},
+    {cat:"build", kind:"forum", hot:true, tags:["捷運降溫論","路網規劃"],
+     t:"論壇紀錄刷新：「高雄輕軌成功了吧？」單串暴衝至 63 推、770 則留言",
+     p:"9/11 開串時僅 1 推的「高雄輕軌 以結果論來說 成功了吧？」，兩日內衝上 63 推、770 則留言，遠超 9/7 張景森母串的 287 則，成為本日誌開設以來熱度最高的單串。討論實質是降溫論的代理戰：支持方以高雄輕軌成環後的運量成長與沿線街廓改造，回應張景森、李鴻源對資本效率與運量跳票的質疑；反對方則以每公里造價、補助依賴與「成環才有感」的時間成本反擊。連續八天，MRT 板的主軸都是「該不該繼續蓋、用哪套數字算」，北捷本體再度不是主角。",
+     src:"PTT MRT 板（63 推／770 則留言）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"build", kind:"forum", hot:false, tags:["社子線","路網規劃"],
+     t:"社子天母大同線續熱：說明會串增至 35 推 148 則留言，9/13 再長出延伸建議新串",
+     p:"9/12 網友 hoyunxian 分享的「社子天母大同線路網說明會」由昨日記錄的 15 推 55 則留言，一日內增至 35 推、148 則留言，是目前北捷本體熱度最高的一串；9/13 另有網友 GamaBear 開「社子天母線延伸建議」新串（9 推、17 則留言）接力。討論集中在天母三站（雨農國小、蘭雅公園、天母棒球場旁）的站位取捨、採地下中運量的造價，以及與淡水信義線、北環段、中和新蘆線、民生汐止線的轉乘串接；也有人把降溫論的 5 項警示指標直接套到本案的預估運量上檢視。全案仍須完成可行性研究、交通部核定、都市計畫變更與環評。",
+     src:"PTT MRT 板（35 推／148 則留言；延伸串 9 推）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"build", kind:"forum", hot:false, tags:["軌道政見","路網規劃"],
+     t:"深坑輕軌三串續增：母串 29 推 72 則留言，兩篇 Re: 合計再添 45 則",
+     p:"9/12 的「等了 20 年 深坑輕軌待政院核定」母串由昨日的 16 推 36 則留言增至 29 推、72 則留言，兩篇 Re: 續戰串分別為 5 推 34 則與 2 推 11 則留言，三串合計 117 則留言。討論仍聚焦全案 5.81 公里、5 站、202.71 億元、工期 7 年的成本效益，以及動物園站北側至北深路這段的需求強度；侯友宜先前回應機廠與路線分歧已收斂、已報交通部並回覆行政院。",
+     src:"PTT MRT 板（29／5／2 推）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"buzz", kind:"forum", hot:false, tags:["防颱整備"],
+     t:"納莉 25 週年前夕舊事重提：「北捷 16 站被淹沒」老照片回流論壇",
+     p:"9/13 網友轉貼的納莉颱風回顧在 MRT 板累積 7 推、32 則留言。2001 年 9 月 16 至 19 日納莉颱風長時間滯留，台北市區嚴重積水，北捷共 16 座車站遭大水灌入、花費約三個月才全面復原，當年的「捷運水上樂園」照片再度被翻出，不少年輕網友留言「第一次看到」。9 月 17 日將滿 25 週年，討論延伸到現行車站出入口防水閘門、抽水設備與捷運防汛 SOP 是否足以應付更極端的降雨，屬季節性的回顧型話題，情緒平和。",
+     src:"PTT MRT 板（7 推／32 則留言）／NOWnews、知新聞", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"ops", kind:"news", hot:false, tags:["松山新店線異常","信義東延段"],
+     t:"行車面連續第五天全清：誤點證明頁「查無資料」，近 7 日無 5 分鐘以上延誤",
+     p:"官方「誤點證明」頁面 9/14 上午仍顯示查無資料——該頁僅登載 5 分鐘以上延誤並提供 7 日內下載，等於近一週北捷全路網沒有任何達到出證標準的延誤。與行車有關的最新一則說明仍是 9/9 的松山新店線新店區公所站停靠位置異常（退行處理約 2 分 30 秒、列車已送回機廠詳查），中央社台北捷運專題最新一則亦停在 9/9。東延段通車後第 16 天無人潮管制紀錄，北捷行車本體已連續五天零事故。",
+     src:"臺北捷運公司誤點證明頁／中央社台北捷運專題", url:"https://www.metro.taipei/News.aspx?n=0D6F05148E52D2FE&sms=8FF6EAB4BC08C618"},
+    {cat:"fare", kind:"news", hot:false, tags:["首月免費","信義東延段"],
+     t:"東延段免費期倒數 14 天：僅剩 9/19 最後一場音樂會，官方仍未公布新站運量",
+     p:"象山—廣慈／奉天宮新通車區間免費搭乘至 9 月 28 日，剩兩週整；每日上午 7 時起發放限量 500 份全家霜淇淋兌換券、乘車抽獎（捷運年票與自行車）續辦。8/30 起排定的通車音樂會僅剩 9 月 19 日下午 2 時 15 分的最後一場。官方自 8/30 通車以來始終未公布新站分站運量，免費期結束後新站的真實運量、以及淡水信義線南段班距是否被實質拉長，仍是本月最主要的待驗證項目，距驗收只剩兩週。",
+     src:"臺北捷運公司新聞稿", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"},
+    {cat:"ops", kind:"forum", hot:false, tags:["拆座椅","顯示器異常"],
+     t:"拉環串連四日零增長，301 型「9 月中旬完成」本週到期、官方仍未回報",
+     p:"9/10 轉貼的「北捷淡水信義線 優化車廂增拉環」連續第四日停在 7 推、19 則留言，零增長；對照 8/26「拆柱子又裝扶手」的 32 推 165 則留言，論壇對硬體補救的興趣仍只有爭議本身的一成。北捷 9/8 承諾淡水信義線 301 型 2 列每列增設 56 個拉環於「9 月中旬完成」，本週已進入到期區間，官方尚未回報進度；381 型 2 列每列 128 個則已完成，低拉環高度由 161 公分降至 155 公分並繫黃色織帶。嬰兒車停放區與長者座位需求仍無具體答覆。",
+     src:"PTT MRT 板（7 推／19 則留言）／臺北捷運公司新聞稿（9/8）", url:"https://www.pttweb.cc/bbs/MRT"}
+  ]
+},
+{
+  date:"2026-09-13", wd:"週日",
+  summary:"北捷本體沉寂五天後，終於由社子天母大同線的路網說明會重新回到論壇版面。9/12 網友分享的說明會內容累積 15 推、55 則留言，是 9/8 以來 MRT 板第一則與北捷直接相關的新文；背景是市府因北投士林科技園區開發，將原社子輕軌升級為中運量的「士林大同線」，路網呈 Y 字型串連社子、北士科、天母、關渡與大龍峒，天母段規劃雨農國小、蘭雅公園、天母棒球場旁三站並採地下中運量，優先推動北士科—芝山段。今日最大爭議則是選戰與預算合流：交通部長陳世凱 9/12 赴新北出席議員參選人後援會茶會，當場向支持者保證「中央補助新北市的軌道建設一毛都不會少，全力支持」，直接對上 9/6 以來新北主張三鶯線、基捷、淡海輕軌合計遭減列 54.1 億元的指控。論壇端則必須修正昨日的判斷——降溫論沒有退場，而是換了殼繼續燒：9/11 的「高雄輕軌以結果論來說成功了吧？」單串由開串時的 1 推暴增至 55 推、221 則留言，成為近一週熱度最高的一串，張景森續戰串亦小幅回溫至 12 推 62 則留言。北捷營運連續第四天全清：官方新聞稿停在 9/11 的敬師月優惠，誤點證明頁維持「查無資料」。整體風向中性：北捷零事故、零負評，火力仍全在路網規劃與預算分配。",
+  metrics:[["當日則數","10"],["爭議題","2"],["當日風向","中性"]],
+  items:[
+    {cat:"build", kind:"forum", hot:false, tags:["社子線","路網規劃"],
+     t:"北捷本體五天來首見新文：社子天母大同線路網說明會分享串 15 推 55 則留言",
+     p:"9/12 網友 hoyunxian 在 MRT 板分享「社子天母大同線路網說明會」內容，累積 15 推、55 則留言，是 9/8 以來板上第一則與北捷直接相關的新貼文，也是今日熱度最高的北捷本體題。背景為北市府因應北投士林科技園區開發（交通局預估該區日均交通量約 10.5 萬人次、承德路七段與大度路已出現壅塞），將原「社子輕軌」升級為中運量捷運並更名為士林大同線：路網呈 Y 字型，串連社子島、北士科、天母、關渡、葫蘆堵與大龍峒，天母段規劃雨農國小、蘭雅公園、天母棒球場旁三站、採地下中運量，機廠預計設於士林監理站，優先推動北士科—芝山段。留言集中在站位取捨、與淡水信義線及北環段的轉乘效率，以及「評估到動工還有多久」的老問題——全案仍須完成可行性研究、交通部核定、都市計畫變更與環評。",
+     src:"PTT MRT 板（15 推／55 則留言）／風傳媒、公視新聞", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"build", kind:"news", hot:true, tags:["捷運預算","軌道政見","路網規劃"],
+     t:"今日最大爭議：陳世凱赴新北喊「軌道建設補助一毛都不會少」，選戰與預算爭議正式合流",
+     p:"交通部長陳世凱 9/12 與民進黨新北市長參選人蘇巧慧同台，出席議員參選人張志豪的後援會成立茶會，當場向與會支持者保證「中央補助新北市的軌道建設一毛都不會少，全力支持」，並表示會協助振興興南夜市。這番話直接對上 9/6 以來的爭議：新北主張三鶯線遭刪 5.79 億、基隆捷運新北轄段遭刪近 47 億、淡海輕軌二期補助全數掛零，三案合計減列 54.1 億元。中央部會首長在選舉場合對補助金額作出無條件承諾，使原本停留在數字與進度的預算攻防，正式與年底選戰綁在一起；留言兩極，一派要求把承諾寫進明年度預算書，一派批評選前加碼、選後縮水的老劇本。",
+     src:"聯合新聞網（9/12）", url:"https://udn.com/news/story/124652/9750638"},
+    {cat:"build", kind:"forum", hot:true, tags:["捷運降溫論","路網規劃"],
+     t:"修正昨日判斷：降溫論沒有退場而是換殼，「高雄輕軌成功了吧」單串暴增至 55 推 221 則留言",
+     p:"9/11 網友 nyybos8812 開的「高雄輕軌 以結果論來說 成功了吧？」在擷取當時僅 1 推，經一日已暴增至 55 推、221 則留言，成為近一週熱度最高的單串，也推翻了 9/12 記錄的「降溫論首度停止擴張」。討論實質是同一場辯論的反向論證：支持方以高雄輕軌成環後的運量成長與沿線街廓改造回應張景森、李鴻源的資本效率質疑，反對方則重提每公里造價與補助依賴。同日 9/10 的張景森續戰串也由 10 推 56 則留言回溫至 12 推、62 則留言。這組政策辯論至今已連續七天主導 MRT 板。",
+     src:"PTT MRT 板（55 推／221 則留言）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"build", kind:"forum", hot:false, tags:["軌道政見","路網規劃"],
+     t:"深坑輕軌一天長出三串：母串增至 16 推 36 則留言，兩篇 Re: 續戰再添 44 則",
+     p:"9/12 由網友 godofsex 轉貼的「等了 20 年 深坑輕軌待政院核定」母串，由昨日記錄的 4 推增至 16 推、36 則留言，同日另有兩篇 Re: 續戰串（nick0605 的 4 推 33 則留言、yankbarca 的 2 推 11 則留言）。三串合計 55 則留言，是本期少見的單日多串現象。討論聚焦全案 5.81 公里、5 站、202.71 億元、工期 7 年的成本效益，以及「動物園站北側到北深路」這段需求是否撐得起中運量以外的系統，與降溫論的 5 項警示指標被網友直接套用比對。",
+     src:"PTT MRT 板（16／4／2 推）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"ops", kind:"news", hot:false, tags:["站務人力"],
+     t:"新北捷運站務員兼超商店員遭批壓榨：服務台貼出「人手不足，洽全家服務台」",
+     p:"民進黨新北市議員張維倩在議會質詢指出，新北捷運公司近年雖由虧轉盈，但多元經營不應犧牲核心服務：她發現與全家合作的十四張站概念店內，有穿著制服的站務人員在店裡協助結帳，車站服務台甚至貼出「因人手不足，有事情洽全家便利商店服務台」的告示，直言「站務人力還要兼超商店員，根本是壓榨員工」，強調捷運營運首要任務應是行車安全與旅客服務；她另質疑推動 5、6 年的魚菜共生計畫成效不明，市府無法說明營養便當銷售數字。侯友宜回應多元經營是為提升資產效益，但「捷運營運最重要的仍是安全穩定，人力調配必須以安全為前提」，捷運局則稱便利商店有助員工技能訓練、營收表現不錯。這是繼三鶯線「扣兩次錢」之後，新北端第二則指向旅客服務品質的批評。",
+     src:"聯合新聞網（9/10）", url:"https://udn.com/news/story/7323/9744497"},
+    {cat:"ops", kind:"news", hot:false, tags:["松山新店線異常","信義東延段"],
+     t:"營運面連四日全清：官方新聞稿停在 9/11，誤點證明頁仍「查無資料」",
+     p:"臺北捷運公司新聞稿頁面最新一則仍為 9/11 的敬師月優惠，9/12 與 9/13 上午皆無新增稿件；與營運有關的最新一則已回推到 9/9 的松山新店線新店區公所站停靠位置異常說明（退行處理約 2 分 30 秒、列車已送回機廠詳查）。官方「誤點證明」頁面同步顯示查無資料——該頁僅登載 5 分鐘以上延誤並提供 7 日內下載，等於近一週北捷全路網沒有任何達到出證標準的延誤。東延段通車後第 15 天亦無人潮管制紀錄，北捷本體已連續四天零事故、零負面，是本日誌開設以來最長的一段平靜期。",
+     src:"臺北捷運公司新聞稿／誤點證明頁", url:"https://www.metro.taipei/News.aspx?n=0D6F05148E52D2FE&sms=8FF6EAB4BC08C618"},
+    {cat:"fare", kind:"news", hot:false, tags:["首月免費","信義東延段"],
+     t:"東延段免費期倒數 15 天：最後一場通車音樂會落在 9/19，霜淇淋與抽獎續辦",
+     p:"象山—廣慈／奉天宮新通車區間免費搭乘至 9 月 28 日，剩餘兩週；每日上午 7 時起發放限量 500 份全家霜淇淋兌換券、乘車抽獎（捷運年票與自行車）同步續辦。8/30 起共安排的通車音樂會在 9/12 演出倒數第二場後，僅剩 9 月 19 日下午 2 時 15 分的最後一場。官方自 8/30 通車以來始終未公布新站的分站運量統計，免費期結束後新站的真實運量、以及淡水信義線南段班距是否被實質拉長，仍是本月最主要的待驗證項目——距離驗收只剩半個月。",
+     src:"臺北捷運公司新聞稿", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"},
+    {cat:"ops", kind:"forum", hot:false, tags:["拆座椅","顯示器異常","信義東延段"],
+     t:"兩串北捷本體舊題續凍：拉環串連三日停在 7 推 19 則留言，顯示當機串官方沉默滿 12 天",
+     p:"9/10 轉貼的「北捷淡水信義線 優化車廂增拉環」連續第三日停在 7 推、19 則留言，零增長；對照 8/26「拆柱子又裝扶手」的 32 推 165 則留言，論壇對硬體補救的興趣仍只有爭議本身的一成。9/2 開串、一度累積 118 推 368 則留言的廣慈／奉天宮新站資訊顯示設備異常討論，同樣不在前 25 則之列；北捷自 9/2 至今從未就此另發稿說明，官方沉默已滿 12 天，設備是否修復亦無公開資訊。301 型 2 列「9 月中旬完成」增設 56 個拉環的時程，本週進入到期日，官方尚未回報進度。",
+     src:"PTT MRT 板（7 推／19 則留言）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"buzz", kind:"news", hot:false, tags:["親子活動","敬師優惠"],
+     t:"軟性聲量續辦：親子電影院第二場 9/19 移師大安森林公園站，敬師月優惠至 9/30",
+     p:"北捷「2026 假日親子電影院」9/12 大湖公園場結束後，第二場移師捷運大安森林公園站陽光大廳，9 月 19 日下午 3 時魔術開場後放映《哆啦A夢：大雄的繪畫世界物語》，國小以下孩童可領限量貼紙、捷運會員每場限領 1 份立體掛圖。同期進行的還有敬師月（至 9/30，北市教師本人加親友共 4 人免費入園兒童新樂園，9/13、9/19、9/20 等假日再送每人 4 項設施免費券）與敬軍優惠（至 12/31）。兩波族群定向優惠社群反應正面但聲量不高，留言多在確認資格與兌換方式。",
+     src:"臺北捷運公司新聞稿（9/10、9/11）／聯合新聞網", url:"https://udn.com/news/story/7323/9748896"},
+    {cat:"build", kind:"forum", hot:false, tags:["路網規劃"],
+     t:"外縣市題仍占多數：安坑輕軌秀朗橋設站增至 21 推 61 則留言，高捷 8 月運量情報 12 推",
+     p:"論壇前排仍由外縣市軌道話題撐起：9/10「安坑輕軌維持秀朗橋設站是不是比較好？」由 15 推 41 則留言增至 21 推、61 則留言；9/11「高雄捷運 115 年 8 月運量」情報由 7 推增至 12 推 17 則留言；「捷運三鶯線有不容忽視的亮點」分享串則維持在 3 推 5 則留言的低檔；9/11 的中捷藍線 999 億缺口串停在 33 推。北捷本體除社子線新文外，站名冗長與路網圖兩串仍完全停滯。",
+     src:"PTT MRT 板（21／12／3 推）", url:"https://www.pttweb.cc/bbs/MRT"}
+  ]
+},
+{
+  date:"2026-09-12", wd:"週六",
+  summary:"「捷運六線齊發」的地面代價首度被量化：北市 34 條幹道行車速率連年下滑，上班尖峰由 2019 年的每小時 32.7 公里掉到今年的 21.6 公里。交通局統計下班尖峰更由 30.4 公里降到 18.4 公里、跌幅近四成，10 公里的通勤路程約多花 10 至 13 分鐘；交工處長張建華點名「除捷運動工，還因推停讓行人政策」，蔣萬安坦承正處施工高峰期，議員李明賢則反駁全市車輛數維持在 170 多萬輛、變塞並非車變多。這是降溫論延燒六天後，第一次有本地數據把「蓋捷運」的成本直接算到通勤族頭上。路網端另一則爭議來自新北：深坑輕軌推動逾 20 年仍未動工，議員陳永福指地方「談到輕軌就罵」、質疑淪為選舉騙票，侯友宜回應機廠與路線分歧已收斂、已報交通部並回覆行政院，全案 5.81 公里、5 站、202.71 億元、工期 7 年，也是 9/12 上午 MRT 板唯一新文。北捷本體連續第三天零事故：誤點證明頁仍「查無資料」、近 7 日無 5 分鐘以上延誤，官方最新兩則稿件都是活動——今日大湖公園的假日親子電影院，以及敬師月教師本人加親友共 4 人免費入園。整體風向中性：北捷零負評，火力落在施工的外部成本與輕軌跳票。",
+  metrics:[["當日則數","9"],["爭議題","2"],["當日風向","中性"]],
+  items:[
+    {cat:"build", kind:"news", hot:true, tags:["施工黑暗期","路網規劃","捷運預算"],
+     t:"今日最大爭議：北市 34 條幹道連年變慢，交通局點名捷運施工，上班尖峰時速掉到 21.6 公里",
+     p:"台北市交通局統計顯示，全市 34 條幹道行車速率逐年下降：上班尖峰由 2019 年的每小時 32.7 公里降至今年的 21.6 公里、跌幅約 33%，下班尖峰由 30.4 公里降至 18.4 公里、跌幅約 39%，換算 10 公里的通勤路程約多耗 10 至 13 分鐘。交通工程處長張建華說明主因是「除捷運動工，還因推停讓行人政策」，路口停等時間拉長；蔣萬安補充目前「捷運六線齊發」正處施工高峰期。議員李明賢質疑全市車輛總數仍維持在 170 多萬輛左右，速率下降並非交通量增加所致，要求市府交代施工期的交通衝擊評估；市府回應將以科技優化路口秒數，但強調「安全與速度取捨，一定先確保安全」。這是連燒六天的降溫論之後，第一次有本地數據把「蓋捷運」的外部成本直接算到通勤族頭上。",
+     src:"聯合新聞網（9/10）／自由時報（9/9）", url:"https://udn.com/news/story/7323/9744954"},
+    {cat:"build", kind:"news", hot:true, tags:["軌道政見","路網規劃","捷運預算"],
+     t:"深坑輕軌推逾 20 年遭批「選舉騙票」，侯友宜：路線意見已收斂、待行政院核定",
+     p:"民進黨議員陳永福在新北市議會質詢指出，深坑輕軌推動超過 20 年至今未見動工，地方民眾「現在談到輕軌就罵」，質疑一再淪為選舉承諾。侯友宜回應，本案曾因機廠搬遷與路線配置產生分歧而延宕，目前相關意見已整合完畢，已報交通部並回覆行政院，「只要行政院審核核定後就沒有問題」。全案規劃長度 5.81 公里、5 座車站、經費 202.71 億元、預計工期 7 年，起點為捷運動物園站北側、終點至北深路。這是繼 9/11 綠營議員張維倩要市府自我檢討、侯友宜承諾淡海輕軌二期最遲明年開工之後，新北軌道政見連兩天被同陣營議員盯上。",
+     src:"自由時報（9/10–9/11）", url:"https://news.ltn.com.tw/news/life/breakingnews/5569196"},
+    {cat:"buzz", kind:"news", hot:false, tags:["親子活動"],
+     t:"北捷本體今日唯一動態：「2026 假日親子電影院」大湖公園場登場，壓軸放映《鞋貓劍客 2》",
+     p:"北捷 9/10 發布的活動今日開跑：上午 10 時起臺北市立圖書館「城市書森」行動書車進駐大湖公園提供親子共讀，下午 2 時起有彩繪列車 10 週年特展、客家文化闖關與 DIY 手作，3 時起安排客語故事表演、角色見面會與 YOYO 家族歌舞，壓軸放映《鞋貓劍客 2》；9 月 19 日第二場移師捷運大安森林公園站陽光大廳，3 時魔術開場後放映《哆啦A夢：大雄的繪畫世界物語》。國小以下孩童可領限量貼紙、捷運會員每場限領 1 份立體掛圖。屬純正面的軟性聲量，社群多為行程分享與停車、交通詢問。",
+     src:"聯合新聞網（9/10）／好視新聞網", url:"https://udn.com/news/story/7323/9748896"},
+    {cat:"buzz", kind:"news", hot:false, tags:["敬師優惠"],
+     t:"官方 9/11 新稿：敬師月至 9/30，北市教師本人＋親友共 4 人免費入園兒童新樂園",
+     p:"北捷育樂公司響應北市教育局「115 年度敬師月活動」，即日起至 9 月 30 日，臺北市中小學、幼兒園及大專院校教師持有效教師證或學校識別證，可享本人加親友 3 人、共 4 人免費入園臺北市立兒童新樂園；9 月 5、6、12、13、19、20、25、26、27、28 日等假日再加碼每人贈 4 項設施免費遊樂券。這是繼 9/8 敬軍優惠（軍人、替代役與軍眷免費搭貓纜、玩兒童新樂園）之後，北捷育樂一個月內第二波族群定向優惠，社群反應正面但聲量不高，留言多在確認資格與兌換方式。",
+     src:"臺北捷運公司新聞稿（9/11）／好視新聞網", url:"https://newsday.tw/news/566648"},
+    {cat:"ops", kind:"news", hot:false, tags:["松山新店線異常","信義東延段"],
+     t:"營運面連三日全清：官方稿件只剩活動題，誤點證明頁仍「查無資料」",
+     p:"臺北捷運公司新聞稿頁面 9/10 與 9/11 各發一則，內容分別是假日親子電影院與敬師月優惠，皆非營運題；與營運有關的最新一則仍停在 9/9 的松山新店線新店區公所站停靠位置異常說明（退行處理約 2 分 30 秒、列車已送回機廠詳查）。官方「誤點證明」頁面同步顯示查無資料——該頁僅登載 5 分鐘以上延誤並提供 7 日內下載，等於近一週北捷全路網沒有任何達到出證標準的延誤。中央社台北捷運專題最新一則亦停在 9/9。東延段通車後第 14 天無人潮管制紀錄，北捷本體已連續三天零事故、零負面。",
+     src:"臺北捷運公司新聞稿／誤點證明頁", url:"https://www.metro.taipei/News.aspx?n=0D6F05148E52D2FE&sms=8FF6EAB4BC08C618"},
+    {cat:"fare", kind:"news", hot:false, tags:["首月免費","信義東延段"],
+     t:"東延段免費期倒數 16 天：今日 14 時 15 分倒數第二場通車音樂會，霜淇淋與抽獎續至 9/28",
+     p:"象山—廣慈／奉天宮新通車區間免費搭乘至 9 月 28 日，僅剩兩週多；每日上午 7 時起發放限量 500 份全家霜淇淋兌換券、乘車抽獎（捷運年票與自行車）同步續辦。通車音樂會今日下午 2 時 15 分於車站公共藝術區演出，為倒數第二場，最後一場落在 9 月 19 日。官方自 8/30 通車以來仍未公布新站的分站運量統計，免費期結束後新站的真實運量、以及淡水信義線南段班距是否被實質拉長，仍是本月最主要的待驗證項目。",
+     src:"臺北捷運公司新聞稿", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"},
+    {cat:"build", kind:"forum", hot:false, tags:["路網規劃","軌道政見","捷運預算"],
+     t:"論壇北捷本體連續第 5 天零新文：9/11 五則新文全為外縣市題，9/12 只有深坑輕軌",
+     p:"MRT 板 9/11 全日五則新文全數與北捷無關——「高雄輕軌以結果論來說成功了吧？」（1 推）、「高雄捷運 115 年 8 月運量」情報（7 推）、高雄輕軌喔熊觀光號、三鶯線亮點分享，加上熱度最高的中捷藍線 999 億缺口串（經一日由擷取時的 0 推增至 33 推）；9/12 上午則僅有「等了 20 年 深坑輕軌待政院核定」一則新文（4 推）。北捷本體自 9/8 起已連續五天沒有任何新開的討論串，是本期紀錄。",
+     src:"PTT MRT 板（33／7／4／1 推）", url:"https://www.ptt.cc/bbs/MRT/index.html"},
+    {cat:"build", kind:"forum", hot:false, tags:["捷運降溫論","捷運預算"],
+     t:"降溫論首度停止擴張：三串留言數 24 小時零增長，連六天的主導題退場",
+     p:"9/7 張景森「5 項指標」母串留言停在 287 則、9/8 李鴻源母串 32 推 165 則留言、9/9 的 Re: 續戰串 12 推 47 則留言，9/10 的張景森續戰串 10 推 56 則留言——四串在 9/11 至 9/12 之間全數零增長，板上亦未再出現新的降溫論貼文。連續六天主導 MRT 板的「該不該繼續蓋」政策辯論，首度停止擴張；接棒的是同一組質疑的在地版本，也就是今日的幹道速率與深坑輕軌兩題。",
+     src:"PTT MRT 板（287／165／56／47 則留言，皆未增長）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"ops", kind:"forum", hot:false, tags:["拆座椅","顯示器異常","信義東延段"],
+     t:"兩串北捷本體舊題同步凍結：拉環串停在 7 推 19 則留言，顯示當機串官方沉默滿 11 天",
+     p:"9/10 轉貼的「北捷淡水信義線 優化車廂增拉環」經過兩日仍停在 7 推、19 則留言，24 小時零增長，印證論壇對硬體補救的興趣遠低於對決策順序的質疑（對照 8/26「拆柱子又裝扶手」的 32 推 165 則留言）。9/2 開串、一度累積 118 推 368 則留言的廣慈／奉天宮新站資訊顯示設備異常討論，仍不在前 20 則之列；北捷自 9/2 至今從未就此另發稿說明，官方沉默已滿 11 天，設備是否修復亦無公開資訊。",
+     src:"PTT MRT 板（7 推／19 則留言）", url:"https://www.pttweb.cc/bbs/MRT"}
+  ]
+},
+{
+  date:"2026-09-11", wd:"週五",
+  summary:"捷運降溫論從「該不該蓋」進入「用哪一套數字算」，張景森 9/10 搬出三條路線的運量落差再開一槍。他點名高雄捷運紅橘線建設經費 1,840 億元、原規劃 2036 年日運量 82.5 萬人次，2025 年實際僅約 19.3 萬、約四分之一；台中捷運綠線 593 億元、2024 年日均 9 萬人次，低於通車前預期的 16.5 萬；桃園機場捷運 1,138 億元、通車初期亦明顯不足，並強調評估捷運不能只看「車廂人潮」或「公司盈餘」，而要做完整成本效益與全生命週期財務分析——正是對 9/10 網友搬財報反駁的回擊。預算戰場同日再添兩處：中捷藍線 999 億元缺口未編入總預算、盧市府卸任前才送修正計畫，被議員批爛攤子「丟包」新市長，是 9/11 論壇唯一新文；新北端則首度出現綠營議員張維倩要市府「先檢討自己的計畫、不能永遠都是別人的錯」，侯友宜承諾淡海輕軌二期最遲明年開工。北捷本體連續第二天零負面：官方新聞稿停在 9/9 松山新店線一案，誤點證明頁查無資料、近 7 日無 5 分鐘以上延誤；拉環串熱度小幅回升至 7 推 19 則留言，廣慈站顯示當機串則已跌出前排、官方沉默滿 10 天。整體風向中性：北捷零事故零爭議，火力全在路線層級的數字攻防。",
+  metrics:[["當日則數","9"],["爭議題","2"],["當日風向","中性"]],
+  items:[
+    {cat:"build", kind:"news", hot:true, tags:["捷運降溫論","路網規劃","捷運預算"],
+     t:"今日最大爭議：張景森再開一槍，改用三條路線的「預估 vs 實際運量」反擊財報說",
+     p:"在 9/10 網友搬出五家捷運公司 2025 年財報反駁後，張景森同日再度發文，把戰場從損益表拉回運量預測：高雄捷運紅橘線建設經費 1,840 億元、原規劃 2036 年日運量 82.5 萬人次，2025 年實際約 19.3 萬人次、僅約四分之一；台中捷運綠線 593 億元、2024 年平均日運量 9 萬人次，遠低於通車前預期的 16.5 萬；桃園機場捷運 1,138 億元、原規劃日運量 16.5 萬人次，通車初期明顯不足。他主張評估捷運價值不該以「車廂人潮」的照片或「公司盈餘」為據，而需完整成本效益分析，包含替代方案比較與全生命週期財務負擔。這使降溫論進入第五天，也把爭論精準化為「該用哪一套數字衡量一條線值不值得蓋」。",
+     src:"Newtalk 新聞（9/10）", url:"https://newtalk.tw/news/view/2026-09-10/1058909"},
+    {cat:"build", kind:"news", hot:true, tags:["捷運預算","路網規劃","軌道政見"],
+     t:"預算戰場新火線：中捷藍線 999 億缺口未編入總預算，議員批爛攤子「丟包」新市長",
+     p:"台中捷運藍線出現 999 億元經費缺口卻未編入總預算，市府遲至盧秀燕卸任前才將修正計畫送出，綠營議員批評形同把爛攤子「丟包」給下一任市長，並揚言刪減 3.9 億元購物節預算作為反制。此案接續 9/6「中央明年補助中捷藍線 45 億、捷工局稱還差 46.53 億」的討論，把中捷藍線從單純的補助不足升級為地方自籌款與時程交代的政治攻防，也是 9/11 上午 PTT MRT 板唯一的新貼文（0 推、5 則留言）。對北捷而言屬外溢題，但與張景森的降溫論構成同一組質疑：路線先上車、財源後補票。",
+     src:"自由時報（9/10–9/11）", url:"https://news.ltn.com.tw/news/Taichung/breakingnews/5569874"},
+    {cat:"build", kind:"news", hot:false, tags:["捷運預算","路網規劃","軌道政見"],
+     t:"新北預算爭議轉向：綠營議員反過來要市府自我檢討，侯友宜承諾淡海輕軌二期最遲明年開工",
+     p:"針對中央刪減新北捷運補助 54.1 億元，民進黨議員張維倩 9/9 在議會提出與藍營不同的角度，指市府應先檢視計畫本身是否需要補強、強化與中央的溝通，「不能永遠都是別人的錯，全歸咎中央」。侯友宜回應「中央、地方各有職責」，將持續溝通並呼籲中央盡速核定，同時承諾淡海輕軌二期最遲明年一定開工，並重申新北至 2035 年將形成 189 公里、182 座車站的軌道網絡；基隆捷運新北轄段原提報 93.8 億元遭減列約 47 億元仍待解。這是 9/6 以來預算爭議中第一則來自同陣營的檢討聲音。",
+     src:"聯合新聞網（9/9）", url:"https://udn.com/news/story/125013/9743361"},
+    {cat:"build", kind:"forum", hot:false, tags:["捷運降溫論","捷運預算","路網規劃"],
+     t:"降溫論連五天主導論壇：張景森續戰串 10 推 56 則留言，母串留言停在 287 則",
+     p:"MRT 板 9/10 由網友 GrafRaphael 轉貼的「張景森再質疑各地捷運盲目增建」累積 10 推、56 則留言，是當日熱度第二的新文；9/7 的張景森 5 指標母串留言維持在 287 則、仍是近兩週最高，其 Re: 串 25 推 70 則留言，9/8 的李鴻源母串 32 推 165 則留言、Re: 串 12 推 47 則留言。五天之內同一組降溫主張長出四串，北捷本體則連一則新文都沒有——版面結構與 9/8 至 9/10 完全一致。",
+     src:"PTT MRT 板（10 推／56 則留言）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"ops", kind:"forum", hot:false, tags:["拆座椅","信義東延段"],
+     t:"拉環方案熱度小幅回升：由 0 推 5 則留言增至 7 推 19 則留言，仍遠低於拆柱爭議",
+     p:"9/10 網友 godofsex 轉貼的「北捷淡水信義線 優化車廂增拉環」，經過一日累積由擷取當時的 0 推 5 則留言增至 7 推、19 則留言，熱度回升但仍屬低檔。對照 8/26「拆柱子又裝扶手」的 32 推 165 則留言與 9/7 降溫論母串的 287 則留言，同一議題的「改善方案」帶動的討論量約僅爭議本身的一成，再次印證論壇對硬體補救的興趣遠低於對決策順序的質疑。一般社群仍維持正面反應（低拉環由 161 公分降到 155 公分、繫黃色織帶）。",
+     src:"PTT MRT 板（7 推／19 則留言）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"ops", kind:"news", hot:false, tags:["松山新店線異常","信義東延段"],
+     t:"營運面全清：官方新聞稿連兩日無新增，誤點證明頁「查無資料」、近 7 日零延誤紀錄",
+     p:"臺北捷運公司新聞稿頁面最新一則仍為 9/9 的松山新店線新店區公所站停靠位置異常說明（退行處理約 2 分 30 秒、列車已送回機廠詳查），9/10 與 9/11 上午皆無新增稿件。官方「誤點證明」頁面同步顯示查無資料——該頁僅登載 5 分鐘以上延誤且提供 7 日內下載，等於近一週北捷全路網沒有任何達到出證標準的延誤。東延段通車後第 13 天亦無人潮管制紀錄，新站已完全進入常態營運節奏。",
+     src:"臺北捷運公司新聞稿／誤點證明頁", url:"https://www.metro.taipei/News.aspx?n=0D6F05148E52D2FE&sms=8FF6EAB4BC08C618"},
+    {cat:"ops", kind:"forum", hot:false, tags:["顯示器異常","信義東延段"],
+     t:"廣慈／奉天宮「顯示當機」串跌出前排：官方沉默滿 10 天，議題實質退場",
+     p:"9/2 開串、一度累積 118 推 368 則留言、東延段通車以來北捷本體討論量最大的新站資訊顯示設備異常討論，已不再出現在 MRT 板前 20 則之列，代表連續多日無新回應。北捷自 9/2 至今從未就新站顯示設備另發新聞稿或說明，是本期唯一官方連續沉默滿 10 天的題目；設備是否已修復也無公開資訊，等於議題在沒有答案的情況下自然退燒。",
+     src:"PTT MRT 板（前 20 則已無此串）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"fare", kind:"news", hot:false, tags:["首月免費","信義東延段"],
+     t:"東延段免費期倒數 17 天：9/12 音樂會明日登場，霜淇淋與抽獎續至 9/28",
+     p:"象山—廣慈／奉天宮新通車區間免費搭乘至 9 月 28 日，剩不到三週；每日上午 7 時起發放限量 500 份全家霜淇淋兌換券、乘車抽獎（捷運年票與自行車）同步續辦。兩場通車音樂會分別在 9 月 12 日（明日）與 9 月 19 日下午 2 時 15 分於車站公共藝術區演出。官方至今仍未公布通車後的分站運量統計，免費期結束後新站的真實運量、以及淡水信義線南段班距是否被實質拉長，仍是本月最主要的待驗證項目。",
+     src:"臺北捷運公司新聞稿", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"},
+    {cat:"build", kind:"forum", hot:false, tags:["路網規劃"],
+     t:"外縣市題續補版面：安坑輕軌秀朗橋設站 15 推 41 則留言，中捷藍線車廂外觀 9/10 開放投票",
+     p:"北捷本體無新題時，論壇前排由外縣市軌道話題填滿：9/10「安坑輕軌維持秀朗橋設站是不是比較好？」15 推、41 則留言，是當日推文數最高的新文，討論集中在站位取捨與新店端轉乘便利性；9/3 的「中捷藍線 3 款車廂外觀 9/7 出爐」則進入 9/10 起開放民眾投票的階段（18 推、51 則留言）。另有 9/8「高雄輕軌『這兩站』開學運量增 9.1％」9 推 30 則留言。北捷本體的站名與路網圖兩串則維持完全停滯。",
+     src:"PTT MRT 板（15／18／9 推）", url:"https://www.pttweb.cc/bbs/MRT"}
+  ]
+},
+{
+  date:"2026-09-10", wd:"週四",
+  summary:"網友搬出五家捷運公司 2025 年財報打臉李鴻源「離開北台灣都賠錢」，讓延燒四天的捷運降溫論首度出現數據層級的反駁。臉書社群「高雄好過日」彙整指出，2025 年北捷盈餘 4.06 億元、桃捷 6.79 億元、新北捷 2.37 億元、高捷 8,236 萬元，五家僅中捷虧損 4.4 億；但同篇也承認若扣除政府補助與緩繳租金、再計入建設成本，全台捷運其實都嚴重虧損，等於雙方各取一半事實。營運面出現本期唯一事故：9/9 上午 8 時 49 分松山新店線一列往松山方向列車在新店區公所站停靠位置異常，行車專員退行處理約 2 分 30 秒、至七張站重置後恢復，列車已送回機廠詳查。北捷本體另有口徑細節被放大——官方 9/8 稿件寫明是淡水信義線「全數 4 列」空間優化列車增設拉環（381 型 2 列已完成、301 型 2 列 9 月中旬完成），紅線目前僅這 4 列，與前兩日「每列車最多增 128 個拉環」的標題易被誤讀為全線適用。論壇 9/10 唯一新文是拉環新聞轉貼、僅 0 推 5 則留言。整體風向中性：北捷本體零負評，火力仍落在路線層級的預算辯論。",
+  metrics:[["當日則數","9"],["爭議題","1"],["當日風向","中性"]],
+  items:[
+    {cat:"build", kind:"news", hot:true, tags:["捷運降溫論","路網規劃","捷運預算"],
+     t:"今日最大爭議：網友搬 2025 年財報打臉李鴻源，五家捷運公司只有中捷虧損",
+     p:"針對李鴻源 9/7 的「捷運離開北台灣都賠錢」說法，臉書社群「高雄好過日」彙整全台捷運公司 2025 年財報反駁：北捷盈餘 4.06 億元、桃捷 6.79 億元、新北捷 2.37 億元、高捷 8,236 萬元，五家之中僅中捷虧損 4.4 億元，其中高捷是疫後首度轉虧為盈。不過同一篇分析也補上另一半事實：若扣除政府補助與緩繳租金等支持措施，北捷本業同樣是虧損；若再把建設成本計入，全台捷運其實都嚴重虧損。這是降溫論延燒四天以來第一則以財務數據正面交鋒的反駁，也讓辯論從「該不該蓋」細緻化為「用哪一套帳來衡量」。",
+     src:"自由時報（9/10）", url:"https://news.ltn.com.tw/news/life/breakingnews/5568985"},
+    {cat:"ops", kind:"news", hot:false, tags:["松山新店線異常"],
+     t:"本期唯一營運事故：9/9 松山新店線新店區公所站停靠位置異常，退行處理 2 分 30 秒",
+     p:"北捷 9/9 發布新聞稿說明，當日上午 8 時 49 分一列往松山站方向列車行駛至新店區公所站時，列車停靠站功能短暫異常導致停靠位置不準確，行車專員隨即執行列車退行作業，讓旅客正常上下車，處理時間約 2 分 30 秒；列車行駛至下一站七張站後由專員完成系統重置，後續月台停靠恢復正常，該列車已送回機廠詳查。時間落在上班尖峰但影響極短，官方主動揭露的速度也比 9/3 文湖線一案快。社群與論壇反應平淡，未形成討論串。",
+     src:"臺北捷運公司新聞稿／中央社、聯合新聞網（9/9）", url:"https://udn.com/news/story/7266/9743622"},
+    {cat:"ops", kind:"news", hot:false, tags:["拆座椅"],
+     t:"拉環方案的口徑細節被講清楚：淡水信義線「全數 4 列」優化車，紅線目前只有這 4 列",
+     p:"官方 9/8 稿件〈多一個拉環 多一份體貼〉的完整說法在 9/9 至 9/10 被媒體逐字轉載後，規模才被講明白：所謂增設拉環是針對淡水信義線「全數 4 列」空間優化列車，其中 381 型 2 列已完成、每列增 128 個拉環（第 2 至第 5 節車廂入口區環形扶手各加 4 個一般拉環與 4 個降低高度拉環），301 型 2 列每列增 56 個、預計 9 月中旬完成；降低高度的拉環由 161 公分調為 155 公分並繫醒目黃色吊帶。換言之紅線目前的優化車僅 4 列，與板南線已全車隊改裝的規模差距不小，前兩日「紅線每列車最多增 128 個拉環」的標題容易被誤讀為全線適用。",
+     src:"聯合新聞網（9/9）／臺北捷運公司新聞稿（9/8）", url:"https://udn.com/news/story/7266/9741696"},
+    {cat:"build", kind:"forum", hot:false, tags:["捷運降溫論","路網規劃"],
+     t:"降溫論連四天主導論壇：李鴻源母串 164 則留言、9/9 Re: 續戰，張景森串留言增至 287",
+     p:"MRT 板 9/8 的「缺乏轉乘與密集需求 李鴻源：捷運離開北」累積 32 推、164 則留言，9/9 由網友 kashima228 再開 Re: 續戰串（11 推、43 則留言）；9/7 的張景森 5 指標母串留言數由 9/9 記錄的 223 續增至 287 則、仍是近兩週最高，其 Re: 串亦有 25 推 70 則留言。四天之內兩位前部會首長的降溫主張各自長出母串與續戰串，是本期論壇最清楚的結構：北捷本體無大事，版面即由「該不該繼續蓋」填滿。",
+     src:"PTT MRT 板（32／25／11 推）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"ops", kind:"forum", hot:false, tags:["拆座椅","信義東延段"],
+     t:"論壇對拉環方案反應冷淡：9/10 唯一新文僅 0 推 5 則留言",
+     p:"MRT 板 9/10 截至擷取時的唯一新文，是網友 godofsex 轉貼的「北捷淡水信義線 優化車廂增拉環」，0 推、5 則留言，熱度極低。對照 8/26「拆柱子又裝扶手」的 43 推 262 則留言，同一議題的改善方案幾乎沒有帶動討論——這與 9/8 至 9/9 媒體與社群一面倒的正面反應構成落差：一般社群買單，鐵道與通勤重度使用者則認為 4 列車的規模不值一提。",
+     src:"PTT MRT 板（0 推／5 則留言）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"ops", kind:"forum", hot:false, tags:["顯示器異常","信義東延段"],
+     t:"廣慈／奉天宮「顯示當機」邁入第 9 天無官方說明：續增至 118 推、368 則留言",
+     p:"9/2 開串的新站資訊顯示設備異常討論，推文由 9/7 記錄的 115 推增至 118 推、留言累計 368 則，仍是東延段通車以來北捷本體討論量最大的一串。北捷 9/7 的新站公告只談自行車與大型樂器解禁、9/8 的稿件談拉環、9/9 談松山新店線停靠異常，始終未觸及新站顯示設備，是本期唯一官方連續沉默近十天的題目。",
+     src:"PTT MRT 板（118 推／368 則留言）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"buzz", kind:"news", hot:false, tags:["敬軍優惠"],
+     t:"北捷育樂敬軍優惠開跑：軍人、替代役與軍眷免費搭貓纜、玩兒童新樂園，可攜 4 位親友",
+     p:"北捷育樂公司 9/8 發布的敬軍活動在 9/9 起被生活媒體大量轉載：即日起至 12 月 31 日，現役軍人、替代役役男及軍眷本人出示證件，可免費搭乘貓空纜車（水晶車廂不適用）、免費入園臺北市立兒童新樂園並不限次數搭乘 13 項大型遊樂設施、於臺北小巨蛋冰上樂園享單日免費滑冰 2 小時或免費參觀 4 小時（冰鞋與護具租借另計），且符合資格者可攜同最多 4 位親友同享。屬純正面的軟性聲量，社群多為行程分享與資格確認。",
+     src:"食尚玩家（9/9）／臺北捷運公司新聞稿（9/8）", url:"https://supertaste.tvbs.com.tw/travel/361415"},
+    {cat:"fare", kind:"news", hot:false, tags:["首月免費","信義東延段"],
+     t:"東延段免費期倒數 18 天：9/12 音樂會登場，霜淇淋與抽獎續至 9/28",
+     p:"象山—廣慈／奉天宮新通車區間免費搭乘至 9 月 28 日，剩餘不到三週；每日上午 7 時起發放限量 500 份全家霜淇淋兌換券、乘車抽獎（捷運年票與自行車）同步續辦。兩場通車音樂會分別安排在 9 月 12 日與 9 月 19 日下午 2 時 15 分於車站公共藝術區演出。免費期結束後新站的真實運量、以及淡水信義線南段班距是否被實質拉長，仍是本月最主要的觀察點，官方目前尚未公布通車後的分站運量統計。",
+     src:"臺北捷運公司新聞稿／好視新聞網", url:"https://newsday.tw/news/563310"},
+    {cat:"build", kind:"forum", hot:false, tags:["路網規劃","站名爭議"],
+     t:"背景題續冷：高雄輕軌開學運量增 9.1%、中捷藍線車廂外觀出爐，站名與路網圖兩串停滯",
+     p:"論壇前排的非北捷題材維持低溫：9/8「高雄輕軌『這兩站』開學運量增 9.1％」9 推 30 則留言、9/3「中捷藍線 3 款車廂外觀 9/7 出爐」18 推 51 則留言。北捷本體的兩串長期背景題則已完全停滯——「為啥北捷後期站名命名越趨冗長」停在 91 推 293 則留言、「北捷網站更新後的路線圖」停在 87 推 300 則留言，9/7 之後皆無新增回應，命名與路網圖可讀性檢討正式退場。",
+     src:"PTT MRT 板（18／9 推）", url:"https://www.pttweb.cc/bbs/MRT"}
+  ]
+},
+{
+  date:"2026-09-09", wd:"週三",
+  summary:"北捷正面回應「搭車練核心」的抓握抱怨，淡水信義線 381 型每列增設 128 個拉環、低拉環高度由 161 公分降到 155 公分，是本期北捷本體最實質的一項改善。官方說明 381 型已完成施作，於第 2 至第 5 節車廂入口區的環形扶手各加裝 4 個一般拉環與 4 個降低高度、繫黃色織帶的拉環，301 型每列增 56 個、預計 9 月中旬完成，板南線與其他路線仍維持每列增設 24 處立式扶手。社群反應罕見一面倒正面，嬌小族與家長留言「終於得救了」「第一次不會被撞到頭」。政策面則延續兩天的火力：交通部明年度捷運補助數字上修至 499 億元、為今年 90 億的 5.5 倍並創歷年新高，歷年累計 7,161 億中北北基占約 4,882 億、近 7 成，交通部強調「標準一致、未重南輕北」，新北仍主張遭減列約 54 億；前內政部長李鴻源加入張景森的降溫論，稱捷運一蓋十年、動輒兩三百億，完工時車輛可能都自駕化了。審計部另批 TPASS 預算浮編、累計剩餘逾億元。營運面全日零事故、零延誤，官方新聞稿仍停在 9/7。整體風向中性偏正：北捷本體交出具體改善，爭議集中在「該不該繼續蓋」的預算層級。",
+  metrics:[["當日則數","9"],["爭議題","2"],["當日風向","中性偏正"]],
+  items:[
+    {cat:"ops", kind:"news", hot:false, tags:["拆座椅","親子車廂"],
+     t:"北捷本體最實質進展：紅線每列車最多增 128 個拉環，低拉環由 161 公分降到 155 公分",
+     p:"針對拆立柱後「搭捷運練核心」「都沒有地方可抓」的抱怨，北捷 9/8 公布具體施作規格：淡水信義線 381 型列車運用原有環形扶手增設拉環，於第 2 至第 5 節車廂入口區各加裝 4 個一般拉環及 4 個高度降低的拉環，每列車共增加 128 個，目前已完成；301 型每列增設 56 個，預計 9 月中旬完成。板南線及其他路線則沿用 8/17 決標的方案，每列增設 24 處立式扶手。降低高度的拉環由 161 公分調整為 155 公分並繫上黃色織帶以利辨識，主要照顧身高較矮的乘客與孩童。這是 8 月中旬空間優化爭議延燒近一個月後，北捷首次把「補回抓握點」的數量與時程講清楚。",
+     src:"壹蘋新聞網（9/8）／臺北捷運公司", url:"https://news.nextapple.com/life/20260908/CCA86442FC62F4E838FEB3EC3A4A8A2F"},
+    {cat:"ops", kind:"social", hot:false, tags:["拆座椅"],
+     t:"社群反應罕見一面倒正面：「161 降到 155 公分」嬌小族喊終於得救了",
+     p:"黃色拉環的消息在 9/8 被多家媒體與內容網站同步轉載，社群留言與過去一個月的空間優化話題形成強烈對比——幾乎沒有反對聲量。常見留言為「終於得救了」「第一次搭捷運不會被拉環撞到頭」「早該這樣做」，家長族群另關注孩童能否搆到。少數質疑集中在「為何是先拆再補」的順序，以及只有淡水信義線先做、其他路線何時跟上。這是 8 月以來拆座椅／拆立柱系列話題中第一則正面居多的社群反應。",
+     src:"TVBS／睿傳媒等多家轉載", url:"https://www.right-media.news/archives/232299"},
+    {cat:"build", kind:"news", hot:true, tags:["捷運預算","路網規劃","軌道政見"],
+     t:"補助數字上修：全台捷運補助 499 億創新高，北北基歷年占近 7 成，交通部稱未重南輕北",
+     p:"交通部明年度地方捷運建設補助的完整數字為 499 億元，為今年編列 90 億元的 5.5 倍，創歷年新高（前兩日媒體引用的 453 億為部分路線加總）。歷年補助總額已逾 7,161 億元，其中北北基地區獲得 4,882 億餘元、約占 68%，交通部解釋是因北部路網推動較早、建設經費相對較高，並強調「補助標準一致、未重南輕北」，分配取決於各案工程進度與決標情形。新北市則持續主張其提報金額遭減列約 54 億元、已函請優先追加。這是 9/6 以來預算爭議的第三天，數字本身被修正，南北之爭的框架卻更清楚。",
+     src:"壹蘋新聞網（9/8）／公視新聞", url:"https://news.nextapple.com/life/20260908/7ECD84FBA7E922ECC8C133A43B171943"},
+    {cat:"build", kind:"news", hot:true, tags:["捷運降溫論","路網規劃"],
+     t:"降溫論加入重量級聲音：李鴻源稱捷運蓋十年，完工時「車輛可能都自駕化了」",
+     p:"前內政部長李鴻源聲援張景森的「捷運蓋過頭」主張，指目前捷運建設動輒十年以上工期、兩三百億元經費，等完工時自駕車發展可能已徹底改變運輸需求，路線恐淪為養蚊子；他並指出北部以外的捷運營運普遍虧損，且捷運通車後若沒有足夠的公車接駁，民眾仍會回頭騎機車。他以高鐵通車後國內航線快速萎縮為例，說明新基礎建設如何讓既有系統一夕過時。這則使降溫論從單一評論擴大為跨部會前官員的共同質疑，也讓「該不該繼續蓋」正式成為本週輿論主線。",
+     src:"聯合新聞網（9/7）", url:"https://udn.com/news/story/6656/9739475"},
+    {cat:"build", kind:"news", hot:false, tags:["文湖線異常","路網規劃","捷運預算"],
+     t:"補助新聞附帶的北捷進度：北市正評估文湖線增加車廂可行性，萬大線一期明年通車",
+     p:"同一則補助報導中揭露的北捷路網進度：針對通車最久、尖峰擁擠與可靠度屢受質疑的文湖線，北市府正評估增加車廂的可行性；信義線東延段已於 8/30 通車；萬大中和樹林線第一期預計明年通車。與 5 月公布的文湖線全線列車更新計畫（新列車採四節貫穿、載客量增 3 成至 574 人、尖峰可多載約 5,000 人次，2036 年起上線）相比，增加車廂屬相對短期的緩解手段。論壇對此反應不多，但與 9/3 文德站列車燈光閃爍緊急煞車一案被放在一起檢視。",
+     src:"壹蘋新聞網（9/8）／ETtoday", url:"https://news.nextapple.com/life/20260908/7ECD84FBA7E922ECC8C133A43B171943"},
+    {cat:"fare", kind:"news", hot:false, tags:["票價調整","捷運預算"],
+     t:"審計部批 TPASS 預算浮編：兩年累計剩餘逾億元，明年再增編 12.8 億",
+     p:"審計部在總決算報告中指出，TPASS 定期票方案 2024、2025 年支用金額分別為 43 億與 53 億元，基北北桃等九項方案累計剩餘經費逾億元，明年編列 88 億元、較今年 75.2 億再增 12.8 億，外界質疑恐再衍生鉅額剩餘款。報告另指出，儘管運量已達成目標，道路交通事故件數卻不減反增，未達成降低 5% 的政策目標。此案與捷運補助 499 億的爭議同時被提起，構成「運輸補助錢花得對不對」的另一條線。",
+     src:"聯合新聞網（9/7）", url:"https://udn.com/news/story/125013/9738191"},
+    {cat:"buzz", kind:"forum", hot:false, tags:["捷運降溫論","路網規劃"],
+     t:"論壇進入近期最安靜狀態：9/8 全日僅一篇 Re: 續戰文，9/9 上午尚無新文",
+     p:"MRT 板 9/8 全日唯一新文，是網友 GrafRaphael 針對張景森 5 項指標開的 Re: 延伸串（8 推、17 則留言）；截至 9/9 上午擷取時，板上尚未出現 9/9 的新貼文。降溫論母串（9/7 由 H2 轉貼）維持在 223 則留言，仍是近兩週留言數最高的一串。連續兩天由同一組政策題支撐版面，也再次印證北捷本體無大事時，論壇即由預算與制度辯論填滿。",
+     src:"PTT MRT 板（8 推／17 則留言）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"ops", kind:"forum", hot:false, tags:["顯示器異常","信義東延段"],
+     t:"廣慈／奉天宮「顯示當機三天」仍是北捷本體最熱：累計 351 則留言，官方至今未說明",
+     p:"9/2 開串的新站資訊顯示設備異常討論，留言數累計至 351 則，仍是東延段通車以來北捷本體討論量最大的一串（8/26「拆柱子又裝扶手」則為 262 則，居次）。北捷 9/7 發布的新站公告只談自行車與大型樂器解禁，未觸及顯示設備，是本期少數官方持續沉默的題目。9/8 公布的拉環方案雖屬同一系列的改善，也尚未在板上帶動新一輪討論。",
+     src:"PTT MRT 板（351 則留言）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"ops", kind:"news", hot:false, tags:["信義東延段","首月免費","文湖線異常"],
+     t:"營運面：全日零事故、零延誤，官方新聞稿停在 9/7，東延段免費期剩不到三週",
+     p:"臺北捷運公司新聞稿頁面最新一則仍為 9/7 的廣慈／奉天宮站開放自行車、大型寵物車與低音提琴公告，9/8 與 9/9 上午皆無新增稿件；中央社台北捷運專題最新一則仍停在 9/3 的文湖線文德站列車燈光閃爍緊急煞車、約 83 人換乘一案。全日無 5 分鐘以上延誤或事故通報，東延段通車後第 11 天亦無人潮管制紀錄。象山—廣慈／奉天宮區間免費與每日限量 500 份霜淇淋兌換續至 9/28，剩餘兩場通車音樂會安排在 9/12 與 9/19 下午 2 時 15 分。",
+     src:"臺北捷運公司新聞稿／中央社台北捷運專題", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"}
+  ]
+},
+{
+  date:"2026-09-08", wd:"週二",
+  summary:"「台灣捷運蓋過頭了、該踩煞車」成為今日最大爭議，矛頭首次指向整體軌道建設模式而非北捷本體。張景森 9/7 提出捷運計畫「二次體檢」的 5 項警示指標——超支 20%、每公里日運量低於 5,000 人次、每延人公里資本成本破百萬、需求預測跳票、營收不足支應基本營運，三項以上亮紅燈即應暫緩；他指新規劃路線每公里造價已破百億，主張萬大線、環狀線等高運量案續推、低需求案喊停。高雄藍綠陣營隨即同聲喊「加速」，PTT 該串累積 223 則留言、9/8 再開續戰，是本期最熱。北捷本體則安靜且偏正面：9/7 公告廣慈／奉天宮站即日起開放自行車、大型寵物車與低音提琴，較原訂 9/29 提前三週；蔣萬安同日稱「六線齊發 2.0 進入動工高峰期」，惟坦言營建成本上漲與缺工。全日零事故、零延誤通報。整體風向中性：北捷零負評，火力全集中在「該不該繼續蓋」的路線層級辯論。",
+  metrics:[["當日則數","10"],["爭議題","2"],["當日風向","中性"]],
+  items:[
+    {cat:"build", kind:"news", hot:true, tags:["捷運降溫論","捷運預算","路網規劃"],
+     t:"今日最大爭議：張景森喊「台灣捷運蓋過頭」，拋 5 項指標要求二次體檢踩煞車",
+     p:"前行政院政務委員張景森 9/7 逆風主張全台捷運建設該降溫，提議建立捷運計畫「二次體檢」機制並訂出 5 項警示指標：經費超出核定 20%、每公里日運量低於 5,000 人次、每延人公里資本成本超過 100 萬元、需求預測未能實現、營收不足支應基本營運成本；符合兩項亮黃燈，三項以上亮紅燈並應暫緩。他指出新規劃路線每公里造價已突破百億元、部分甚至逾 600 億元，與早期萬大線一期等高運量廊帶的資本效率落差懸殊，並強調「踩煞車不是停車」——北市萬大線、環狀線這類高運量高效益案應續推，仍在規劃階段的低需求系統則該喊停。這是本期第一則把矛頭指向整體軌道建設模式、而非北捷營運本身的爭議題。",
+     src:"自由時報／聯合新聞網（9/7）", url:"https://news.ltn.com.tw/news/life/breakingnews/5565799"},
+    {cat:"build", kind:"forum", hot:true, tags:["捷運降溫論","路網規劃","軌道政見"],
+     t:"論壇最熱：PTT「張景森拋 5 指標示警」串累積 223 則留言，9/8 再開 Re: 續戰",
+     p:"9/7 由網友 H2 轉貼的自由時報報導在 MRT 板炸開，單串 8 推但留言達 223 則，是近兩週留言數最高的一串；9/8 另一名網友 GrafRaphael 再開 Re: 延伸串（8 推、17 則留言），成為今日板上唯一的新文。討論兩極：一派認同資本效率指標、批評選舉支票式的路線規劃；一派反問「六都以外永遠不用蓋」，並質疑 5,000 人次／公里的門檻對郊區路線不公平。與 9/6 至 9/7 的預算串合流後，MRT 板已連續三天由「錢從哪來、值不值得蓋」的路線層級辯論主導。",
+     src:"PTT MRT 板（223／17 則留言）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"build", kind:"news", hot:false, tags:["捷運降溫論","軌道政見"],
+     t:"降溫論碰壁：高雄藍綠陣營同聲喊「加速」，選舉年沒人願意當踩煞車的人",
+     p:"張景森的主張隔日即在地方遭遇正面反彈——高雄藍綠兩陣營罕見同調，均表態捷運建設應「加速」而非踩煞車，理由是路網成形前的運量本就偏低、以既有數據判死刑並不公允。這條後續清楚顯示降溫論在選舉年的處境：中央端談財政紀律，地方端談建設進度，兩套語言各說各話。與 9/6 至 9/7 交通部 453 億補助的分配爭議是同一組結構性矛盾的兩面。",
+     src:"自由時報（9/7）", url:"https://news.ltn.com.tw/news/Kaohsiung/breakingnews/5566438"},
+    {cat:"build", kind:"news", hot:false, tags:["軌道政見","路網規劃","捷運預算"],
+     t:"蔣萬安議會受訪：北市「六線齊發 2.0 進入動工高峰期」，萬大線一期 2027 完工",
+     p:"9/7 市政總質詢後受訪，蔣萬安表示北市捷運正處於動工高峰期：北環、南環線全面動工，環狀線東環段亦已全面動工，萬大中和樹林線第一期預計 2027 年完工，民生汐止線仍在規劃階段。他同時坦言面對營建成本提高與缺工問題，市府會以增加經費等方式確保「工程順利發包、已動工的工程如期完成」。這則與張景森的降溫論恰好構成正反兩面：一邊主張高運量案續推，一邊正把六條線同時推上工地。",
+     src:"聯合新聞網（9/7）", url:"https://udn.com/news/story/7323/9739546"},
+    {cat:"ops", kind:"news", hot:false, tags:["信義東延段","首月免費"],
+     t:"北捷本體唯一新公告：廣慈／奉天宮站即日起開放自行車、大型寵物車與低音提琴，較原訂提前三週",
+     p:"官方 9/7 發布新聞稿，宣布廣慈／奉天宮站即日起開放自行車、大型寵物車及低音提琴進出，以因應多元旅客需求。通車前公告的限制原訂實施至 9/29，等於提前約三週解禁，可視為北捷對新站首週人潮壓力已趨緩的判斷。社群反應正面但聲量不高，單車族與樂器族多表達肯定；也有人問淡水信義線其他端點站的自行車進出時段是否會一併檢討。這是 9/4 以來官方唯一一則新增稿件。",
+     src:"臺北捷運公司新聞稿（9/7）／好視新聞網", url:"https://newsday.tw/news/563310"},
+    {cat:"fare", kind:"news", hot:false, tags:["首月免費","信義東延段"],
+     t:"東延段優惠進入最後三週：免費區間與霜淇淋續至 9/28，9/12、9/19 兩場音樂會待辦",
+     p:"同一則官方稿件也重申尚在進行的優惠：象山—廣慈／奉天宮新通車區間至 9 月 28 日免費，於象山或廣慈／奉天宮站進出時系統會先扣抵新線區間票價，單程票旅客可向詢問處索取乘車憑證免購票；每日上午 7 時起發放限量 500 份全家霜淇淋兌換券，全台門市皆可兌換。剩餘的通車音樂會安排在 9 月 12 日與 19 日下午 2 時 15 分於車站公共藝術區演出，曲風含紐奧良爵士與二胡、笙等國樂。討論已完全轉為優惠盤點，扭蛋之亂的餘波未再擴大。",
+     src:"臺北捷運公司新聞稿（9/7）／好視新聞網", url:"https://newsday.tw/news/563310"},
+    {cat:"build", kind:"forum", hot:false, tags:["捷運預算","路網規劃"],
+     t:"預算題續燒第三天：PTT 9/7 再開兩串北市補助文，惟推文明顯轉冷",
+     p:"接續 9/6 的三串預算題，MRT 板 9/7 再出現兩則北市相關新聞串——「交通部明年度補助逾百億捷運建設預算給北市」（1 推、8 則留言）與「獲交通部補助大眾捷運建設經費全國第 2 高城市」（3 推、10 則留言）。兩串推文都極低，顯示分配數字本身的討論動能已被 9/7 傍晚出現的降溫論整個吸走：同一天內，板上的問題從「誰分到多少」變成「這些線到底該不該蓋」。",
+     src:"PTT MRT 板（3／1 推）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"buzz", kind:"forum", hot:false, tags:["站名爭議","路網規劃"],
+     t:"路線圖與站名兩串收尾：9/6 Re: 續文後 9/7、9/8 未再增長",
+     p:"8/31 開串的「北捷網站更新後的路線圖」在 9/6 有一篇 Re: 新回文（5 推、17 則留言）討論副站名標示與轉乘符號後即告停歇，9/7 與 9/8 皆無新回應；「為啥北捷後期站名命名越趨冗長」亦未見新增推文。延燒近兩週、由「廣慈／奉天宮」引爆的命名與路網圖可讀性檢討，至此正式退出前排，轉為背景議題。",
+     src:"PTT MRT 板（5 推／17 則留言）", url:"https://www.pttweb.cc/bbs/MRT"},
+    {cat:"ops", kind:"news", hot:false, tags:["文湖線異常","通車人潮"],
+     t:"營運面：全日零事故、零延誤通報，官方新聞稿停在 9/7 未再更新",
+     p:"臺北捷運公司新聞稿頁面最新一則為 9/7 的廣慈／奉天宮站開放自行車公告，9/8 全日未再發布任何稿件；中央社台北捷運新聞專題最新一則仍停在 9/3 的文湖線文德站列車燈光閃爍緊急煞車、約 83 人換乘一案，其後無新增營運事故。9/8 全日無 5 分鐘以上延誤或事故通報，東延段通車後第 10 天亦無人潮管制紀錄，新站已進入常態營運節奏。",
+     src:"臺北捷運公司新聞稿／中央社台北捷運專題", url:"https://www.metro.taipei/News.aspx?n=30CCEFD2A45592BF&sms=72544237BBE4C5F6"},
+    {cat:"buzz", kind:"forum", hot:false, tags:["路網規劃"],
+     t:"論壇題材乾涸的側面：9/7 唯一北捷本體貼文是「橋和站附近停機車」",
+     p:"扣掉預算與降溫論兩組政策題，9/7 板上與捷運場站直接相關的貼文只剩一則「橋和站附近停機車」的在地問題（1 推、8 則留言），詢問中和橋和站周邊機車停放與接駁動線。9/8 更是全日僅有一篇 Re: 新文。這是東延段通車熱潮退去後最安靜的兩天，也再次印證既有模式：北捷本體沒有大事時，版面即由預算、外縣市路網與制度辯論填滿。",
+     src:"PTT MRT 板（1 推／8 則留言）", url:"https://www.pttweb.cc/bbs/MRT"}
+  ]
+}
+];
+
+/* === DATA:END === */
+
+/* 追蹤表列出的議題（左側格點），依重要性排序，建議維持 8–12 個 */
+const TRACK = ["文湖線異常","保全執勤","長者摔倒","拆座椅","車廂治安","顯示器異常","信義東延段","首月免費","貓纜異常","捷運預算","軌道政見","路網規劃"];
+
+/* ---------- state ---------- */
+let selA = LOG[0].date;
+let selB = null;
+let cmpOn = false;
+
+const $ = s => document.querySelector(s);
+const byDate = d => LOG.find(x => x.date === d);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+document.getElementById("range").textContent =
+  LOG[LOG.length-1].date.slice(5) + " → " + LOG[0].date.slice(5);
+document.getElementById("daycount").textContent = LOG.length + " 天";
+
+/* ---------- rail ---------- */
+function renderDays(){
+  const box = $("#daylist");
+  box.innerHTML = "";
+  LOG.forEach(d => {
+    const hot = d.items.some(i => i.hot);
+    const b = document.createElement("button");
+    b.className = "daybtn" + (selB === d.date ? " is-b" : "");
+    b.setAttribute("aria-current", selA === d.date ? "true" : "false");
+    b.innerHTML =
+      '<span class="' + (hot ? "hotdot" : "nodot") + '"></span>' +
+      '<span><span class="d">' + d.date.slice(5) + '</span> <span class="w">' + d.wd + '</span></span>' +
+      '<span class="n">' + d.items.length + '</span>';
+    b.addEventListener("click", () => {
+      if (cmpOn && d.date !== selA) { selB = (selB === d.date) ? null : d.date; }
+      else { selA = d.date; if (selB === selA) selB = null; }
+      render();
+    });
+    box.appendChild(b);
+  });
+}
+
+function renderTracker(){
+  const days = LOG.slice().reverse();
+  let h = "<thead><tr><th>議題</th>" +
+    days.map(d => '<th>' + d.date.slice(8) + '</th>').join("") + "</tr></thead><tbody>";
+  TRACK.forEach(tag => {
+    h += "<tr><td>" + esc(tag) + "</td>";
+    days.forEach(d => {
+      const hit = d.items.filter(i => i.tags.includes(tag));
+      const cls = hit.length ? (hit.some(i => i.hot) ? "dot hot" : "dot on") : "dot";
+      const title = d.date + " · " + tag + " · " + hit.length + " 則";
+      h += '<td><span class="cell"><span class="' + cls + '" title="' + esc(title) + '"></span></span></td>';
+    });
+    h += "</tr>";
+  });
+  $("#tracker").innerHTML = h + "</tbody>";
+}
+
+/* ---------- main ---------- */
+function itemHTML(it, newTags){
+  const isNew = newTags && it.tags.some(t => newTags.has(t));
+  return '<article class="item' + (it.hot ? " hot" : "") + '" style="border-left-color:' + CATS[it.cat].color + '">' +
+    "<h4>" + esc(it.t) + "</h4>" +
+    "<p>" + esc(it.p) + "</p>" +
+    '<div class="meta">' +
+      '<span class="chip kind">' + KIND[it.kind] + "</span>" +
+      (it.hot ? '<span class="chip hotflag">爭議</span>' : "") +
+      (isNew ? '<span class="chip newflag">新增</span>' : "") +
+      it.tags.map(t => '<span class="chip">#' + esc(t) + "</span>").join("") +
+      '<span class="src">' + esc(it.src) +
+        (it.url ? ' · <a href="' + esc(it.url) + '" target="_blank" rel="noopener">來源</a>' : "") +
+      "</span>" +
+    "</div></article>";
+}
+
+function dayHTML(d, newTags){
+  let h = '<div><div class="colhead"><span class="dt">' + d.date + '</span>' +
+    '<span class="wd">' + d.wd + '</span>' +
+    '<span class="tag">' + d.items.length + ' 則</span></div>';
+  Object.keys(CATS).forEach(c => {
+    const list = d.items.filter(i => i.cat === c);
+    if (!list.length) return;
+    h += '<section class="catgroup"><div class="cathead">' +
+      '<span class="bar" style="background:' + CATS[c].color + '"></span>' +
+      "<h3>" + CATS[c].name + "</h3><span class='cnt'>" + list.length + "</span></div>" +
+      list.map(i => itemHTML(i, newTags)).join("") + "</section>";
+  });
+  return h + "</div>";
+}
+
+function renderSummary(){
+  const d = byDate(selA);
+  const label = (selA === LOG[0].date) ? "今日輿情總結" : "當日輿情總結";
+  $("#summary").innerHTML =
+    '<div class="eyebrow">' + label + " · " + d.date + " " + d.wd + "</div>" +
+    "<h2>" + esc(d.summary.split("。")[0]) + "。</h2>" +
+    "<p>" + esc(d.summary) + "</p>" +
+    '<div class="metrics">' + d.metrics.map(m =>
+      '<div class="metric"><span class="k">' + esc(m[0]) + '</span><span class="v">' + esc(m[1]) + "</span></div>"
+    ).join("") + "</div>";
+}
+
+function renderDiff(){
+  const wrap = $("#diffwrap");
+  if (!cmpOn || !selB) { wrap.innerHTML = ""; return; }
+  const a = byDate(selA), b = byDate(selB);
+  const tagsOf = d => new Set(d.items.flatMap(i => i.tags));
+  const ta = tagsOf(a), tb = tagsOf(b);
+  const add = [...ta].filter(t => !tb.has(t));
+  const same = [...ta].filter(t => tb.has(t));
+  const gone = [...tb].filter(t => !ta.has(t));
+  const li = arr => arr.length ? "<ul>" + arr.map(t => "<li>" + esc(t) + "</li>").join("") + "</ul>" : '<div class="none">—</div>';
+  wrap.innerHTML =
+    '<section class="diffstrip"><h3>議題差異 · ' + a.date + " 相對於 " + b.date + "</h3>" +
+    '<div class="difflists">' +
+      '<div class="add"><div class="t">新出現 ' + add.length + "</div>" + li(add) + "</div>" +
+      '<div class="same"><div class="t">持續 ' + same.length + "</div>" + li(same) + "</div>" +
+      '<div class="gone"><div class="t">已退燒 ' + gone.length + "</div>" + li(gone) + "</div>" +
+    "</div></section>";
+}
+
+function render(){
+  const cols = $("#cols");
+  const a = byDate(selA);
+  let newTags = null;
+  if (cmpOn && selB){
+    const tb = new Set(byDate(selB).items.flatMap(i => i.tags));
+    newTags = new Set(a.items.flatMap(i => i.tags).filter(t => !tb.has(t)));
+  }
+  cols.className = "cols" + (cmpOn && selB ? " two" : "");
+  cols.innerHTML = dayHTML(a, newTags) + (cmpOn && selB ? dayHTML(byDate(selB), null) : "");
+  renderSummary();
+  renderDiff();
+  renderDays();
+  $("#cmphint").textContent = cmpOn
+    ? (selB ? "對照組：" + selB + "（再點一次可取消）" : "請於上方再點一個日期作為對照組。")
+    : "開啟後，於左側再點一個日期作為對照組。";
+}
+
+$("#cmp").addEventListener("change", e => {
+  cmpOn = e.target.checked;
+  if (!cmpOn) selB = null;
+  else if (!selB && LOG[1]) selB = LOG[1].date;
+  render();
+});
+
+/* ---------- raw data panel ---------- */
+(function(){
+  const json = JSON.stringify(LOG, null, 2);
+  const total = LOG.reduce((n,d) => n + d.items.length, 0);
+  document.getElementById("rawcount").textContent = LOG.length + " 天 / " + total + " 則";
+  document.getElementById("rawjson").textContent = json;
+  const btn = document.getElementById("copyjson");
+  btn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(json);
+      btn.textContent = "已複製";
+    } catch (e) {
+      const r = document.createRange();
+      r.selectNodeContents(document.getElementById("rawjson"));
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = "已選取，請按 Ctrl/⌘+C";
+    }
+    setTimeout(() => { btn.textContent = "複製全部"; }, 2400);
+  });
+})();
+
+renderTracker();
+render();
+</script>
+</body>
+</html>
