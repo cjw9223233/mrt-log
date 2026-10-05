@@ -3,9 +3,11 @@
 每天自動彙整「台北捷運」相關新聞與社群討論，整理成可切換日期、可兩日比對的單頁網站。
 
 - **線上網址（GitHub Pages）**：<https://cjw9223233.github.io/mrt-log/>
+- **Claude Artifact 版**：<https://claude.ai/code/artifact/10582dca-0c98-466c-b0b1-25e995d13ee0>（第二個發布點，也是排程讀取基底的首選來源）
 - **更新頻率**：每日一次，約台灣時間 10:00（由 Claude Code 排程任務自動執行）
 - **收錄範圍**：最近 14 天（滑動視窗；更早的資料保存在 git 歷史中）
 - **新手導讀**：[`docs/control-room.html`](docs/control-room.html)：用「捷運路網」圖解整條自動化流程，適合不寫程式的人
+- **排程指令**：[`ops/routine-prompt.md`](ops/routine-prompt.md)：每日自動任務的完整指令、設定與修改流程
 
 > 本站內容為公開輿論的摘錄，不是官方公告。營運資訊請以臺北捷運公司公告為準。
 
@@ -77,14 +79,14 @@ flowchart LR
 
 | 元件 | 位置 | 責任 | 存在 repo 內？ |
 |---|---|---|---|
-| 排程任務（Routine）與任務指令 | Claude Code 後台（claude.ai/code） | 定時觸發，並定義蒐集範圍、寫作規則、部署步驟 | **否** |
+| 排程任務（Routine）與任務指令 | Claude Code 後台（claude.ai/code/routines） | 定時觸發，並定義蒐集範圍、寫作規則、部署步驟 | 指令備份於 [`ops/routine-prompt.md`](ops/routine-prompt.md) |
 | `index.html` | repo 根目錄 | 呈現層與資料層合一：CSS、LOG 資料、渲染 JS 全在這一個檔案 | 是 |
-| Claude Artifact | claude.ai | 第二個發布點，提供免技術背景也能開的分享連結；同時是排程讀取基底的首選來源 | **否** |
+| Claude Artifact | [claude.ai/code/artifact/10582dca…](https://claude.ai/code/artifact/10582dca-0c98-466c-b0b1-25e995d13ee0) | 第二個發布點，提供免技術背景也能開的分享連結；同時是排程讀取基底的首選來源 | **否** |
 | GitHub Pages | `cjw9223233.github.io/mrt-log` | 從 `main` 根目錄直接發布靜態網站 | 設定在 GitHub repo Settings |
 | `.nojekyll` | repo 根目錄 | 讓 GitHub Pages 跳過 Jekyll 處理，原樣發布檔案 | 是 |
 | `docs/control-room.html` | `docs/` | 給非技術人員看的流程教學 | 是 |
 
-> ⚠️ **維護者須知**：這個系統最關鍵的「邏輯」是排程任務的**指令文字**，它不在 repo 裡。要改蒐集來源、寫作風格、保留天數或推播規則，都得到 Claude Code 的排程設定裡改，而不是改這個 repo。請把指令的最新版本另外備份，建議之後也收進 repo，例如 `ops/routine-prompt.md`。
+> ⚠️ **維護者須知**：實際執行的是線上排程，改 repo 裡的指令副本不會讓排程跟著變。要改蒐集來源、寫作風格、保留天數或推播規則，請依 [`ops/routine-prompt.md`](ops/routine-prompt.md#4-修改指令的流程) 的流程：先改檔案、commit，再同步到線上。
 
 ### 3.3 關鍵設計決策
 
@@ -106,6 +108,8 @@ mrt-log/
 ├── index.html              # 整個網站：樣式 + 資料（LOG）+ 渲染程式
 ├── docs/
 │   └── control-room.html   # 非技術人員導讀：自動化流程圖解
+├── ops/
+│   └── routine-prompt.md   # 排程指令的版控副本、設定與修改流程
 ├── .nojekyll               # 關閉 GitHub Pages 的 Jekyll 處理
 └── README.md
 ```
@@ -201,7 +205,7 @@ console.log(LOG.length+" 天 / "+LOG.reduce((n,d)=>n+d.items.length,0)+" 則；�
 | 新增追蹤議題 | 在 `TRACK` 加入標籤，並確保 LOG 中已有條目使用**完全相同**的標籤 | 太多欄會讓追蹤表難讀，請移除已退燒的議題 |
 | 更新背景議題 | 編輯 `<section class="bg-note">` 內的 `<li>` | 這段不在 LOG 裡，排程會一起維護 |
 | 新增分類 | 在 `CATS` 加 key、名稱與顏色變數，並在 `:root` 與兩組深色模式區塊都補上 `--c-xxx` | 同時更新排程指令，AI 才會使用新分類 |
-| 調整保留天數、蒐集來源或寫作風格 | 修改**排程任務指令**（不在 repo） | 改完後手動觸發一次，確認結果 |
+| 調整保留天數、蒐集來源或寫作風格 | 修改**排程任務指令**，依 [`ops/routine-prompt.md`](ops/routine-prompt.md#4-修改指令的流程) 的流程進行 | 改完要同步到線上排程並手動觸發一次 |
 | 改版面或樣式 | 修改 `<style>` 與渲染函式 | 排程只會動資料與時間戳，不會動版面；改完要在淺色、深色模式與手機寬度各看一次 |
 
 ### 6.4 Commit 慣例
@@ -234,7 +238,7 @@ git show <commit>:index.html > snapshot.html     # 取出當時的頁面，直�
 
 ## 8. 已知限制與後續建議
 
-- **核心邏輯不在版控內**：排程指令與 Artifact 網址都不在 repo，換人維護時最容易斷線。建議把指令收進 `ops/routine-prompt.md`，並在本文件補上 Artifact 連結。
+- **repo 副本與線上排程可能不一致**：指令已收進 [`ops/routine-prompt.md`](ops/routine-prompt.md)，但線上排程才是實際執行的版本。若有人直接在後台修改，兩邊就會不一致，建議每月依[比對方法](ops/routine-prompt.md#5-檢查-repo-版與線上版是否一致)抽查。排程設定中另有幾個待確認事項，見該檔第 6 節。
 - **沒有 CI 驗證**：目前驗證只在排程執行時進行。可以把 [6.2](#62-修改前後的驗證) 的檢查做成 GitHub Actions，在每次 push 時自動執行。
 - **資料與呈現耦合**：LOG 寫在 HTML 裡，對 AI 很方便，但不利於其他程式取用。若之後有分析需求，可以拆出 `data/log.json`，讓頁面用 `fetch` 載入。
 - **背景議題與時間戳是手寫的**：它們不在 LOG 裡，容易忘記更新。
