@@ -3,6 +3,7 @@
 每天自動彙整「台北捷運」相關新聞與社群討論，整理成可切換日期、可兩日比對的單頁網站。
 
 - **線上網址（GitHub Pages）**：<https://cjw9223233.github.io/mrt-log/>
+- **Cloudflare 版**：推送到 `main` 後由 Cloudflare 自動建置與部署，只公開 `index.html`（網址見 Cloudflare 主控台，設定方式見 [6.6](#66-佈署到-cloudflare)）
 - **Claude Artifact 版**：<https://claude.ai/code/artifact/10582dca-0c98-466c-b0b1-25e995d13ee0>（第二個發布點，也是排程讀取基底的首選來源）
 - **更新頻率**：每日一次，約台灣時間 10:00（由 Claude Code 排程任務自動執行）
 - **收錄範圍**：最近 14 天（滑動視窗；更早的資料保存在 git 歷史中）
@@ -83,6 +84,7 @@ flowchart LR
 | `index.html` | repo 根目錄 | 呈現層與資料層合一：CSS、LOG 資料、渲染 JS 全在這一個檔案 | 是 |
 | Claude Artifact | [claude.ai/code/artifact/10582dca…](https://claude.ai/code/artifact/10582dca-0c98-466c-b0b1-25e995d13ee0) | 第二個發布點，提供免技術背景也能開的分享連結；同時是排程讀取基底的首選來源 | **否** |
 | GitHub Pages | `cjw9223233.github.io/mrt-log` | 從 `main` 根目錄直接發布靜態網站 | 設定在 GitHub repo Settings |
+| Cloudflare（Workers 靜態資產） | Cloudflare 主控台，連結本 repo 的 `main` | 每次 push 自動執行 `tools/build-site.sh` 與 `npx wrangler deploy`，只發布 `dist/` | 建置腳本與 `wrangler.jsonc` 在 repo；連結設定在 Cloudflare 主控台 |
 | `.nojekyll` | repo 根目錄 | 讓 GitHub Pages 跳過 Jekyll 處理，原樣發布檔案 | 是 |
 | `docs/control-room.html` | `docs/` | 給非技術人員看的流程教學 | 是 |
 
@@ -110,6 +112,10 @@ mrt-log/
 │   └── control-room.html   # 非技術人員導讀：自動化流程圖解
 ├── ops/
 │   └── routine-prompt.md   # 排程指令的版控副本、設定與修改流程
+├── tools/
+│   └── build-site.sh       # Cloudflare 建置腳本：決定哪些檔案進入公開網站（輸出到 dist/）
+├── wrangler.jsonc          # Cloudflare 部署設定：只發布 dist/，不可刪除
+├── .gitignore              # 忽略 dist/ 等建置產物
 ├── .nojekyll               # 關閉 GitHub Pages 的 Jekyll 處理
 └── README.md
 ```
@@ -220,6 +226,30 @@ git log --oneline -- index.html                  # 找出目標日期的 commit
 git show <commit>:index.html > snapshot.html     # 取出當時的頁面，直接用瀏覽器開
 ```
 
+### 6.6 佈署到 Cloudflare
+
+每次推送到 `main`（包含每日排程的自動提交），Cloudflare 會自動做兩件事：
+
+1. **建置**：執行 `sh tools/build-site.sh`，把腳本裡 `PUBLISH` 清單列出的檔案（目前只有 `index.html`）複製到 `dist/`。
+2. **部署**：執行 `npx wrangler deploy`，依 `wrangler.jsonc` 的設定只上傳 `dist/`。
+
+兩個檔案各管一件事：
+
+| 檔案 | 作用 |
+|---|---|
+| `tools/build-site.sh` | 決定哪些檔案進入公開網站。新增網站要用的檔案或資料夾時，把路徑加進 `PUBLISH` 清單 |
+| `wrangler.jsonc` | 告訴 Cloudflare 只發布 `dist/`。**不可刪除**：沒有它，Cloudflare 會把整個倉庫（含 `README.md`、`ops/`、`docs/`）都公開 |
+
+本機開發不需要跑建置腳本；想先確認結果可執行 `sh tools/build-site.sh && npx wrangler deploy --dry-run`。`dist/` 是建置產物，已列入 `.gitignore`。
+
+Cloudflare 主控台上的設定（只需做一次）：
+
+1. Workers & Pages → Create → Import a repository，選 `cjw9223233/mrt-log`。
+2. 專案名稱填 `mrt-log`（要和 `wrangler.jsonc` 的 `name` 一致）。
+3. 建置指令 `sh tools/build-site.sh`，部署指令 `npx wrangler deploy`，分支 `main`。不需要設環境變數。
+
+GitHub Pages 與 Cloudflare 互不影響，兩邊都從 `main` 取得同一份 `index.html`。
+
 ---
 
 ## 7. 疑難排解
@@ -228,6 +258,7 @@ git show <commit>:index.html > snapshot.html     # 取出當時的頁面，直�
 |---|---|---|
 | 網站「最後更新」停在昨天以前 | 排程沒觸發、執行失敗，或 push 被拒 | 到 claude.ai/code 檢查排程的執行紀錄；用 `git log` 看最近一次提交 |
 | repo 已更新，網站卻沒變 | GitHub Pages 部署中或有快取 | 等幾分鐘後強制重新整理；到 repo 的 Actions／Pages 頁面看部署狀態 |
+| GitHub Pages 已更新，Cloudflare 版沒變 | Cloudflare 建置失敗，或排程改推到備用分支（Cloudflare 只跟 `main`） | 到 Cloudflare 主控台該專案的 Deployments 看建置紀錄；本機用 `sh tools/build-site.sh` 重現 |
 | push 被拒（main 受保護） | 分支保護規則 | 排程會改推到備用分支並通知；可調整保護規則，或把 Pages 來源切到該分支 |
 | 「repo 尚未授權」錯誤 | 排程的 GitHub 權限沒包含此 repo | 到排程設定把 `cjw9223233/mrt-log` 加入允許清單 |
 | Artifact 與 GitHub 內容不一致 | 某一邊發布失敗，或基底讀到舊版 | 以時間戳較新、內容較完整的一方為準，請 Claude 依此重新發布兩邊 |

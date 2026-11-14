@@ -1,0 +1,11 @@
+// Cloudflare 部署設定。不可刪除：沒有這個檔案，Cloudflare 會把整個倉庫
+// （含 README.md、ops/、docs/）都當成網站內容公開。
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mrt-log",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    // 只發布建置腳本 tools/build-site.sh 產生的 dist/
+    "directory": "./dist"
+  }
+}
