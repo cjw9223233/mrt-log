@@ -29,6 +29,7 @@
 | 每次執行是否延續上一次 | 否（`persist_session: false`，每次都是全新 session） |
 | 發布點 A：Claude Artifact | <https://claude.ai/code/artifact/10582dca-0c98-466c-b0b1-25e995d13ee0> |
 | 發布點 B：GitHub Pages | <https://cjw9223233.github.io/mrt-log/> |
+| 發布點 C：Cloudflare（2026-11-14 新增） | 不由指令直接操作：步驟六 push 到 `main` 後，Cloudflare 自動執行 `sh tools/build-site.sh` 與 `npx wrangler deploy`，只發布 `index.html`。網址見 Cloudflare 主控台；說明見 README [6.6](../README.md#66-佈署到-cloudflare) |
 
 ---
 
@@ -43,7 +44,7 @@
 | 三、寫入資料 | 把今天這一筆插到 LOG 最前面；同日重跑時就地增補；只保留 14 天；更新 TRACK、「最後更新」時間戳、背景議題 | `LOG`、`TRACK`、`masthead` 時間戳、`bg-note` | 無 |
 | 四、版面規範 | 禁止動 CSS、HTML 結構、配色與既有功能 | 不可改動的範圍 | 無 |
 | 五、產檔與驗證 | 產生 Artifact 版與 GitHub 版兩份檔案；用 node 解析 LOG；用 Playwright 截圖並點擊測試 | 外框（`<head>` 組裝） | 驗證不過就不應發布 |
-| 六、部署 Pages | commit「日誌更新 YYYY-MM-DD」並 push `main`；約 60 秒後回頭確認線上時間戳 | 整個檔案 | push 被拒：改推 `claude/pages` 並通知；403 未授權：不繞過，通知使用者到後台加 repo |
+| 六、部署 Pages | commit「日誌更新 YYYY-MM-DD」並 push `main`（同一次 push 也會觸發 Cloudflare 部署，但指令不會檢查它）；約 60 秒後回頭確認線上時間戳 | 整個檔案 | push 被拒：改推 `claude/pages` 並通知；403 未授權：不繞過，通知使用者到後台加 repo |
 | 七、發布 Artifact | 用固定 url 覆蓋發布 | 不適用 | 走備援路徑時用 `force:true`；仍失敗就改送檔案，不另開新網址 |
 | 八、通知 | 推播當日摘要與兩個網址 | 不適用 | 平淡且兩邊都成功時可以不推播 |
 
@@ -177,8 +178,12 @@ EOF
 | 項目 | 觀察 | 影響 | 建議 |
 |---|---|---|---|
 | 工具清單 | 指令使用 Artifact、PushNotification、SendUserFile，但這三個都不在 `allowed_tools` 中 | 目前每天都成功，推測是排程內建工具；若平台日後改為嚴格限制，步驟七、八可能失效 | 下次調整排程時一併確認，必要時把工具加入清單 |
-| 產出分支 | 排程設定的產出分支是 `claude/brave-johnson`，但指令要求推送 `main` | repo 可能多出一條長期存在、內容過時的分支，造成混淆 | 確認該分支是否存在、是否需要；不需要就從設定中移除 |
+| 產出分支 | 排程設定的產出分支是 `claude/brave-johnson`，但指令要求推送 `main`。2026-11-14 的執行中，session 的工作分支實際是 `claude/brave-johnson-zm1fv8`，結束前的檢查要求把提交也推到這條分支，所以同一個提交會同時出現在 `main` 與工作分支 | repo 會多出內容與 `main` 重複的 `claude/…` 分支，造成混淆 | 確認這些分支是否需要保留；不需要就定期刪除，或從排程設定中移除產出分支 |
 | 基底優先順序 | 步驟 1-A 以 Artifact 為主要基底，GitHub 只是備援 | 只在 GitHub 手動修改 `index.html` 的話，下次排程可能用 Artifact 舊版蓋掉 | 人工修改 GitHub 後，請 Claude 依新版 `index.html` 覆蓋發布 Artifact，讓兩邊一致 |
+
+| Cloudflare 不在指令範圍內 | 2026-11-14 起多了第三個發布點，但指令的固定產出目標、步驟六與步驟八都只提 Artifact 與 GitHub Pages | Cloudflare 建置失敗不會被發現，也不會推播；通知附的網址沒有 Cloudflare 版 | 若要納入，在指令加上 Cloudflare 網址與部署後的時間戳檢查（需先把該網域加入環境的連線名單） |
+| 備用分支不會更新 Cloudflare | 步驟六在 `main` 被拒時改推 `claude/pages`，Cloudflare 只跟 `main` | 發生時 GitHub Pages 可切換分支補救，Cloudflare 版會停在舊內容 | 發生時把提交合併回 `main`，或到 Cloudflare 主控台暫時改部署分支 |
+| 對外連線名單 | 2026-11-14 執行時，下列網域因不在環境的連線名單而無法解析：`www.metro.taipei`、`news.ltn.com.tw`、`www.cna.com.tw`、`www.pttweb.cc`、`www.ftnn.com.tw`、`n.yam.com`、`cjw9223233.github.io` | 步驟二的 4 個指定來源頁全部讀不到，內容只能取自搜尋摘要，PTT 推文數無法複查；步驟六的線上時間戳確認也無法執行 | 到 <https://claude.ai/code/routines> 的排程環境網路設定加入這些網域 |
 
 ---
 
@@ -188,3 +193,5 @@ EOF
 |---|---|
 | 2026-09-21 | 建立排程 |
 | 2026-10-05 | 指令首次收進版控（內容與線上版逐字相同，未修改） |
+| 2026-11-14 | 新增 Cloudflare 部署（`tools/build-site.sh`、`wrangler.jsonc`），由 push 到 `main` 觸發。**指令原文未修改**，線上排程不需同步 |
+| 2026-11-15 | 第 1、2 節補上發布點 C；第 6 節新增 Cloudflare、備用分支、對外連線名單三項待確認事項，並更新產出分支的觀察 |

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="給新手 PM 的說明文件：北捷輿情日誌從蒐集資料、寫入頁面到雙軌部署（Artifact + GitHub Pages）與通知的完整自動化流程與關鍵名詞解釋。">
+<meta name="description" content="給新手 PM 的說明文件：北捷輿情日誌從蒐集資料、寫入頁面到多點部署（Artifact、GitHub Pages、Cloudflare）與通知的完整自動化流程與關鍵名詞解釋。">
 <title>日誌自動化控制室</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -216,7 +216,7 @@ footer.foot{
 <section>
   <div class="tldr">
     <div class="k">30 秒版本</div>
-    <p>這是一個「每天自動醒來一次」的 AI 任務。它醒來後會：讀取昨天寫好的資料 → 上網找今天跟台北捷運有關的新聞與討論 → 把新資料寫進一份 JSON 清單 → 用同一份清單組出兩個網頁 → 用真的瀏覽器截圖檢查版面沒壞 → 同時發布到「Claude Artifact」和「GitHub Pages」兩個地方 → 傳一則通知告訴你今天發生了什麼。</p>
+    <p>這是一個「每天自動醒來一次」的 AI 任務。它醒來後會：讀取昨天寫好的資料 → 上網找今天跟台北捷運有關的新聞與討論 → 把新資料寫進一份 JSON 清單 → 用同一份清單組出兩個網頁 → 用真的瀏覽器截圖檢查版面沒壞 → 同時發布到「Claude Artifact」和「GitHub Pages」兩個地方（推上 GitHub 之後，Cloudflare 也會自動更新一份）→ 傳一則通知告訴你今天發生了什麼。</p>
     <p>你不需要碰任何程式碼。你需要知道的只是：<b>「排程」決定什麼時候跑</b>、<b>「Artifact」和「GitHub」是兩個不同的家，但住的是同一份內容</b>、<b>「LOG 陣列」是這整個系統唯一的資料庫</b>。</p>
   </div>
 </section>
@@ -235,6 +235,7 @@ flowchart TD
     TEST --> GH["git push 到 GitHub"]
     TEST --> ART["發布回 Artifact"]
     GH --> PAGES["GitHub Pages<br/>自動把 repo 變成公開網站"]
+    GH --> CF["Cloudflare<br/>自動建置，只發布 index.html"]
     ART --> LINK["claude.ai 上的分享連結"]
     PAGES --> NOTIFY["PushNotification<br/>把重點推播給你"]
     LINK --> NOTIFY
@@ -307,6 +308,10 @@ flowchart TD
       <div class="term">
         <div class="t-name"><b>GitHub Pages</b><span>免費架站</span></div>
         <p>GitHub 提供的免費服務：只要 repo 裡有一個 <code>index.html</code>，它就會自動把整個 repo 變成一個公開網站，網址通常長得像 <code>帳號.github.io/repo名稱</code>。</p>
+      </div>
+      <div class="term">
+        <div class="t-name"><b>Cloudflare</b><span>第三個發布點</span></div>
+        <p>另一家提供網站託管的服務。它盯著 repo 的 <code>main</code> 分支，一有新的 push 就自動跑兩步：先用建置腳本挑出要公開的檔案放進 <code>dist/</code>，再把 <code>dist/</code> 上傳成網站。和 GitHub Pages 的差別是：這裡只公開 <code>index.html</code>，repo 裡的其他文件不會跟著上線。</p>
       </div>
       <div class="term">
         <div class="t-name"><b>Artifact</b><span>Claude 的頁面</span></div>
@@ -382,6 +387,7 @@ flowchart TD
       <div class="stop-card">
         <div class="sh"><span class="badge">STOP 6</span><h3>上線：同時部署到兩個家</h3></div>
         <p>驗證過關後，兩邊幾乎同時發布：GitHub 那邊用 <code>git commit</code> + <code>git push</code> 把新的 <code>index.html</code> 送上 <code>main</code> 分支，觸發 GitHub Pages 自動重新部署公開網站；Artifact 那邊則用同一個網址「覆蓋更新」，版本號自動往上加一，舊網址不會變。</p>
+        <p><b>2026-11-14 起多了第三個家：</b>Cloudflare 也連上了這個 repo。AI 不需要多做任何事，<code>git push</code> 到 <code>main</code> 的那一刻，Cloudflare 會自己建置並更新它那一份。要注意的是，AI 目前不會回頭檢查 Cloudflare 有沒有成功。</p>
         <div class="ex"><b>今天實際情況：</b>這是這個 repo 第一次真的有 <code>index.html</code> 被推上去（之前只有一份 README）。Artifact 端則是已經第 31 個版本，代表這條線已經穩定跑了一個多月。</div>
       </div>
     </div>
@@ -403,6 +409,11 @@ flowchart TD
   <div class="qa">
     <div class="q">為什麼要同時發布到 Artifact 和 GitHub 兩個地方，不是重複做工嗎？</div>
     <div class="a">兩者服務的對象不同。Artifact 連結誰都能打開、不需要懂技術，適合快速分享；GitHub Pages 則是「真正屬於你、掛在你自己網域下」的公開網站，之後要接自訂網域、串其他自動化都比較有彈性。用同一份 LOG 資料組出兩個外殼，維護成本幾乎沒有增加。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">已經有 GitHub Pages 了，Cloudflare 那一份差在哪裡？</div>
+    <div class="a">差在「公開了多少東西」。GitHub Pages 會把 <code>main</code> 分支根目錄的所有檔案都變成網頁，包含 README、排程指令備份和這份說明文件；Cloudflare 那邊則由 <code>tools/build-site.sh</code> 明確列出要公開的檔案，目前只有 <code>index.html</code>。設定檔 <code>wrangler.jsonc</code> 負責告訴 Cloudflare「只上傳 <code>dist/</code>」，所以它不能刪。</div>
   </div>
 
   <div class="qa">
@@ -430,6 +441,7 @@ flowchart TD
         <tr><td>git push 被拒絕</td><td>repo 對 <code>main</code> 分支設了保護規則，不接受直接推送</td><td>改推到一條備用分支，並在通知裡請你去 GitHub Pages 設定把來源分支切過去</td></tr>
         <tr><td>Artifact 發布失敗</td><td>這次的基底資料來自 GitHub 備援版本，系統認定「還沒讀過最新的 Artifact 版本」，為了避免覆蓋掉別人剛改的內容而擋下</td><td>因為已經先確認 GitHub 版才是最新、最正確的版本，會用「強制覆蓋」參數完成發布</td></tr>
         <tr><td>出現「repo 尚未授權」錯誤</td><td>這個 Routine 目前只被允許操作特定幾個 repo，這次要處理的 repo 不在名單裡</td><td>不會嘗試繞過權限限制，只會照常做完其他能做的事，並在通知裡請你去後台把這個 repo 加進允許名單</td></tr>
+        <tr><td>GitHub Pages 更新了，Cloudflare 那一份沒變</td><td>Cloudflare 的建置失敗，或這次 AI 是推到備用分支（Cloudflare 只跟 <code>main</code>）</td><td>目前不會自己處理，也不會通知。要到 Cloudflare 主控台該專案的 Deployments 看建置紀錄</td></tr>
         <tr><td>公開網站看起來還沒更新</td><td>GitHub Pages 從收到新檔案到全球生效，本來就有幾分鐘的快取延遲</td><td>會嘗試重新讀取確認，讀不到不會直接判定失敗，只會在通知裡註記「可能還在生效中」</td></tr>
       </tbody>
     </table>
@@ -458,7 +470,7 @@ flowchart TD
 </section>
 
 <footer class="foot">
-  本文件為內部教學說明，整理自 2026-09-21 該日任務的實際執行紀錄。若日後系統設計調整（例如新增資料來源、改變部署流程），建議同步更新本文件，避免與實際運作脫節。
+  本文件為內部教學說明，整理自 2026-09-21 該日任務的實際執行紀錄；2026-11-15 補上 Cloudflare 部署的說明。若日後系統設計調整（例如新增資料來源、改變部署流程），建議同步更新本文件，避免與實際運作脫節。
 </footer>
 
 </div>
