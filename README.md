@@ -3,7 +3,7 @@
 每天自動彙整「台北捷運」相關新聞與社群討論，整理成可切換日期、可兩日比對的單頁網站。
 
 - **線上網址（GitHub Pages）**：<https://cjw9223233.github.io/mrt-log/>
-- **Cloudflare 版**：已上線。每次推送到 `main` 由 Cloudflare 自動建置與部署，只公開 `index.html`（網址見 Cloudflare 主控台該專案頁；運作方式見 [6.6](#66-佈署到-cloudflare)）
+- **線上網址（Cloudflare）**：<https://mrt-log.cjw-9223233.workers.dev/>。每次推送到 `main` 由 Cloudflare 自動建置與部署，只公開 `index.html`（運作方式見 [6.6](#66-佈署到-cloudflare)）
 - **Claude Artifact 版**：<https://claude.ai/code/artifact/10582dca-0c98-466c-b0b1-25e995d13ee0>（第二個發布點，也是排程讀取基底的首選來源）
 - **更新頻率**：每日一次，約台灣時間 10:00（由 Claude Code 排程任務自動執行）
 - **收錄範圍**：最近 14 天（滑動視窗；更早的資料保存在 git 歷史中）
@@ -85,7 +85,7 @@ flowchart LR
 | `index.html` | repo 根目錄 | 呈現層與資料層合一：CSS、LOG 資料、渲染 JS 全在這一個檔案 | 是 |
 | Claude Artifact | [claude.ai/code/artifact/10582dca…](https://claude.ai/code/artifact/10582dca-0c98-466c-b0b1-25e995d13ee0) | 第二個發布點，提供免技術背景也能開的分享連結；同時是排程讀取基底的首選來源 | **否** |
 | GitHub Pages | `cjw9223233.github.io/mrt-log` | 從 `main` 根目錄直接發布靜態網站 | 設定在 GitHub repo Settings |
-| Cloudflare（Workers 靜態資產） | Cloudflare 主控台，連結本 repo 的 `main` | 每次 push 自動執行 `tools/build-site.sh` 與 `npx wrangler deploy`，只發布 `dist/` | 建置腳本與 `wrangler.jsonc` 在 repo；連結設定在 Cloudflare 主控台 |
+| Cloudflare（Workers 靜態資產） | `mrt-log.cjw-9223233.workers.dev`，由 Cloudflare 主控台連結本 repo 的 `main` | 每次 push 自動執行 `tools/build-site.sh` 與 `npx wrangler deploy`，只發布 `dist/` | 建置腳本與 `wrangler.jsonc` 在 repo；連結設定在 Cloudflare 主控台 |
 | `.nojekyll` | repo 根目錄 | 讓 GitHub Pages 跳過 Jekyll 處理，原樣發布檔案 | 是 |
 | `docs/control-room.html` | `docs/` | 給非技術人員看的流程教學 | 是 |
 
@@ -110,7 +110,7 @@ flowchart LR
 |---|---|---|---|
 | Claude Artifact | 排程步驟七用固定網址覆蓋發布 | 單一頁面 | 會：發布失敗會改送檔案並通知 |
 | GitHub Pages | push 到 `main` 後 GitHub 自動部署 | `main` 根目錄的所有檔案，包含 `README.md`、`ops/`、`docs/` | 會，但目前無效：步驟六要讀線上時間戳，執行環境連不上 `github.io`（見[第 8 節](#8-已知限制與後續建議)） |
-| Cloudflare | push 到 `main` 後 Cloudflare 自動建置與部署 | 只有 `index.html` | 不會：排程指令沒有提到 Cloudflare，建置失敗只會顯示在 Cloudflare 主控台 |
+| Cloudflare（<https://mrt-log.cjw-9223233.workers.dev/>） | push 到 `main` 後 Cloudflare 自動建置與部署 | 只有 `index.html` | 不會：排程指令沒有提到 Cloudflare，建置失敗只會顯示在 Cloudflare 主控台 |
 
 要確認某個發布點是不是最新，直接開該網址看頁首的「最後更新」。
 
