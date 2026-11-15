@@ -97,7 +97,9 @@
 - 則數沒有下限。當天有幾則真正的新進展就寫幾則，平靜的日子只有 1–2 則、甚至 0 則都可以；上限 13 則。
 - PTT／Dcard 討論串盡量記下推文數或熱度概況；沒能打開全文、只取得搜尋摘要的條目，在該則內文用一句話註明即可。
 
-指定來源或其他網站讀不到時（例如網域不在可連線名單內）：改用搜尋結果繼續完成，**不要把連線失敗、網域清單或設定方法寫進頁面的任何欄位**（summary、items、背景議題都不行），這些只寫在步驟八的通知裡。
+讀取網頁的順序：先用 WebFetch；若 WebFetch 回報 `getaddrinfo ENOTFOUND`（這是工具本身的解析問題，不一定代表網域被擋），改用 Bash 執行 `curl -sS -L -m 30 <網址>`（用 curl 預設的 User-Agent，不要偽裝成瀏覽器），再用 node 或 python 從回傳的 HTML 取出日期、標題與連結。curl 也失敗（403、連線被拒）才算讀不到。官方新聞稿頁、誤點證明頁、自由時報、中央社、PTT 都可以用這個方法讀。
+
+指定來源或其他網站讀不到時（例如網域不在可連線名單內，或網站回 403）：改用搜尋結果繼續完成，不要用更換 User-Agent、加瀏覽器標頭等方式繞過網站的封鎖；**不要把連線失敗、網域清單或設定方法寫進頁面的任何欄位**（summary、items、背景議題都不行），這些只寫在步驟八的通知裡。
 
 【步驟三：把今日資料寫進基底的資料結構】
 在基底 HTML 中找到 `const LOG = [` 開頭的每日資料陣列，依照它既有的欄位格式，新增一筆今天日期的物件放在陣列**最前面**。
@@ -128,7 +130,7 @@ CSS、HTML 結構、class 名稱、配色 token、區塊順序，以及日期選
 3. 用 `git ls-remote --symref origin HEAD` 確認預設分支（目前應為 main），再 `git push origin HEAD:main`（若預設分支已改名，改推該分支）。session 若另外指定了工作分支（例如 claude/ 開頭），同一個 commit 也用 `git push -u origin HEAD:<工作分支>` 推上去，避免結束前的檢查卡住。**不要在指令、檔案或輸出中放任何 token**；憑證由本排程所連結的 GitHub 授權自動提供。
 4. 若 push 到 main 被拒（例如分支權限檢查），改推 `git push origin HEAD:claude/pages --force`，並在通知中說明兩件事：請使用者到 https://github.com/cjw9223233/mrt-log/settings/pages 把 Branch 改成 claude/pages（只需改一次；若已是 claude/pages 就不必提醒）；以及 Cloudflare 只跟 main，這次不會更新，需要把該 commit 合併回 main。
 5. 若出現「not in this session's authorized repository set」之類的 403 → 代表 repo 尚未加進此排程的 repository 設定；不要嘗試其他繞過方式，照常完成步驟七，並在通知中說明：請到 https://claude.ai/code/routines → 北捷輿情日誌 → Edit → Select repositories 加入 cjw9223233/mrt-log。
-6. push 成功後等約 60 秒，用 WebFetch 分別開 https://cjw9223233.github.io/mrt-log/ 與 https://mrt-log.cjw-9223233.workers.dev/ ，確認「最後更新」時間戳已是今天。快取或建置可能延遲至 10 分鐘，未更新不算失敗，只在通知中註記；網址因連線名單而打不開時，同樣只在通知中註記「未能複核」，不要重試其他繞過方式。
+6. push 成功後等約 60 秒，用 WebFetch 分別開 https://cjw9223233.github.io/mrt-log/ 與 https://mrt-log.cjw-9223233.workers.dev/ ，確認「最後更新」時間戳已是今天（WebFetch 失敗時同樣改用 `curl -sS -L -m 30` 取回 HTML 再比對）。快取或建置可能延遲至 10 分鐘，未更新不算失敗，只在通知中註記；兩種方法都打不開時，只在通知中註記「未能複核」，不要重試其他繞過方式。
 
 【步驟七：發布 Artifact】
 用 Artifact 工具發布 /root/mrt_log.html，**務必帶上 url 參數指向 https://claude.ai/code/artifact/10582dca-0c98-466c-b0b1-25e995d13ee0** ，不要省略 url，否則會另開新網址。
@@ -201,7 +203,7 @@ EOF
 
 | Cloudflare 的檢查要等同步後才生效 | 2026-11-15 的修改版已把 Cloudflare 納入固定產出目標、步驟六的時間戳檢查與步驟八的通知，但線上排程還是舊版 | 同步前，Cloudflare 建置失敗不會被發現，也不會推播 | 照第 4 節把修改版同步到線上；並把 `mrt-log.cjw-9223233.workers.dev` 加入環境的連線名單，否則檢查只會回報「未能複核」 |
 | 備用分支不會更新 Cloudflare | 步驟六在 `main` 被拒時改推 `claude/pages`，Cloudflare 只跟 `main`。修改版會在通知中提醒這一點 | 發生時 GitHub Pages 可切換分支補救，Cloudflare 版會停在舊內容 | 發生時把提交合併回 `main`，或到 Cloudflare 主控台暫時改部署分支 |
-| 對外連線名單 | 2026-11-14 執行時，下列網域因不在環境的連線名單而無法解析：`www.metro.taipei`、`news.ltn.com.tw`、`www.cna.com.tw`、`www.pttweb.cc`、`www.ftnn.com.tw`、`n.yam.com`、`cjw9223233.github.io`。`mrt-log.cjw-9223233.workers.dev` 同樣連不上 | 步驟二的 4 個指定來源頁全部讀不到，內容只能取自搜尋摘要，PTT 推文數無法複查；步驟六的線上時間戳確認也無法執行。這是環境設定問題，改指令解決不了 | 到 <https://claude.ai/code/routines> 的排程環境網路設定加入這些網域 |
+| 對外連線名單 | 2026-11-14 執行時，下列網域因不在環境的連線名單而無法解析：`www.metro.taipei`、`news.ltn.com.tw`、`www.cna.com.tw`、`www.pttweb.cc`、`www.ftnn.com.tw`、`n.yam.com`、`cjw9223233.github.io`、`mrt-log.cjw-9223233.workers.dev`。**2026-11-15 已加入環境的 Allowed domains 並驗證**：從 Bash 用 `curl` 八個網域都回 200，兩個公開頁讀得到且「最後更新」與 repo 一致。但 **WebFetch 工具在同一個 session 裡仍回 `getaddrinfo ENOTFOUND`**，推測它不走環境的連線名單，因此修改版指令要求 WebFetch 失敗時改用 `curl` | 設定問題已解決。剩下的風險是排程若只用 WebFetch，仍會誤判為讀不到 | 修改版指令（尚未同步到線上）已寫入 curl 備援；同步後下一次排程執行時，確認通知與頁面沒有「讀不到」的說明 |
 
 ---
 
@@ -213,4 +215,5 @@ EOF
 | 2026-10-05 | 指令首次收進版控（內容與線上版逐字相同，未修改） |
 | 2026-11-14 | 新增 Cloudflare 部署（`tools/build-site.sh`、`wrangler.jsonc`），由 push 到 `main` 觸發。**指令原文未修改**，線上排程不需同步 |
 | 2026-11-15 | **指令原文改版（尚未同步到線上）**：(1) 取消「每天 6–13 則」的下限，只收近 2 天有新進展且日期可確認的條目，長期未結事項改放背景議題；(2) 連線失敗只寫進通知，不寫進頁面；(3) 組檔前先刪除本體內重複的 `</head>`、`<body>`，並加入對應驗證；(4) 納入 Cloudflare：固定產出目標、部署後檢查、通知網址、備用分支提醒；(5) git 步驟改為沿用工作目錄、`git ls-remote --symref`、`git push origin HEAD:main`，只提交 `index.html` 與 `.nojekyll`；(6) 天數改用具體日期或以 `date` 計算；(7) 通知規則分成一定通知、應該通知、可以不通知三級 |
+| 2026-11-15 | 指令原文再改（仍未同步到線上）：新增「WebFetch 失敗時改用 `curl`」的讀取順序與禁止偽裝 User-Agent 的限制，步驟六的時間戳確認同步改用同一方法。原因：環境連線名單設定完成後實測，`curl` 八個網域都通，WebFetch 仍 DNS 解析失敗 |
 | 2026-11-15 | 第 1、2 節補上發布點 C 與其網址；第 6 節新增 Cloudflare、備用分支、對外連線名單三項待確認事項，並更新產出分支的觀察 |

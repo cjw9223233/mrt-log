@@ -293,7 +293,7 @@ GitHub Pages 與 Cloudflare 互不影響，兩邊都從 `main` 取得同一份 `
 
 - **repo 副本與線上排程可能不一致**：指令已收進 [`ops/routine-prompt.md`](ops/routine-prompt.md)，但線上排程才是實際執行的版本。若有人直接在後台修改，兩邊就會不一致，建議每月依[比對方法](ops/routine-prompt.md#5-檢查-repo-版與線上版是否一致)抽查。排程設定中另有幾個待確認事項，見該檔第 6 節。
 - **排程指令的修改版尚未同步到線上**：2026-11-15 改版的指令（只收有新進展的條目、連線失敗不寫進頁面、納入 Cloudflare 檢查等）已寫進 [`ops/routine-prompt.md`](ops/routine-prompt.md)，但線上排程仍是舊版。同步前，每日內容仍會出現舊議題湊數與連線失敗說明，Cloudflare 建置失敗也不會有推播。同步流程見[該檔第 4 節](ops/routine-prompt.md#4-修改指令的流程)。
-- **執行環境的對外連線名單太窄**：2026-11-14 的執行中，官方新聞稿頁、自由時報、中央社、PTT 與 `cjw9223233.github.io` 都連不上，內容只能取自搜尋摘要，部署後也無法回頭確認線上時間戳。需要到排程的環境網路設定加入這些網域，清單見 [`ops/routine-prompt.md` 第 6 節](ops/routine-prompt.md#6-待確認事項)。
+- **WebFetch 工具讀不到網站，但 `curl` 讀得到**：2026-11-14 的執行中，官方新聞稿頁、自由時報、中央社、PTT 與兩個公開網址都連不上。2026-11-15 已把這些網域加進排程環境的 Allowed domains，從 Bash 用 `curl` 實測全部回 200；但 WebFetch 仍回 DNS 解析失敗。排程指令的修改版已要求 WebFetch 失敗時改用 `curl`，在該版同步到線上之前，排程仍可能因為只用 WebFetch 而誤判為讀不到。網域清單見 [`ops/routine-prompt.md` 第 6 節](ops/routine-prompt.md#6-待確認事項)。
 - **沒有 CI 驗證**：目前驗證只在排程執行時進行。Cloudflare 的建置腳本只檢查首頁有沒有 LOG 資料，不檢查格式。可以把 [6.2](#62-修改前後的驗證) 的檢查做成 GitHub Actions，或直接加進 `tools/build-site.sh`，在每次 push 時自動執行。
 - **資料與呈現耦合**：LOG 寫在 HTML 裡，對 AI 很方便，但不利於其他程式取用。若之後有分析需求，可以拆出 `data/log.json`，讓頁面用 `fetch` 載入。
 - **背景議題與時間戳是手寫的**：它們不在 LOG 裡，容易忘記更新。
