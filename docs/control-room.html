@@ -387,7 +387,7 @@ flowchart TD
       <div class="stop-card">
         <div class="sh"><span class="badge">STOP 6</span><h3>上線：同時部署到兩個家</h3></div>
         <p>驗證過關後，兩邊幾乎同時發布：GitHub 那邊用 <code>git commit</code> + <code>git push</code> 把新的 <code>index.html</code> 送上 <code>main</code> 分支，觸發 GitHub Pages 自動重新部署公開網站；Artifact 那邊則用同一個網址「覆蓋更新」，版本號自動往上加一，舊網址不會變。</p>
-        <p><b>2026-11-14 起多了第三個家：</b>Cloudflare 也連上了這個 repo。AI 不需要多做任何事，<code>git push</code> 到 <code>main</code> 的那一刻，Cloudflare 會自己建置並更新它那一份。要注意的是，AI 目前不會回頭檢查 Cloudflare 有沒有成功。</p>
+        <p><b>2026-11-14 起多了第三個家：</b>Cloudflare 也連上了這個 repo。AI 不需要多做任何事，<code>git push</code> 到 <code>main</code> 的那一刻，Cloudflare 會自己建置並更新它那一份。2026-11-15 改版的排程指令會在 push 之後回頭看 Cloudflare 那一份的「最後更新」時間；這份指令同步到線上排程之前，AI 不會檢查它。</p>
         <div class="ex"><b>今天實際情況：</b>這是這個 repo 第一次真的有 <code>index.html</code> 被推上去（之前只有一份 README）。Artifact 端則是已經第 31 個版本，代表這條線已經穩定跑了一個多月。</div>
       </div>
     </div>
@@ -441,7 +441,7 @@ flowchart TD
         <tr><td>git push 被拒絕</td><td>repo 對 <code>main</code> 分支設了保護規則，不接受直接推送</td><td>改推到一條備用分支，並在通知裡請你去 GitHub Pages 設定把來源分支切過去</td></tr>
         <tr><td>Artifact 發布失敗</td><td>這次的基底資料來自 GitHub 備援版本，系統認定「還沒讀過最新的 Artifact 版本」，為了避免覆蓋掉別人剛改的內容而擋下</td><td>因為已經先確認 GitHub 版才是最新、最正確的版本，會用「強制覆蓋」參數完成發布</td></tr>
         <tr><td>出現「repo 尚未授權」錯誤</td><td>這個 Routine 目前只被允許操作特定幾個 repo，這次要處理的 repo 不在名單裡</td><td>不會嘗試繞過權限限制，只會照常做完其他能做的事，並在通知裡請你去後台把這個 repo 加進允許名單</td></tr>
-        <tr><td>GitHub Pages 更新了，Cloudflare 那一份沒變</td><td>Cloudflare 的建置失敗，或這次 AI 是推到備用分支（Cloudflare 只跟 <code>main</code>）</td><td>目前不會自己處理，也不會通知。要到 Cloudflare 主控台該專案的 Deployments 看建置紀錄</td></tr>
+        <tr><td>GitHub Pages 更新了，Cloudflare 那一份沒變</td><td>Cloudflare 的建置失敗，或這次 AI 是推到備用分支（Cloudflare 只跟 <code>main</code>）</td><td>指令改版同步到線上後，AI 會在通知裡註記時間戳沒更新；在那之前不會通知。原因要到 Cloudflare 主控台該專案的 Deployments 看建置紀錄</td></tr>
         <tr><td>公開網站看起來還沒更新</td><td>GitHub Pages 從收到新檔案到全球生效，本來就有幾分鐘的快取延遲</td><td>會嘗試重新讀取確認，讀不到不會直接判定失敗，只會在通知裡註記「可能還在生效中」</td></tr>
       </tbody>
     </table>
