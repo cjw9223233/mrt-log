@@ -3,7 +3,7 @@
 每天自動彙整「台北捷運」相關新聞與社群討論，整理成可切換日期、可兩日比對的單頁網站。
 
 - **線上網址（GitHub Pages）**：<https://cjw9223233.github.io/mrt-log/>
-- **Cloudflare 版**：推送到 `main` 後由 Cloudflare 自動建置與部署，只公開 `index.html`（網址見 Cloudflare 主控台，設定方式見 [6.6](#66-佈署到-cloudflare)）
+- **線上網址（Cloudflare）**：<https://mrt-log.cjw-9223233.workers.dev/>。每次推送到 `main` 由 Cloudflare 自動建置與部署，只公開 `index.html`（運作方式見 [6.6](#66-佈署到-cloudflare)）
 - **Claude Artifact 版**：<https://claude.ai/code/artifact/10582dca-0c98-466c-b0b1-25e995d13ee0>（第二個發布點，也是排程讀取基底的首選來源）
 - **更新頻率**：每日一次，約台灣時間 10:00（由 Claude Code 排程任務自動執行）
 - **收錄範圍**：最近 14 天（滑動視窗；更早的資料保存在 git 歷史中）
@@ -19,7 +19,7 @@
 | 你是… | 你想知道… | 先讀 |
 |---|---|---|
 | 讀者／主管 | 這是什麼、怎麼看 | [1. 這是什麼](#1-這是什麼) → [2. 如何使用網頁](#2-如何使用網頁) |
-| PM／營運 | 它怎麼自己跑、出事怎麼辦 | [3. 系統架構](#3-系統架構) → [7. 疑難排解](#7-疑難排解) |
+| PM／營運 | 它怎麼自己跑、發布到哪裡、出事怎麼辦 | [3. 系統架構](#3-系統架構) → [3.4 發布點對照](#34-發布點對照) → [7. 疑難排解](#7-疑難排解) |
 | 維護者／工程師 | 資料格式、怎麼安全地改 | [4. 專案結構](#4-專案結構) → [5. 資料模型](#5-資料模型) → [6. 維護手冊](#6-維護手冊) |
 
 ---
@@ -72,6 +72,7 @@ flowchart LR
     V --> G["git commit + push 到 main"]
     V --> A["覆蓋發布 Claude Artifact"]
     G --> P["GitHub Pages 自動部署"]
+    G --> C["Cloudflare 自動建置與部署<br/>只發布 index.html"]
     P --> N["PushNotification<br/>有重要事件或異常時才推播"]
     A --> N
 ```
@@ -84,7 +85,7 @@ flowchart LR
 | `index.html` | repo 根目錄 | 呈現層與資料層合一：CSS、LOG 資料、渲染 JS 全在這一個檔案 | 是 |
 | Claude Artifact | [claude.ai/code/artifact/10582dca…](https://claude.ai/code/artifact/10582dca-0c98-466c-b0b1-25e995d13ee0) | 第二個發布點，提供免技術背景也能開的分享連結；同時是排程讀取基底的首選來源 | **否** |
 | GitHub Pages | `cjw9223233.github.io/mrt-log` | 從 `main` 根目錄直接發布靜態網站 | 設定在 GitHub repo Settings |
-| Cloudflare（Workers 靜態資產） | Cloudflare 主控台，連結本 repo 的 `main` | 每次 push 自動執行 `tools/build-site.sh` 與 `npx wrangler deploy`，只發布 `dist/` | 建置腳本與 `wrangler.jsonc` 在 repo；連結設定在 Cloudflare 主控台 |
+| Cloudflare（Workers 靜態資產） | `mrt-log.cjw-9223233.workers.dev`，由 Cloudflare 主控台連結本 repo 的 `main` | 每次 push 自動執行 `tools/build-site.sh` 與 `npx wrangler deploy`，只發布 `dist/` | 建置腳本與 `wrangler.jsonc` 在 repo；連結設定在 Cloudflare 主控台 |
 | `.nojekyll` | repo 根目錄 | 讓 GitHub Pages 跳過 Jekyll 處理，原樣發布檔案 | 是 |
 | `docs/control-room.html` | `docs/` | 給非技術人員看的流程教學 | 是 |
 
@@ -98,8 +99,20 @@ flowchart LR
 | 每次執行都從檔案接手，不依賴 AI 記憶 | 排程每次都開全新 Session，狀態只能存在檔案裡 | 基底若讀錯版本，就可能覆蓋掉較新的內容 |
 | 同一天重跑時「就地補充」，不新增一筆 | 維持 `date` 唯一，避免日期清單重複 | 排程邏輯必須先檢查當天資料是否已存在 |
 | 14 天滑動視窗 | 控制頁面大小與追蹤表寬度 | 舊資料只能從 git 歷史找回（見 [6.5](#65-查詢超過-14-天的歷史資料)） |
-| 雙軌發布（Artifact + GitHub Pages） | Artifact 方便分享；Pages 是自己可控的公開網站，之後可接自訂網域 | 兩邊可能不同步，詳見[疑難排解](#7-疑難排解) |
+| 三個發布點（Artifact + GitHub Pages + Cloudflare） | Artifact 方便分享；Pages 與 Cloudflare 都是自己可控的公開網站，其中 Cloudflare 只公開 `index.html`，不會連 README、`ops/`、`docs/` 一起發布 | 各發布點可能不同步，而且排程只驗證前兩個，詳見 [3.4](#34-發布點對照) 與[疑難排解](#7-疑難排解) |
 | 預設不推播 | 平靜的日子不打擾人 | 沒收到通知不代表有跑。要確認請看頁首的「最後更新」 |
+
+### 3.4 發布點對照
+
+三個發布點的內容都來自同一份 LOG，但更新方式與公開範圍不同：
+
+| 發布點 | 怎麼更新 | 公開了什麼 | 排程會不會檢查 |
+|---|---|---|---|
+| Claude Artifact | 排程步驟七用固定網址覆蓋發布 | 單一頁面 | 會：發布失敗會改送檔案並通知 |
+| GitHub Pages | push 到 `main` 後 GitHub 自動部署 | `main` 根目錄的所有檔案，包含 `README.md`、`ops/`、`docs/` | 會，但目前無效：步驟六要讀線上時間戳，執行環境連不上 `github.io`（見[第 8 節](#8-已知限制與後續建議)） |
+| Cloudflare（<https://mrt-log.cjw-9223233.workers.dev/>） | push 到 `main` 後 Cloudflare 自動建置與部署 | 只有 `index.html` | 不會：排程指令沒有提到 Cloudflare，建置失敗只會顯示在 Cloudflare 主控台 |
+
+要確認某個發布點是不是最新，直接開該網址看頁首的「最後更新」。
 
 ---
 
@@ -242,11 +255,17 @@ git show <commit>:index.html > snapshot.html     # 取出當時的頁面，直�
 
 本機開發不需要跑建置腳本；想先確認結果可執行 `sh tools/build-site.sh && npx wrangler deploy --dry-run`。`dist/` 是建置產物，已列入 `.gitignore`。
 
-Cloudflare 主控台上的設定（只需做一次）：
+Cloudflare 主控台上的設定（已於 2026-11-14 完成，僅供日後對照或重建）：
 
 1. Workers & Pages → Create → Import a repository，選 `cjw9223233/mrt-log`。
-2. 專案名稱填 `mrt-log`（要和 `wrangler.jsonc` 的 `name` 一致）。
+2. 專案名稱 `mrt-log`（要和 `wrangler.jsonc` 的 `name` 一致）。
 3. 建置指令 `sh tools/build-site.sh`，部署指令 `npx wrangler deploy`，分支 `main`。不需要設環境變數。
+
+注意事項：
+
+- 每日排程的 `日誌更新 YYYY-MM-DD` 提交也會觸發一次建置，不需要另外操作。
+- 排程在 `main` 被拒時會改推備用分支 `claude/pages`；Cloudflare 只跟 `main`，這種情況下不會更新。
+- 建置腳本內建一道防呆：`dist/index.html` 裡找不到 LOG 資料就讓建置失敗，線上會停在上一個成功的版本。
 
 GitHub Pages 與 Cloudflare 互不影響，兩邊都從 `main` 取得同一份 `index.html`。
 
@@ -270,7 +289,9 @@ GitHub Pages 與 Cloudflare 互不影響，兩邊都從 `main` 取得同一份 `
 ## 8. 已知限制與後續建議
 
 - **repo 副本與線上排程可能不一致**：指令已收進 [`ops/routine-prompt.md`](ops/routine-prompt.md)，但線上排程才是實際執行的版本。若有人直接在後台修改，兩邊就會不一致，建議每月依[比對方法](ops/routine-prompt.md#5-檢查-repo-版與線上版是否一致)抽查。排程設定中另有幾個待確認事項，見該檔第 6 節。
-- **沒有 CI 驗證**：目前驗證只在排程執行時進行。可以把 [6.2](#62-修改前後的驗證) 的檢查做成 GitHub Actions，在每次 push 時自動執行。
+- **Cloudflare 版不在排程的驗證與通知範圍內**：排程指令只處理 Artifact 與 GitHub Pages。Cloudflare 建置失敗不會有推播，要到主控台的 Deployments 才看得到。若要補上，需修改排程指令（流程見 [`ops/routine-prompt.md`](ops/routine-prompt.md#4-修改指令的流程)）。
+- **執行環境的對外連線名單太窄**：2026-11-14 的執行中，官方新聞稿頁、自由時報、中央社、PTT 與 `cjw9223233.github.io` 都連不上，內容只能取自搜尋摘要，部署後也無法回頭確認線上時間戳。需要到排程的環境網路設定加入這些網域，清單見 [`ops/routine-prompt.md` 第 6 節](ops/routine-prompt.md#6-待確認事項)。
+- **沒有 CI 驗證**：目前驗證只在排程執行時進行。Cloudflare 的建置腳本只檢查首頁有沒有 LOG 資料，不檢查格式。可以把 [6.2](#62-修改前後的驗證) 的檢查做成 GitHub Actions，或直接加進 `tools/build-site.sh`，在每次 push 時自動執行。
 - **資料與呈現耦合**：LOG 寫在 HTML 裡，對 AI 很方便，但不利於其他程式取用。若之後有分析需求，可以拆出 `data/log.json`，讓頁面用 `fetch` 載入。
 - **背景議題與時間戳是手寫的**：它們不在 LOG 裡，容易忘記更新。
 - **內容品質依賴 AI 判斷**：「爭議」與「當日風向」屬於主觀標記，建議定期抽查來源連結與摘要是否正確。
