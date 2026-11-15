@@ -286,6 +286,29 @@ footer.foot{
   border-radius:7px;font-size:11.5px;line-height:1.6;color:var(--ink-2);
   max-height:340px;overflow:auto;white-space:pre;
 }
+/* ---------- back to top ---------- */
+.totop{
+  position:fixed;z-index:20;
+  right:max(16px,env(safe-area-inset-right,0px));
+  bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  width:52px;height:52px;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  background:var(--surface);color:var(--accent);
+  border:1px solid var(--line);box-shadow:var(--shadow);
+  font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  opacity:0;visibility:hidden;transform:translateY(10px);
+  transition:opacity .2s ease,transform .2s ease,visibility 0s linear .2s,background-color .15s ease,border-color .15s ease;
+}
+.totop.show{opacity:1;visibility:visible;transform:none;transition:opacity .2s ease,transform .2s ease,visibility 0s,background-color .15s ease,border-color .15s ease}
+.totop svg{width:18px;height:18px;display:block}
+.totop .lbl{font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:600;letter-spacing:.12em;line-height:1}
+@media (hover:hover){.totop:hover{background:var(--accent);border-color:var(--accent);color:var(--surface)}}
+.totop:active{transform:scale(.94)}
+.totop:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media (max-width:600px){.totop{width:46px;height:46px;bottom:calc(16px + env(safe-area-inset-bottom,0px))}}
+@media (prefers-reduced-motion:reduce){.totop,.totop.show{transition:none}}
+@media print{.totop{display:none}}
+.masthead h1[tabindex="-1"]:focus{outline:none}
 </style>
 </head>
 <body>
@@ -357,6 +380,11 @@ footer.foot{
     </main>
   </div>
 </div>
+
+<button type="button" class="totop" id="totop" aria-label="回到頂端" title="回到頂端">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
+  <span class="lbl" aria-hidden="true">TOP</span>
+</button>
 
 <script>
 const CATS = {
@@ -563,6 +591,27 @@ $("#cmp").addEventListener("change", e => {
     }
     setTimeout(() => { btn.textContent = "複製全部"; }, 2400);
   });
+})();
+
+/* ---------- back to top ---------- */
+(function(){
+  const btn = document.getElementById("totop");
+  if (!btn) return;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let ticking = false;
+  const update = () => {
+    btn.classList.toggle("show", window.scrollY > Math.max(480, window.innerHeight * 0.75));
+    ticking = false;
+  };
+  window.addEventListener("scroll", () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, {passive:true});
+  btn.addEventListener("click", () => {
+    window.scrollTo({top:0, behavior: reduce.matches ? "auto" : "smooth"});
+    const h = document.querySelector(".masthead h1");
+    if (h) { h.setAttribute("tabindex","-1"); h.focus({preventScroll:true}); }
+  });
+  update();
 })();
 
 renderTracker();
